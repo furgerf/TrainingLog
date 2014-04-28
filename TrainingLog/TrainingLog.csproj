@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BioDataEntry.cs" />
     <Compile Include="Forms\BioDataEntryForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -82,6 +83,9 @@
     <Compile Include="Forms\StatisticsForm.Designer.cs">
       <DependentUpon>StatisticsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="SweatData.cs" />
+    <Compile Include="TrainingEntry.cs" />
+    <Compile Include="Utils.cs" />
     <EmbeddedResource Include="Forms\BioDataEntryForm.resx">
       <DependentUpon>BioDataEntryForm.cs</DependentUpon>
     </EmbeddedResource>
