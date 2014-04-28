@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace TrainingLog
 {
-    public partial class Form1 : Form
+    public partial class StatisticsForm : Form
     {
-        public Form1()
+        public StatisticsForm()
         {
             InitializeComponent();
         }
