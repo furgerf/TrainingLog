@@ -2,7 +2,7 @@ using System;
 
 namespace TrainingLog
 {
-    public class TrainingEntry
+    public class TrainingEntry : Entry
     {
         #region Public Fields
 
@@ -11,10 +11,6 @@ namespace TrainingLog
         public double DistanceKm { get { return _distanceM / 1000.0; } set { _distanceM = (int)(1000*value); } }
 
         public int DistanceM { get { return _distanceM; } set { _distanceM = value; } }
-
-        public Utils.Index Feeling { get; set; }
-
-        public String Note { get; set; }
 
         public TimeSpan Pace { get { return new TimeSpan(0, (int)(Duration.TotalMinutes / DistanceKm), 0); } }
 
@@ -34,7 +30,12 @@ namespace TrainingLog
 
         #region Constructor
 
-        public TrainingEntry(TimeSpan duration)
+        public TrainingEntry(TimeSpan duration) : base("TrainingEntry")
+        {
+            Duration = duration;
+        }
+
+        protected TrainingEntry(TimeSpan duration, String entryName) : base(entryName)
         {
             Duration = duration;
         }
@@ -43,7 +44,15 @@ namespace TrainingLog
 
         #region Main Methods
 
+        public override Entry TryParse(string data)
+        {
+            throw new NotImplementedException();
+        }
 
+        public override string LogString
+        {
+            get { throw new NotImplementedException(); }
+        }
 
         #endregion
     }

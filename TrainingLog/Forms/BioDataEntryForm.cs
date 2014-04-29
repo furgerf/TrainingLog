@@ -1,4 +1,6 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.IO;
+using System.Windows.Forms;
 
 namespace TrainingLog.Forms
 {
@@ -14,10 +16,27 @@ namespace TrainingLog.Forms
         public BioDataEntryForm()
         {
             InitializeComponent();
+
+            // fill combobox lists
+            foreach (var foo in Enum.GetNames(typeof(Utils.Index)))
+                if (foo.Equals("Count"))
+                    break;
+                else
+                    comSleepQuality.Items.Add(foo);
+            comSleepQuality.Text = Enum.GetName(typeof (Utils.Index), 2);
+
+            comFeeling.Items.Add("");
+            foreach (var foo in Enum.GetNames(typeof(Utils.Index)))
+                if (foo.Equals("Count"))
+                    break;
+                else
+                    comFeeling.Items.Add(foo);
         }
 
         private void BioDataEntryFormFormClosing(object sender, FormClosingEventArgs e)
         {
+            return;
+
             Hide();
 
             MainForm.GetInstance.Show();
@@ -26,5 +45,45 @@ namespace TrainingLog.Forms
             e.Cancel = !MainForm.GetInstance.CloseForms;
         }
 
+        private void ButOkClick(object sender, EventArgs e)
+        {
+            File.AppendAllText(Utils.DataFilePath,
+                               new BioDataEntry()
+                                   {
+                                       DateTime = DateTime.Now,
+                                       SleepDuration = new TimeSpan(0, (int) (60*numSleepDuration.Value), 0),
+                                       SleepQuality = (Utils.Index) comSleepQuality.SelectedIndex,
+                                       RestingHeartRate = (int) numRestingHeartRate.Value,
+                                       Weight = (int) numWeight.Value,
+                                       Nibbles = txtNibbles.Text,
+                                       Feeling =
+                                           comFeeling.Text != ""
+                                               ? (Utils.Index) comFeeling.SelectedIndex
+                                               : Utils.Index.None,
+                                       Note = txtNotes.Text
+                                   }.LogString + '\n');
+
+            Close();
+        }
+
+        private void ButCancelClick(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void NumSleepDurationEnter(object sender, EventArgs e)
+        {
+            numSleepDuration.Select(0, numSleepDuration.Text.Length);
+        }
+
+        private void NumRestingHeartRateEnter(object sender, EventArgs e)
+        {
+            numRestingHeartRate.Select(0, numRestingHeartRate.Text.Length);
+        }
+
+        private void NumWeightEnter(object sender, EventArgs e)
+        {
+            numWeight.Select(0, numWeight.Text.Length);
+        }
     }
 }

@@ -1,10 +1,20 @@
+using System.IO;
+
 namespace TrainingLog
 {
     public class Utils
     {
         public enum Index
         {
-            One, Two, Three, Four, Five
+            Terrible, Bad, Okay, Good, Fantastic, Count, None
         }
+
+        public const string DataFilePath = "training.log";
+
+        //public static FileStream GetDataFileAppend()
+        //{
+        //    return File.Open(DataFilePath, FileMode.Append);
+        //    File.a
+        //}
     }
 }

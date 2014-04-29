@@ -41,11 +41,5 @@ namespace TrainingLog
 
 
         #endregion
-
-        #region Event Handling
-
-
-
-        #endregion
     }
 }

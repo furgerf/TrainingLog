@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BioDataEntry.cs" />
+    <Compile Include="Entry.cs" />
     <Compile Include="Forms\BioDataEntryForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -83,6 +84,7 @@
     <Compile Include="Forms\StatisticsForm.Designer.cs">
       <DependentUpon>StatisticsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="RaceEntry.cs" />
     <Compile Include="SweatData.cs" />
     <Compile Include="TrainingEntry.cs" />
     <Compile Include="Utils.cs" />
