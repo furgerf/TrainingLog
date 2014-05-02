@@ -19,7 +19,7 @@ namespace TrainingLog
         #region Constructor
 
         public RaceEntry(TimeSpan duration)
-            :base(duration, "RaceEntry")
+            :base(duration, Utils.Sport.Running,  "RaceEntry")
         {
         }
 

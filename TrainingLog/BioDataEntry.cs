@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Windows.Forms;
 
 namespace TrainingLog
 {
@@ -93,8 +94,13 @@ namespace TrainingLog
             for (var i = 1; i < attributes.Length; i++)
             {
                 var pair = attributes[i].Split(AttributeDividor);
+                
                 if (!entry.SetAttribute(pair[0], pair[1]))
+                {
+                    MessageBox.Show("Error while parsing \"" + attributes[i] + "\".", "Parsing error",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return null;
+                }
             }
 
             return entry;

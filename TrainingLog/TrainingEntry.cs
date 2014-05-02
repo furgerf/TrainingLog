@@ -18,6 +18,8 @@ namespace TrainingLog
 
         public SweatData SweatData { get { return _sweatData; } set { _sweatData = value; _sweatData.TrainingEntry = this; } }
 
+        public Utils.Sport Sport { get; set; }
+
         #endregion
 
         #region Private Fields
@@ -35,9 +37,10 @@ namespace TrainingLog
             Duration = duration;
         }
 
-        protected TrainingEntry(TimeSpan duration, String entryName) : base(entryName)
+        protected TrainingEntry(TimeSpan duration, Utils.Sport sport, String entryName) : base(entryName)
         {
             Duration = duration;
+            Sport = sport;
         }
 
         #endregion
