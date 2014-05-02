@@ -18,25 +18,17 @@ namespace TrainingLog.Forms
             InitializeComponent();
 
             // fill combobox lists
-            foreach (var foo in Enum.GetNames(typeof(Utils.Index)))
-                if (foo.Equals("Count"))
-                    break;
-                else
-                    comSleepQuality.Items.Add(foo);
-            comSleepQuality.Text = Enum.GetName(typeof (Utils.Index), 2);
+            for (var i = Utils.Index.Count - 1; i >= 0; i--)
+                comSleepQuality.Items.Add(Enum.GetName(typeof (Utils.Index), i));
+            comSleepQuality.SelectedIndex = (int)Utils.Index.Okay;
 
             comFeeling.Items.Add("");
-            foreach (var foo in Enum.GetNames(typeof(Utils.Index)))
-                if (foo.Equals("Count"))
-                    break;
-                else
-                    comFeeling.Items.Add(foo);
+            for (var i = Utils.Index.Count - 1; i >= 0; i--)
+                comFeeling.Items.Add(Enum.GetName(typeof (Utils.Index), i));
         }
 
         private void BioDataEntryFormFormClosing(object sender, FormClosingEventArgs e)
         {
-            return;
-
             Hide();
 
             MainForm.GetInstance.Show();
@@ -48,9 +40,9 @@ namespace TrainingLog.Forms
         private void ButOkClick(object sender, EventArgs e)
         {
             File.AppendAllText(Utils.DataFilePath,
-                               new BioDataEntry()
+                               new BioDataEntry
                                    {
-                                       DateTime = DateTime.Now,
+                                       DateTime = DateTime.Today,
                                        SleepDuration = new TimeSpan(0, (int) (60*numSleepDuration.Value), 0),
                                        SleepQuality = (Utils.Index) comSleepQuality.SelectedIndex,
                                        RestingHeartRate = (int) numRestingHeartRate.Value,

@@ -1,3 +1,5 @@
+using System;
+
 namespace TrainingLog
 {
     public class Utils
