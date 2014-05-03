@@ -206,27 +206,25 @@ namespace TrainingLog
             {
                 var sb = new StringBuilder();
                 sb.Append(EntryName);
+                // mandatory fields
                 sb.Append(AttributeSeparator + "Duration" + AttributeDividor + Duration);
                 sb.Append(AttributeSeparator + "Sport" + AttributeDividor + Sport);
+                sb.Append(AttributeSeparator + "DateTime" + AttributeDividor + DateTime);
+                sb.Append(AttributeSeparator + "TrainingType" + AttributeDividor + TrainingType);
 
-                if (TrainingType != null)
-                    sb.Append(AttributeSeparator + "TrainingType" + AttributeDividor + TrainingType);
-                
+                // optional fields
                 if (DistanceM != 0)
                     sb.Append(AttributeSeparator + "DistanceM" + AttributeDividor + DistanceM);
                 if (Calories != 0)
                     sb.Append(AttributeSeparator + "Calories" + AttributeDividor + Calories);
                 if (AverageHr != 0)
                     sb.Append(AttributeSeparator + "AverageHr" + AttributeDividor + AverageHr);
-                  if (!ZoneTime.IsEmpty)
-                      sb.Append(AttributeSeparator + "ZoneTime" + AttributeDividor + AverageHr);
+                if (!ZoneTime.IsEmpty)
+                    sb.Append(AttributeSeparator + "ZoneTime" + AttributeDividor + ZoneTime);
                 // TODO: Save SweatData
 
                 if (Note != "")
                     sb.Append(AttributeSeparator + "Note" + AttributeDividor + Note);
-
-                sb.Append(AttributeSeparator + "DateTime" + AttributeDividor + DateTime);
-
                 if (Feeling != Utils.Index.None)
                     sb.Append(AttributeSeparator + "Feeling" + AttributeDividor + Feeling);
 

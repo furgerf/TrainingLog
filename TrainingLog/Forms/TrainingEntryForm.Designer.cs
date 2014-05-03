@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.grpBase = new System.Windows.Forms.GroupBox();
+            this.datDate = new System.Windows.Forms.DateTimePicker();
             this.label20 = new System.Windows.Forms.Label();
-            this.txtDate = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
             this.comSport = new System.Windows.Forms.ComboBox();
             this.label18 = new System.Windows.Forms.Label();
@@ -45,6 +45,8 @@
             this.grpNotes = new System.Windows.Forms.GroupBox();
             this.txtNotes = new System.Windows.Forms.TextBox();
             this.grpDistance = new System.Windows.Forms.GroupBox();
+            this.label21 = new System.Windows.Forms.Label();
+            this.comFeeling = new System.Windows.Forms.ComboBox();
             this.labSpeed = new System.Windows.Forms.Label();
             this.labPace = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -78,8 +80,8 @@
             // 
             // grpBase
             // 
+            this.grpBase.Controls.Add(this.datDate);
             this.grpBase.Controls.Add(this.label20);
-            this.grpBase.Controls.Add(this.txtDate);
             this.grpBase.Controls.Add(this.label17);
             this.grpBase.Controls.Add(this.comSport);
             this.grpBase.Controls.Add(this.label18);
@@ -98,6 +100,14 @@
             this.grpBase.TabStop = false;
             this.grpBase.Text = "Base Information";
             // 
+            // datDate
+            // 
+            this.datDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.datDate.Location = new System.Drawing.Point(75, 22);
+            this.datDate.Name = "datDate";
+            this.datDate.Size = new System.Drawing.Size(121, 20);
+            this.datDate.TabIndex = 0;
+            // 
             // label20
             // 
             this.label20.AutoSize = true;
@@ -106,13 +116,6 @@
             this.label20.Size = new System.Drawing.Size(33, 13);
             this.label20.TabIndex = 15;
             this.label20.Text = "Date:";
-            // 
-            // txtDate
-            // 
-            this.txtDate.Location = new System.Drawing.Point(75, 19);
-            this.txtDate.Name = "txtDate";
-            this.txtDate.Size = new System.Drawing.Size(118, 20);
-            this.txtDate.TabIndex = 0;
             // 
             // label17
             // 
@@ -212,7 +215,7 @@
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(49, 13);
             this.label5.TabIndex = 8;
-            this.label5.Text = "[h:] min:s";
+            this.label5.Text = "[h.] min.s";
             // 
             // grpNotes
             // 
@@ -234,6 +237,8 @@
             // 
             // grpDistance
             // 
+            this.grpDistance.Controls.Add(this.label21);
+            this.grpDistance.Controls.Add(this.comFeeling);
             this.grpDistance.Controls.Add(this.labSpeed);
             this.grpDistance.Controls.Add(this.labPace);
             this.grpDistance.Controls.Add(this.label6);
@@ -243,7 +248,25 @@
             this.grpDistance.Size = new System.Drawing.Size(125, 181);
             this.grpDistance.TabIndex = 1;
             this.grpDistance.TabStop = false;
-            this.grpDistance.Text = "Distance";
+            this.grpDistance.Text = "Distance/Feeling";
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(6, 130);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(44, 13);
+            this.label21.TabIndex = 10;
+            this.label21.Text = "Feeling:";
+            // 
+            // comFeeling
+            // 
+            this.comFeeling.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comFeeling.FormattingEnabled = true;
+            this.comFeeling.Location = new System.Drawing.Point(9, 152);
+            this.comFeeling.Name = "comFeeling";
+            this.comFeeling.Size = new System.Drawing.Size(103, 21);
+            this.comFeeling.TabIndex = 9;
             // 
             // labSpeed
             // 
@@ -266,17 +289,17 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(97, 16);
+            this.label6.Location = new System.Drawing.Point(91, 16);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(15, 13);
+            this.label6.Size = new System.Drawing.Size(21, 13);
             this.label6.TabIndex = 1;
-            this.label6.Text = "m";
+            this.label6.Text = "km";
             // 
             // txtDistance
             // 
             this.txtDistance.Location = new System.Drawing.Point(6, 13);
             this.txtDistance.Name = "txtDistance";
-            this.txtDistance.Size = new System.Drawing.Size(85, 20);
+            this.txtDistance.Size = new System.Drawing.Size(79, 20);
             this.txtDistance.TabIndex = 0;
             this.txtDistance.TextChanged += new System.EventHandler(this.DistanceTimeChanged);
             this.txtDistance.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NumericTextChanged);
@@ -344,7 +367,7 @@
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(49, 13);
             this.label15.TabIndex = 23;
-            this.label15.Text = "[h:] min:s";
+            this.label15.Text = "[h.] min.s";
             // 
             // txtZone1
             // 
@@ -370,7 +393,7 @@
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(49, 13);
             this.label13.TabIndex = 20;
-            this.label13.Text = "[h:] min:s";
+            this.label13.Text = "[h.] min.s";
             // 
             // txtZone2
             // 
@@ -396,7 +419,7 @@
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(49, 13);
             this.label11.TabIndex = 17;
-            this.label11.Text = "[h:] min:s";
+            this.label11.Text = "[h.] min.s";
             // 
             // txtZone3
             // 
@@ -422,7 +445,7 @@
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(49, 13);
             this.label9.TabIndex = 14;
-            this.label9.Text = "[h:] min:s";
+            this.label9.Text = "[h.] min.s";
             // 
             // txtZone4
             // 
@@ -448,7 +471,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(49, 13);
             this.label3.TabIndex = 11;
-            this.label3.Text = "[h:] min:s";
+            this.label3.Text = "[h.] min.s";
             // 
             // txtZone5
             // 
@@ -487,7 +510,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(563, 302);
+            this.ClientSize = new System.Drawing.Size(563, 304);
             this.Controls.Add(this.grpHeartRate);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOk);
@@ -551,7 +574,9 @@
         private System.Windows.Forms.TextBox txtZone5;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label20;
-        private System.Windows.Forms.TextBox txtDate;
         private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.ComboBox comFeeling;
+        private System.Windows.Forms.DateTimePicker datDate;
     }
 }
