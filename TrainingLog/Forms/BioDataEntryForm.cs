@@ -18,19 +18,19 @@ namespace TrainingLog.Forms
             InitializeComponent();
 
             // fill combobox lists
-            for (var i = Utils.Index.Count - 1; i >= 0; i--)
-                comSleepQuality.Items.Add(Enum.GetName(typeof (Utils.Index), i));
-            comSleepQuality.SelectedIndex = (int)Utils.Index.Okay;
+            for (var i = Common.Index.Count - 1; i >= 0; i--)
+                comSleepQuality.Items.Add(Enum.GetName(typeof (Common.Index), i));
+            comSleepQuality.SelectedIndex = (int)Common.Index.Okay;
 
             comFeeling.Items.Add("");
-            for (var i = Utils.Index.Count - 1; i >= 0; i--)
-                comFeeling.Items.Add(Enum.GetName(typeof (Utils.Index), i));
+            for (var i = Common.Index.Count - 1; i >= 0; i--)
+                comFeeling.Items.Add(Enum.GetName(typeof (Common.Index), i));
         }
 
         private void ResetForm()
         {
             numSleepDuration.Value = 8;
-            comSleepQuality.SelectedIndex = (int)Utils.Index.Okay;
+            comSleepQuality.SelectedIndex = (int)Common.Index.Okay;
             numRestingHeartRate.Value = 0;
             numOwnIndex.Value = 0;
             numWeight.Value = 0;
@@ -51,21 +51,24 @@ namespace TrainingLog.Forms
 
         private void ButOkClick(object sender, EventArgs e)
         {
-            File.AppendAllText(Utils.DataFilePath,
-                               new BioDataEntry
-                                   {
-                                       DateTime = DateTime.Today,
-                                       SleepDuration = new TimeSpan(0, (int) (60*numSleepDuration.Value), 0),
-                                       SleepQuality = (Utils.Index) (int)Utils.Index.Count - comSleepQuality.SelectedIndex - 1,
-                                       RestingHeartRate = (int) numRestingHeartRate.Value,
-                                       Weight = (int) numWeight.Value,
-                                       Nibbles = txtNibbles.Text,
-                                       Feeling =
-                                           comFeeling.Text != ""
-                                               ? (Utils.Index)(int)Utils.Index.Count - comFeeling.SelectedIndex
-                                               : Utils.Index.None,
-                                       Note = txtNotes.Text
-                                   }.LogString + '\n');
+            var entry = new BioDataEntry
+                            {
+                                DateTime = DateTime.Today,
+                                SleepDuration = new TimeSpan(0, (int) (60*numSleepDuration.Value), 0),
+                                SleepQuality = (Common.Index) (int) Common.Index.Count - comSleepQuality.SelectedIndex - 1,
+                                RestingHeartRate = (int) numRestingHeartRate.Value,
+                                Weight = (int) numWeight.Value,
+                                Nibbles = txtNibbles.Text,
+                                Feeling =
+                                    comFeeling.Text != ""
+                                        ? (Common.Index) (int) Common.Index.Count - comFeeling.SelectedIndex
+                                        : Common.Index.None,
+                                Note = txtNotes.Text
+                            };
+
+            File.AppendAllText(Common.DataFilePath, entry.LogString + '\n');
+
+            Model.Instance.AddEntry(entry);
 
             ResetForm();
             Close();

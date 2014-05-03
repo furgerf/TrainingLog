@@ -10,11 +10,13 @@ namespace TrainingLog
 
         public DateTime DateTime { get; set; }
 
-        public Utils.Index Feeling { get; set; }
+        public Common.Index Feeling { get; set; }
+
+        public abstract string LogString { get; }
 
         #endregion
 
-        #region Private Fields
+        #region Protected Fields
 
         // used between name~value pairs
         protected const char AttributeSeparator = '\t';
@@ -22,20 +24,37 @@ namespace TrainingLog
         // used to separate name and value
         protected const char AttributeDividor = '\v';
 
+        protected readonly string EntryName;
+
         #endregion
 
-        protected Entry(String entryName)
+        #region Constructor
+
+        protected Entry(Common.EntryType entryType)
         {
-            EntryName = entryName;
+            EntryName = entryType.ToString();
         }
+
+        #endregion
 
         #region Main Methods
 
-        public abstract Entry TryParse(String data);
+        public static Entry Parse(string data)
+        {
+            var entryType = data.Substring(0, data.IndexOf(AttributeSeparator));
 
-        public abstract String LogString { get; }
-
-        protected readonly String EntryName;
+            switch (entryType)
+            {
+                case "BioDataEntry":
+                    return BioDataEntry.ParseBioDataEntry(data);
+                case "RaceEntry":
+                    return RaceEntry.ParseRaceEntry(data);
+                case "TrainingEntry":
+                    return TrainingEntry.ParseTrainingEntry(data);
+                default:
+                    return null;
+            }
+        }
 
         #endregion
     }

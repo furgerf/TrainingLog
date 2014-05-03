@@ -58,6 +58,7 @@
     <Compile Include="Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Forms\SettingsForm.cs">
@@ -87,7 +88,8 @@
     <Compile Include="RaceEntry.cs" />
     <Compile Include="SweatData.cs" />
     <Compile Include="TrainingEntry.cs" />
-    <Compile Include="Utils.cs" />
+    <Compile Include="Common.cs" />
+    <Compile Include="ZoneData.cs" />
     <EmbeddedResource Include="Forms\BioDataEntryForm.resx">
       <DependentUpon>BioDataEntryForm.cs</DependentUpon>
     </EmbeddedResource>

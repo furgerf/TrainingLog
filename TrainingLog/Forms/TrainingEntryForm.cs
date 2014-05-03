@@ -19,7 +19,7 @@ namespace TrainingLog.Forms
             InitializeComponent();
 
             // fill combobox list
-            foreach (var foo in Enum.GetNames(typeof (Utils.Sport)))
+            foreach (var foo in Enum.GetNames(typeof (Common.Sport)))
                 if (foo.Equals("Count"))
                     break;
                 else
@@ -27,8 +27,8 @@ namespace TrainingLog.Forms
             comSport.SelectedIndex = 0;
 
             comFeeling.Items.Add("");
-            for (var i = Utils.Index.Count - 1; i >= 0; i--)
-                comFeeling.Items.Add(Enum.GetName(typeof(Utils.Index), i));
+            for (var i = Common.Index.Count - 1; i >= 0; i--)
+                comFeeling.Items.Add(Enum.GetName(typeof(Common.Index), i));
 
             // add event handles
             txtDuration.TextChanged += DurationChanged;
@@ -78,37 +78,39 @@ namespace TrainingLog.Forms
         private void ButOkClick(object sender, EventArgs e)
         {
             TimeSpan duration;
-            TrainingEntry.ZoneData zoneData;
+            ZoneData zoneData;
             if (!IsDataValid(out duration, out zoneData))
                 return;
 
+            var entry = new TrainingEntry(duration)
+                            {
+                                DateTime = datDate.Value.Date,
+                                Sport = (Common.Sport) comSport.SelectedIndex,
+                                TrainingType = GetTrainingType(),
+                                Calories = txtCalories.Text == "" ? 0 : int.Parse(txtCalories.Text),
+                                //TODO: save sweat data
+                                AverageHr = txtAvgHR.Text == "" ? 0 : int.Parse(txtAvgHR.Text),
+                                ZoneTime = zoneData,
+                                DistanceKm = txtDistance.Text == "" ? 0 : double.Parse(txtDistance.Text),
+                                Feeling =
+                                    comFeeling.Text != ""
+                                        ? (Common.Index) (int) Common.Index.Count - comFeeling.SelectedIndex
+                                        : Common.Index.None,
+                                Note = txtNotes.Text
+                            };
 
-            File.AppendAllText(Utils.DataFilePath,
-                                new TrainingEntry(duration)
-                                    {
-                                        DateTime = datDate.Value.Date,
-                                        Sport = (Utils.Sport)comSport.SelectedIndex,
-                                        TrainingType = GetTrainingType(),
-                                        Calories = txtCalories.Text == "" ? 0 : int.Parse(txtCalories.Text),
-                                        //TODO: save sweat data
-                                        AverageHr = txtAvgHR.Text == "" ? 0 : int.Parse(txtAvgHR.Text),
-                                        ZoneTime = zoneData,
-                                        DistanceKm = txtDistance.Text == "" ? 0 : double.Parse(txtDistance.Text),
-                                        Feeling =
-                                           comFeeling.Text != ""
-                                               ? (Utils.Index)(int)Utils.Index.Count - comFeeling.SelectedIndex
-                                               : Utils.Index.None,
-                                        Note = txtNotes.Text
-                                    }.LogString + '\n');
+            File.AppendAllText(Common.DataFilePath, entry.LogString + '\n');
+
+            Model.Instance.AddEntry(entry);
 
             ResetForm();
             Close();
         }
 
-        private bool IsDataValid(out TimeSpan duration, out TrainingEntry.ZoneData zoneData)
+        private bool IsDataValid(out TimeSpan duration, out ZoneData zoneData)
         {
             duration = TimeSpan.Zero;
-            zoneData = new TrainingEntry.ZoneData();
+            zoneData = new ZoneData();
 
             // duration
             if (txtDuration.Text.Split('.').Length == 2)
@@ -128,8 +130,8 @@ namespace TrainingLog.Forms
             }
 
             // distance
-            if (comSport.SelectedIndex == (int) Utils.Sport.Running ||
-                comSport.SelectedIndex == (int) Utils.Sport.Biking)
+            if (comSport.SelectedIndex == (int) Common.Sport.Running ||
+                comSport.SelectedIndex == (int) Common.Sport.Biking)
             {
                 double foo;
                 if (!double.TryParse(txtDistance.Text, out foo))
@@ -166,7 +168,7 @@ namespace TrainingLog.Forms
                 if (txtZone5.Text == "")
                     txtZone5.Text = "0.0.0";
 
-                if (!TrainingEntry.ZoneData.TryParse(txtZone5.Text.Replace('.', ':') + '_' + txtZone4.Text.Replace('.', ':') + '_' + txtZone3.Text.Replace('.', ':') + '_' +
+                if (!ZoneData.TryParse(txtZone5.Text.Replace('.', ':') + '_' + txtZone4.Text.Replace('.', ':') + '_' + txtZone3.Text.Replace('.', ':') + '_' +
                                                      txtZone2.Text.Replace('.', ':') + '_' + txtZone1.Text.Replace('.', ':'), out
                                                                                               zoneData))
                 {
@@ -176,7 +178,7 @@ namespace TrainingLog.Forms
                 }
 
                 var diff = zoneData.GetDuration().CompareTo(duration) <= 0 ? zoneData.GetDuration().TotalSeconds / duration.TotalSeconds : duration.TotalSeconds / zoneData.GetDuration().TotalSeconds;
-                if (diff > 1 + Utils.SignificancePercentage || diff < 1 - Utils.SignificancePercentage)
+                if (diff > 1 + Common.SignificancePercentage || diff < 1 - Common.SignificancePercentage)
                 {
                     MessageBox.Show("Difference between sum of zone data and duration is too big (" + Math.Round((1 - diff) * 100, 2) + "%).", "Too big difference", MessageBoxButtons.OK,
                                     MessageBoxIcon.Information);
@@ -191,15 +193,15 @@ namespace TrainingLog.Forms
 
         private Enum GetTrainingType()
         {
-            switch ((Utils.Sport)comSport.SelectedIndex)
+            switch ((Common.Sport)comSport.SelectedIndex)
             {
-                case Utils.Sport.Running:
-                case Utils.Sport.Biking:
-                    return (Utils.EnduranceType) comTrainingType.SelectedIndex;
-                case Utils.Sport.Squash:
-                    return (Utils.SquashType) comTrainingType.SelectedIndex;
+                case Common.Sport.Running:
+                case Common.Sport.Biking:
+                    return (Common.EnduranceType) comTrainingType.SelectedIndex;
+                case Common.Sport.Squash:
+                    return (Common.SquashType) comTrainingType.SelectedIndex;
                 default:
-                    return Utils.TrainingType.None;
+                    return Common.TrainingType.None;
             }
         }
 
@@ -220,7 +222,7 @@ namespace TrainingLog.Forms
 
             // only allow one decimal point
             if (e.KeyChar == '.'
-                && (sender as TextBox).Text.IndexOf('.') > -1)
+                && ((TextBox) sender).Text.IndexOf('.') > -1)
             {
                 e.Handled = true;
             }
@@ -238,16 +240,16 @@ namespace TrainingLog.Forms
 
             var count = -1;
             var type = GetType();
-            switch ((Utils.Sport) comSport.SelectedIndex)
+            switch ((Common.Sport) comSport.SelectedIndex)
             {
-                case Utils.Sport.Running:
-                case Utils.Sport.Biking:
-                    count = (int) Utils.EnduranceType.Count;
-                    type = typeof (Utils.EnduranceType);
+                case Common.Sport.Running:
+                case Common.Sport.Biking:
+                    count = (int) Common.EnduranceType.Count;
+                    type = typeof (Common.EnduranceType);
                     break;
-                case Utils.Sport.Squash:
-                    count = (int) Utils.SquashType.Count;
-                    type = typeof (Utils.SquashType);
+                case Common.Sport.Squash:
+                    count = (int) Common.SquashType.Count;
+                    type = typeof (Common.SquashType);
                     break;
             }
 
@@ -257,8 +259,8 @@ namespace TrainingLog.Forms
                 comTrainingType.SelectedIndex = 0;
 
             // en-/disable distance
-            grpDistance.Enabled = comSport.SelectedIndex == (int) Utils.Sport.Running ||
-                                  comSport.SelectedIndex == (int) Utils.Sport.Biking;
+            grpDistance.Enabled = comSport.SelectedIndex == (int) Common.Sport.Running ||
+                                  comSport.SelectedIndex == (int) Common.Sport.Biking;
         }
 
         private void DistanceTimeChanged(object sender, EventArgs e)

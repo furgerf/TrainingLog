@@ -6,57 +6,6 @@ namespace TrainingLog
 {
     public class TrainingEntry : Entry
     {
-        public struct ZoneData
-        {
-            public TimeSpan Zone5;
-            public TimeSpan Zone4;
-            public TimeSpan Zone3;
-            public TimeSpan Zone2;
-            public TimeSpan Zone1;
-
-            public override string ToString()
-            {
-                return Zone5.ToString() + '_' + Zone4 + '_' + Zone3 + '_' + Zone2 + '_' + Zone1;
-            }
-
-            public bool IsEmpty { get { return GetDuration() == TimeSpan.Zero; } }
-
-            public static bool TryParse(string s, out ZoneData result)
-            {
-                result = new ZoneData();
-
-                var split = s.Split('_');
-                if (split.Length != 5)
-                    return false;
-
-                try
-                {
-                    result = new ZoneData(TimeSpan.Parse(split[0]), TimeSpan.Parse(split[1]), TimeSpan.Parse(split[2]),
-                                          TimeSpan.Parse(split[3]), TimeSpan.Parse(split[4]));
-                    return true;
-                }
-                catch (FormatException)
-                {
-                    return false;
-                }
-            }
-
-            public TimeSpan GetDuration()
-            {
-                return Zone5.Add(Zone4.Add(Zone3.Add(Zone2.Add(Zone1))));
-            }
-
-
-            private ZoneData(TimeSpan zone5, TimeSpan zone4, TimeSpan zone3, TimeSpan zone2, TimeSpan zone1)
-            {
-                Zone5 = zone5;
-                Zone4 = zone4;
-                Zone3 = zone3;
-                Zone2 = zone2;
-                Zone1 = zone1;
-            }
-        }
-
         #region Public Fields
 
         public TimeSpan Duration { get; set; }
@@ -71,7 +20,7 @@ namespace TrainingLog
 
         public SweatData SweatData { get { return _sweatData; } set { _sweatData = value; _sweatData.TrainingEntry = this; } }
 
-        public Utils.Sport Sport { get; set; }
+        public Common.Sport Sport { get; set; }
 
         public Enum TrainingType { get; set; }
 
@@ -81,6 +30,8 @@ namespace TrainingLog
 
         public ZoneData ZoneTime { get; set; }
 
+        public ZoneData ZoneData { get { return _zoneData; } }
+
         #endregion
 
         #region Private Fields
@@ -89,21 +40,26 @@ namespace TrainingLog
 
         private SweatData _sweatData;
 
+        private readonly ZoneData _zoneData;
+
         #endregion
 
         #region Constructor
 
-        private TrainingEntry() : base("TrainingEntry")
+        private TrainingEntry() : base(Common.EntryType.Training)
         {
+            _zoneData = new ZoneData();
         }
 
-        public TrainingEntry(TimeSpan duration) : base("TrainingEntry")
+        public TrainingEntry(TimeSpan duration) : base(Common.EntryType.Training)
         {
+            _zoneData = new ZoneData();
             Duration = duration;
         }
 
-        protected TrainingEntry(TimeSpan duration, Utils.Sport sport, String entryName) : base(entryName)
+        protected TrainingEntry(TimeSpan duration, Common.Sport sport, Common.EntryType entryType) : base(entryType)
         {
+            _zoneData = new ZoneData();
             Duration = duration;
             Sport = sport;
         }
@@ -122,19 +78,19 @@ namespace TrainingLog
                         Duration = TimeSpan.Parse(value);
                         return true;
                     case "Sport":
-                        Utils.Sport foo;
+                        Common.Sport foo;
                         if (!Enum.TryParse(value, out foo))
                             throw new Exception();
                         Sport = foo;
                         return true;
                     case "TrainingType":
-                        Utils.EnduranceType end;
+                        Common.EnduranceType end;
                         if (Enum.TryParse(value, out end))
                         {
                             TrainingType = end;
                             return true;
                         }
-                        Utils.SquashType squ;
+                        Common.SquashType squ;
                         if (Enum.TryParse(value, out squ))
                         {
                             TrainingType = squ;
@@ -163,7 +119,7 @@ namespace TrainingLog
                         DateTime = DateTime.Parse(value);
                         return true;
                     case "Feeling":
-                        Utils.Index bar;
+                        Common.Index bar;
                         if (!Enum.TryParse(value, out bar))
                             throw new Exception();
                         Feeling = bar;
@@ -178,7 +134,7 @@ namespace TrainingLog
             }
         }
 
-        public override Entry TryParse(string data)
+        public static TrainingEntry ParseTrainingEntry (string data)
         {
             var attributes = data.Split(AttributeSeparator);
 
@@ -225,7 +181,7 @@ namespace TrainingLog
 
                 if (Note != "")
                     sb.Append(AttributeSeparator + "Note" + AttributeDividor + Note);
-                if (Feeling != Utils.Index.None)
+                if (Feeling != Common.Index.None)
                     sb.Append(AttributeSeparator + "Feeling" + AttributeDividor + Feeling);
 
                 return sb.ToString();

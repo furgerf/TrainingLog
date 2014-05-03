@@ -1,8 +1,6 @@
-using System;
-
 namespace TrainingLog
 {
-    public class Utils
+    public class Common
     {
         public enum Index
         {
@@ -29,14 +27,13 @@ namespace TrainingLog
             None
         }
 
+        public enum EntryType
+        {
+            Training, Race, BioData, Count
+        }
+
         public const double SignificancePercentage = 0.05;
 
         public const string DataFilePath = "training.log";
-
-        //public static FileStream GetDataFileAppend()
-        //{
-        //    return File.Open(DataFilePath, FileMode.Append);
-        //    File.a
-        //}
     }
 }

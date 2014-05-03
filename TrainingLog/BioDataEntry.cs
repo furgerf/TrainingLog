@@ -16,7 +16,7 @@ namespace TrainingLog
 
         public TimeSpan SleepDuration { get; set; }
 
-        public Utils.Index SleepQuality { get; set; }
+        public Common.Index SleepQuality { get; set; }
 
         public String Nibbles { get; set; }
 
@@ -30,7 +30,7 @@ namespace TrainingLog
 
         #region Constructor
 
-        public BioDataEntry() : base("BioDataEntry")
+        public BioDataEntry() : base(Common.EntryType.BioData)
         {
             
         }
@@ -58,7 +58,7 @@ namespace TrainingLog
                         SleepDuration = TimeSpan.Parse(value);
                         return true;
                     case "SleepQuality":
-                        Utils.Index foo;
+                        Common.Index foo;
                         if (!Enum.TryParse(value, out foo))
                             throw new Exception();
                         SleepQuality = foo;
@@ -87,7 +87,7 @@ namespace TrainingLog
             }
         }
 
-        public override Entry TryParse(string data)
+        public static BioDataEntry ParseBioDataEntry(string data)
         {
             var attributes = data.Split(AttributeSeparator);
 
@@ -130,7 +130,7 @@ namespace TrainingLog
                     sb.Append(AttributeSeparator + "Note" + AttributeDividor + Note);
                 sb.Append(AttributeSeparator + "DateTime" + AttributeDividor + DateTime);
 
-                if (Feeling != Utils.Index.None)
+                if (Feeling != Common.Index.None)
                     sb.Append(AttributeSeparator + "Feeling" + AttributeDividor + Feeling);
 
                 return sb.ToString();

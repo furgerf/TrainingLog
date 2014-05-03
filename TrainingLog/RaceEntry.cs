@@ -19,7 +19,7 @@ namespace TrainingLog
         #region Constructor
 
         public RaceEntry(TimeSpan duration)
-            :base(duration, Utils.Sport.Running,  "RaceEntry")
+            :base(duration, Common.Sport.Running,  Common.EntryType.Race)
         {
         }
 
@@ -27,7 +27,7 @@ namespace TrainingLog
 
         #region Main Methods
 
-        public override Entry TryParse(string data)
+        public static RaceEntry ParseRaceEntry (string data)
         {
             throw new NotImplementedException();
         }
