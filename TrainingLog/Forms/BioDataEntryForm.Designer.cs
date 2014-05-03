@@ -34,10 +34,9 @@
             this.label2 = new System.Windows.Forms.Label();
             this.numSleepDuration = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
-            this.grpRestingHeartRate = new System.Windows.Forms.GroupBox();
-            this.label4 = new System.Windows.Forms.Label();
+            this.grpHeartRate = new System.Windows.Forms.GroupBox();
             this.numRestingHeartRate = new System.Windows.Forms.NumericUpDown();
-            this.grpWeight = new System.Windows.Forms.GroupBox();
+            this.grpMisc = new System.Windows.Forms.GroupBox();
             this.label5 = new System.Windows.Forms.Label();
             this.numWeight = new System.Windows.Forms.NumericUpDown();
             this.grpNibbles = new System.Windows.Forms.GroupBox();
@@ -46,17 +45,21 @@
             this.txtNotes = new System.Windows.Forms.TextBox();
             this.butOk = new System.Windows.Forms.Button();
             this.butCancel = new System.Windows.Forms.Button();
-            this.grpFeeling = new System.Windows.Forms.GroupBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.numOwnIndex = new System.Windows.Forms.NumericUpDown();
             this.comFeeling = new System.Windows.Forms.ComboBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
             this.grpSleep.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numSleepDuration)).BeginInit();
-            this.grpRestingHeartRate.SuspendLayout();
+            this.grpHeartRate.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numRestingHeartRate)).BeginInit();
-            this.grpWeight.SuspendLayout();
+            this.grpMisc.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numWeight)).BeginInit();
             this.grpNibbles.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.grpFeeling.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numOwnIndex)).BeginInit();
             this.SuspendLayout();
             // 
             // grpSleep
@@ -80,7 +83,7 @@
             this.comSleepQuality.Location = new System.Drawing.Point(62, 38);
             this.comSleepQuality.Name = "comSleepQuality";
             this.comSleepQuality.Size = new System.Drawing.Size(93, 21);
-            this.comSleepQuality.TabIndex = 4;
+            this.comSleepQuality.TabIndex = 2;
             // 
             // label3
             // 
@@ -122,7 +125,7 @@
             0,
             0,
             0});
-            this.numSleepDuration.Enter += new System.EventHandler(this.NumSleepDurationEnter);
+            this.numSleepDuration.Enter += new System.EventHandler(this.NumericEnter);
             // 
             // label1
             // 
@@ -133,54 +136,50 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Duration:";
             // 
-            // grpRestingHeartRate
+            // grpHeartRate
             // 
-            this.grpRestingHeartRate.Controls.Add(this.label4);
-            this.grpRestingHeartRate.Controls.Add(this.numRestingHeartRate);
-            this.grpRestingHeartRate.Location = new System.Drawing.Point(182, 12);
-            this.grpRestingHeartRate.Name = "grpRestingHeartRate";
-            this.grpRestingHeartRate.Size = new System.Drawing.Size(114, 68);
-            this.grpRestingHeartRate.TabIndex = 1;
-            this.grpRestingHeartRate.TabStop = false;
-            this.grpRestingHeartRate.Text = "Resting Heart Rate";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(81, 16);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(27, 13);
-            this.label4.TabIndex = 4;
-            this.label4.Text = "bpm";
+            this.grpHeartRate.Controls.Add(this.label7);
+            this.grpHeartRate.Controls.Add(this.label6);
+            this.grpHeartRate.Controls.Add(this.numOwnIndex);
+            this.grpHeartRate.Controls.Add(this.numRestingHeartRate);
+            this.grpHeartRate.Location = new System.Drawing.Point(182, 12);
+            this.grpHeartRate.Name = "grpHeartRate";
+            this.grpHeartRate.Size = new System.Drawing.Size(164, 68);
+            this.grpHeartRate.TabIndex = 1;
+            this.grpHeartRate.TabStop = false;
+            this.grpHeartRate.Text = "Resting Heart Rate";
             // 
             // numRestingHeartRate
             // 
-            this.numRestingHeartRate.Location = new System.Drawing.Point(6, 14);
+            this.numRestingHeartRate.Location = new System.Drawing.Point(77, 14);
             this.numRestingHeartRate.Maximum = new decimal(new int[] {
             200,
             0,
             0,
             0});
             this.numRestingHeartRate.Name = "numRestingHeartRate";
-            this.numRestingHeartRate.Size = new System.Drawing.Size(69, 20);
+            this.numRestingHeartRate.Size = new System.Drawing.Size(81, 20);
             this.numRestingHeartRate.TabIndex = 2;
-            this.numRestingHeartRate.Enter += new System.EventHandler(this.NumRestingHeartRateEnter);
+            this.numRestingHeartRate.Enter += new System.EventHandler(this.NumericEnter);
             // 
-            // grpWeight
+            // grpMisc
             // 
-            this.grpWeight.Controls.Add(this.label5);
-            this.grpWeight.Controls.Add(this.numWeight);
-            this.grpWeight.Location = new System.Drawing.Point(302, 12);
-            this.grpWeight.Name = "grpWeight";
-            this.grpWeight.Size = new System.Drawing.Size(110, 68);
-            this.grpWeight.TabIndex = 3;
-            this.grpWeight.TabStop = false;
-            this.grpWeight.Text = "Weight";
+            this.grpMisc.Controls.Add(this.label8);
+            this.grpMisc.Controls.Add(this.label5);
+            this.grpMisc.Controls.Add(this.label4);
+            this.grpMisc.Controls.Add(this.comFeeling);
+            this.grpMisc.Controls.Add(this.numWeight);
+            this.grpMisc.Location = new System.Drawing.Point(352, 12);
+            this.grpMisc.Name = "grpMisc";
+            this.grpMisc.Size = new System.Drawing.Size(164, 68);
+            this.grpMisc.TabIndex = 2;
+            this.grpMisc.TabStop = false;
+            this.grpMisc.Text = "Miscellaneous";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(85, 16);
+            this.label5.Location = new System.Drawing.Point(135, 16);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(19, 13);
             this.label5.TabIndex = 5;
@@ -189,7 +188,7 @@
             // numWeight
             // 
             this.numWeight.DecimalPlaces = 1;
-            this.numWeight.Location = new System.Drawing.Point(6, 14);
+            this.numWeight.Location = new System.Drawing.Point(56, 14);
             this.numWeight.Maximum = new decimal(new int[] {
             200,
             0,
@@ -198,15 +197,15 @@
             this.numWeight.Name = "numWeight";
             this.numWeight.Size = new System.Drawing.Size(73, 20);
             this.numWeight.TabIndex = 2;
-            this.numWeight.Enter += new System.EventHandler(this.NumWeightEnter);
+            this.numWeight.Enter += new System.EventHandler(this.NumericEnter);
             // 
             // grpNibbles
             // 
             this.grpNibbles.Controls.Add(this.txtNibbles);
             this.grpNibbles.Location = new System.Drawing.Point(12, 86);
             this.grpNibbles.Name = "grpNibbles";
-            this.grpNibbles.Size = new System.Drawing.Size(510, 48);
-            this.grpNibbles.TabIndex = 5;
+            this.grpNibbles.Size = new System.Drawing.Size(504, 48);
+            this.grpNibbles.TabIndex = 3;
             this.grpNibbles.TabStop = false;
             this.grpNibbles.Text = "Nibbles";
             // 
@@ -214,7 +213,7 @@
             // 
             this.txtNibbles.Location = new System.Drawing.Point(9, 19);
             this.txtNibbles.Name = "txtNibbles";
-            this.txtNibbles.Size = new System.Drawing.Size(495, 20);
+            this.txtNibbles.Size = new System.Drawing.Size(489, 20);
             this.txtNibbles.TabIndex = 0;
             // 
             // groupBox1
@@ -222,8 +221,8 @@
             this.groupBox1.Controls.Add(this.txtNotes);
             this.groupBox1.Location = new System.Drawing.Point(12, 140);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(510, 66);
-            this.groupBox1.TabIndex = 6;
+            this.groupBox1.Size = new System.Drawing.Size(504, 66);
+            this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Notes";
             // 
@@ -232,7 +231,7 @@
             this.txtNotes.Location = new System.Drawing.Point(9, 19);
             this.txtNotes.Multiline = true;
             this.txtNotes.Name = "txtNotes";
-            this.txtNotes.Size = new System.Drawing.Size(495, 37);
+            this.txtNotes.Size = new System.Drawing.Size(489, 37);
             this.txtNotes.TabIndex = 0;
             // 
             // butOk
@@ -240,7 +239,7 @@
             this.butOk.Location = new System.Drawing.Point(160, 212);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(75, 23);
-            this.butOk.TabIndex = 7;
+            this.butOk.TabIndex = 5;
             this.butOk.Text = "OK";
             this.butOk.UseVisualStyleBackColor = true;
             this.butOk.Click += new System.EventHandler(this.ButOkClick);
@@ -250,42 +249,80 @@
             this.butCancel.Location = new System.Drawing.Point(302, 212);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(75, 23);
-            this.butCancel.TabIndex = 8;
+            this.butCancel.TabIndex = 6;
             this.butCancel.Text = "Cancel";
             this.butCancel.UseVisualStyleBackColor = true;
             this.butCancel.Click += new System.EventHandler(this.ButCancelClick);
             // 
-            // grpFeeling
+            // label6
             // 
-            this.grpFeeling.Controls.Add(this.comFeeling);
-            this.grpFeeling.Location = new System.Drawing.Point(418, 12);
-            this.grpFeeling.Name = "grpFeeling";
-            this.grpFeeling.Size = new System.Drawing.Size(104, 68);
-            this.grpFeeling.TabIndex = 4;
-            this.grpFeeling.TabStop = false;
-            this.grpFeeling.Text = "Feeling";
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(6, 41);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(58, 13);
+            this.label6.TabIndex = 6;
+            this.label6.Text = "OwnIndex:";
+            // 
+            // numOwnIndex
+            // 
+            this.numOwnIndex.Location = new System.Drawing.Point(77, 38);
+            this.numOwnIndex.Maximum = new decimal(new int[] {
+            200,
+            0,
+            0,
+            0});
+            this.numOwnIndex.Name = "numOwnIndex";
+            this.numOwnIndex.Size = new System.Drawing.Size(81, 20);
+            this.numOwnIndex.TabIndex = 5;
+            this.numOwnIndex.Enter += new System.EventHandler(this.NumericEnter);
             // 
             // comFeeling
             // 
             this.comFeeling.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comFeeling.FormattingEnabled = true;
-            this.comFeeling.Location = new System.Drawing.Point(6, 13);
+            this.comFeeling.Location = new System.Drawing.Point(56, 38);
             this.comFeeling.Name = "comFeeling";
             this.comFeeling.Size = new System.Drawing.Size(93, 21);
-            this.comFeeling.TabIndex = 5;
+            this.comFeeling.TabIndex = 6;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(6, 16);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(65, 13);
+            this.label7.TabIndex = 7;
+            this.label7.Text = "Resting HR:";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 16);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(44, 13);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "Weight:";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(6, 41);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(44, 13);
+            this.label8.TabIndex = 8;
+            this.label8.Text = "Feeling:";
             // 
             // BioDataEntryForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(533, 244);
-            this.Controls.Add(this.grpFeeling);
+            this.ClientSize = new System.Drawing.Size(525, 245);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOk);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.grpNibbles);
-            this.Controls.Add(this.grpWeight);
-            this.Controls.Add(this.grpRestingHeartRate);
+            this.Controls.Add(this.grpMisc);
+            this.Controls.Add(this.grpHeartRate);
             this.Controls.Add(this.grpSleep);
             this.Name = "BioDataEntryForm";
             this.Text = "Enter BioData";
@@ -293,17 +330,17 @@
             this.grpSleep.ResumeLayout(false);
             this.grpSleep.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numSleepDuration)).EndInit();
-            this.grpRestingHeartRate.ResumeLayout(false);
-            this.grpRestingHeartRate.PerformLayout();
+            this.grpHeartRate.ResumeLayout(false);
+            this.grpHeartRate.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numRestingHeartRate)).EndInit();
-            this.grpWeight.ResumeLayout(false);
-            this.grpWeight.PerformLayout();
+            this.grpMisc.ResumeLayout(false);
+            this.grpMisc.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numWeight)).EndInit();
             this.grpNibbles.ResumeLayout(false);
             this.grpNibbles.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.grpFeeling.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.numOwnIndex)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -316,11 +353,10 @@
         private System.Windows.Forms.NumericUpDown numSleepDuration;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox comSleepQuality;
-        private System.Windows.Forms.GroupBox grpRestingHeartRate;
+        private System.Windows.Forms.GroupBox grpHeartRate;
         private System.Windows.Forms.NumericUpDown numRestingHeartRate;
-        private System.Windows.Forms.GroupBox grpWeight;
+        private System.Windows.Forms.GroupBox grpMisc;
         private System.Windows.Forms.NumericUpDown numWeight;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.GroupBox grpNibbles;
         private System.Windows.Forms.TextBox txtNibbles;
@@ -328,7 +364,11 @@
         private System.Windows.Forms.TextBox txtNotes;
         private System.Windows.Forms.Button butOk;
         private System.Windows.Forms.Button butCancel;
-        private System.Windows.Forms.GroupBox grpFeeling;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.NumericUpDown numOwnIndex;
         private System.Windows.Forms.ComboBox comFeeling;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label4;
     }
 }

@@ -27,6 +27,18 @@ namespace TrainingLog.Forms
                 comFeeling.Items.Add(Enum.GetName(typeof (Utils.Index), i));
         }
 
+        private void ResetForm()
+        {
+            numSleepDuration.Value = 8;
+            comSleepQuality.SelectedIndex = (int)Utils.Index.Okay;
+            numRestingHeartRate.Value = 0;
+            numOwnIndex.Value = 0;
+            numWeight.Value = 0;
+            comFeeling.SelectedIndex = 0;
+            txtNibbles.Text = "";
+            txtNotes.Text = "";
+        }
+
         private void BioDataEntryFormFormClosing(object sender, FormClosingEventArgs e)
         {
             Hide();
@@ -44,38 +56,30 @@ namespace TrainingLog.Forms
                                    {
                                        DateTime = DateTime.Today,
                                        SleepDuration = new TimeSpan(0, (int) (60*numSleepDuration.Value), 0),
-                                       SleepQuality = (Utils.Index) comSleepQuality.SelectedIndex,
+                                       SleepQuality = (Utils.Index) (int)Utils.Index.Count - comSleepQuality.SelectedIndex - 1,
                                        RestingHeartRate = (int) numRestingHeartRate.Value,
                                        Weight = (int) numWeight.Value,
                                        Nibbles = txtNibbles.Text,
                                        Feeling =
                                            comFeeling.Text != ""
-                                               ? (Utils.Index) comFeeling.SelectedIndex
+                                               ? (Utils.Index)(int)Utils.Index.Count - comFeeling.SelectedIndex
                                                : Utils.Index.None,
                                        Note = txtNotes.Text
                                    }.LogString + '\n');
 
+            ResetForm();
             Close();
         }
 
         private void ButCancelClick(object sender, EventArgs e)
         {
+            ResetForm();
             Close();
         }
 
-        private void NumSleepDurationEnter(object sender, EventArgs e)
+        private void NumericEnter(object sender, EventArgs e)
         {
-            numSleepDuration.Select(0, numSleepDuration.Text.Length);
-        }
-
-        private void NumRestingHeartRateEnter(object sender, EventArgs e)
-        {
-            numRestingHeartRate.Select(0, numRestingHeartRate.Text.Length);
-        }
-
-        private void NumWeightEnter(object sender, EventArgs e)
-        {
-            numWeight.Select(0, numWeight.Text.Length);
+            ((NumericUpDown)sender).Select(0, ((NumericUpDown)sender).Text.Length);
         }
     }
 }
