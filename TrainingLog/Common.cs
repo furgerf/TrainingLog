@@ -14,7 +14,7 @@ namespace TrainingLog
 
         public enum EnduranceType
         {
-            Easy, Interval, Fartlek, Base, Long, Tempo, Count
+            Easy, Interval, Fartlek, Base, Long, Tempo, Other, Count
         }
 
         public enum SquashType
