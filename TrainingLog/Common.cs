@@ -9,7 +9,7 @@ namespace TrainingLog
 
         public enum Sport
         {
-            Running, Biking, Squash, Other, Count
+            Running, Cycling, Squash, Other, Count
         }
 
         public enum EnduranceType

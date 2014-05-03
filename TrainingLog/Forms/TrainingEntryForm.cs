@@ -28,11 +28,11 @@ namespace TrainingLog.Forms
                                             "exe.result.calories",
                                             "exe.result.distance",
                                             "exe.time_date",
-                                            "exe.name"
                                         };
         private readonly string[] _xmlKeys2 = new[]
                                         {
-                                            "exe.result.zones"
+                                            "exe.result.zones",
+                                            "single_sport_name"
                                         };
 
         private static TrainingEntryForm _instance;
@@ -122,7 +122,7 @@ namespace TrainingLog.Forms
 
             // distance
             if (comSport.SelectedIndex == (int) Common.Sport.Running ||
-                comSport.SelectedIndex == (int) Common.Sport.Biking)
+                comSport.SelectedIndex == (int) Common.Sport.Cycling)
             {
                 double foo;
                 if (!double.TryParse(txtDistance.Text, out foo))
@@ -171,12 +171,9 @@ namespace TrainingLog.Forms
                 var diff = zoneData.GetDuration().CompareTo(duration) <= 0 ? zoneData.GetDuration().TotalSeconds / duration.TotalSeconds : duration.TotalSeconds / zoneData.GetDuration().TotalSeconds;
                 if (diff > 1 + Common.SignificancePercentage || diff < 1 - Common.SignificancePercentage)
                 {
-                    MessageBox.Show("Difference between sum of zone data and duration is too big (" + Math.Round((1 - diff) * 100, 2) + "%).", "Too big difference", MessageBoxButtons.OK,
-                                    MessageBoxIcon.Information);
+                    if (MessageBox.Show("Difference between sum of zone data and duration is too big (" + Math.Round((1 - diff) * 100, 2) + "%).", "Too big difference", MessageBoxButtons.OKCancel, MessageBoxIcon.Information) == DialogResult.Cancel)
                     return false;
                 }
-                MessageBox.Show("Diff: (" + Math.Round((1 - diff) * 100, 2) + "%).", "Too big difference", MessageBoxButtons.OK,
-                                     MessageBoxIcon.Information);
             }
 
             return true;
@@ -187,7 +184,7 @@ namespace TrainingLog.Forms
             switch ((Common.Sport)comSport.SelectedIndex)
             {
                 case Common.Sport.Running:
-                case Common.Sport.Biking:
+                case Common.Sport.Cycling:
                     return (Common.EnduranceType) comTrainingType.SelectedIndex;
                 case Common.Sport.Squash:
                     return (Common.SquashType) comTrainingType.SelectedIndex;
@@ -238,7 +235,7 @@ namespace TrainingLog.Forms
             switch ((Common.Sport) comSport.SelectedIndex)
             {
                 case Common.Sport.Running:
-                case Common.Sport.Biking:
+                case Common.Sport.Cycling:
                     count = (int) Common.EnduranceType.Count;
                     type = typeof (Common.EnduranceType);
                     break;
@@ -254,8 +251,12 @@ namespace TrainingLog.Forms
                 comTrainingType.SelectedIndex = 0;
 
             // en-/disable distance
-            grpDistance.Enabled = comSport.SelectedIndex == (int) Common.Sport.Running ||
-                                  comSport.SelectedIndex == (int) Common.Sport.Biking;
+            txtDistance.Enabled = comSport.SelectedIndex == (int) Common.Sport.Running ||
+                                  comSport.SelectedIndex == (int) Common.Sport.Cycling;
+
+            if (txtDistance.Enabled) return;
+            labPace.Text = "Pace:   ";
+            labSpeed.Text = "Speed: ";
         }
 
         private void DistanceTimeChanged(object sender, EventArgs e)
@@ -335,7 +336,7 @@ namespace TrainingLog.Forms
 
         private void ButParseFileClick(object sender, EventArgs e)
         {
-            var dlg = new OpenFileDialog { FileName = "polarpersonaltrainer.com.htm", InitialDirectory = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders", "{374DE290-123F-4565-9164-39C4925E467B}", string.Empty).ToString() };
+            var dlg = new OpenFileDialog { FileName = "polarpersonaltrainer.com.htm", InitialDirectory = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders", "{374DE290-123F-4565-9164-39C4925E467B}", string.Empty).ToString(), Filter = "HTM-Files|*.htm|HTML-Files|*.html"};
             if (dlg.ShowDialog() != DialogResult.OK)
                 return;
 
@@ -364,17 +365,30 @@ namespace TrainingLog.Forms
                                             "Potential bad data", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
 
+            for (var i = 0; i < lineIndices.Length; i++)
+                if (lineIndices[i] == 0)
+                    MessageBox.Show("Probably not found data \"" + _xmlKeys1[i] + "\".", "Data not found",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
+            // prepare data from xml keys 1
             var data = new string[lineIndices.Length];
             for (var i = 0; i < _xmlKeys1.Length; i++)
             {
-                // get the interesting part
-                data[i] = lines[lineIndices[i]].Substring(lines[lineIndices[i]].IndexOf(XmlValue1, StringComparison.Ordinal));
-                var firstQuote = data[i].IndexOf('\"');
-                // get substring between quotation marks
-                data[i] = data[i].Substring(firstQuote + 1, data[i].IndexOf('\"', firstQuote + 1) - firstQuote - 1);
+                if (lineIndices[i] == 0)
+                    data[i] = "";
+                else
+                {
+                    // get the interesting part
+                    data[i] =
+                        lines[lineIndices[i]].Substring(lines[lineIndices[i]].IndexOf(XmlValue1,
+                                                                                      StringComparison.Ordinal));
+                    var firstQuote = data[i].IndexOf('\"');
+                    // get substring between quotation marks
+                    data[i] = data[i].Substring(firstQuote + 1, data[i].IndexOf('\"', firstQuote + 1) - firstQuote - 1);
+                }
             }
 
+            // prepare data from xml keys 2
             var split = lines[lineIndices[_xmlKeys1.Length]].Split('<');
             foreach (var t in split)
             {
@@ -385,12 +399,22 @@ namespace TrainingLog.Forms
             }
             data[_xmlKeys1.Length] = data[_xmlKeys1.Length].Substring(1);
 
+            split = lines[lineIndices[_xmlKeys1.Length + 1]].Split('<');
+            foreach (var s in split)
+            {
+                if (!s.Contains(_xmlKeys2[1]))
+                    continue;
+                var firstQuote = s.IndexOf('\"');
+                var secondQuote = s.IndexOf('\"', firstQuote + 1);
+                data[_xmlKeys1.Length + 1] = s.Substring(secondQuote + 2);
+            }
+
             txtDuration.Text = data[0].Replace(':', '.');
             txtAvgHR.Text = data[1];
             txtCalories.Text = data[2];
             txtDistance.Text = data[3];
             datDate.Value = DateTime.Parse(data[4]);
-            comSport.Text = data[5];
+            comSport.Text = data[_xmlKeys1.Length + 1];
 
             var zones = data[_xmlKeys1.Length].Split('_');
             if (zones.Length != 5)
@@ -404,7 +428,6 @@ namespace TrainingLog.Forms
                 txtZone2.Text = zones[3].Replace(':', '.');
                 txtZone1.Text = zones[4].Replace(':', '.');
             }
-
         }
 
         private void TrainingEntryFormFormClosing(object sender, FormClosingEventArgs e)
