@@ -10,6 +10,8 @@ namespace TrainingLog
 
         public int RestingHeartRate { get; set; }
 
+        public int OwnIndex { get; set; }
+
         public decimal Weight { get; set; }
 
         public TimeSpan SleepDuration { get; set; }
@@ -45,6 +47,9 @@ namespace TrainingLog
                 {
                     case "RestingHeartRate":
                         RestingHeartRate = int.Parse(value);
+                        return true;
+                    case "OwnIndex":
+                        OwnIndex = int.Parse(value);
                         return true;
                     case "Weight":
                         Weight = decimal.Parse(value);
@@ -110,9 +115,11 @@ namespace TrainingLog
             {
                 var sb = new StringBuilder();
                 sb.Append(EntryName);
-                
+
                 if (RestingHeartRate != 0)
                     sb.Append(AttributeSeparator + "RestingHeartRate" + AttributeDividor + RestingHeartRate);
+                if (OwnIndex != 0)
+                    sb.Append(AttributeSeparator + "OwnIndex" + AttributeDividor + RestingHeartRate);
                 if (Weight != 0)
                     sb.Append(AttributeSeparator + "Weight" + AttributeDividor + Weight);
                 sb.Append(AttributeSeparator + "SleepDuration" + AttributeDividor + SleepDuration);
