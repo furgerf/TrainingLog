@@ -24,6 +24,13 @@ namespace TrainingLog
             Solo, Training, Club, Match, Count
         }
 
+        public enum TrainingType
+        {
+            None
+        }
+
+        public const double SignificancePercentage = 0.05;
+
         public const string DataFilePath = "training.log";
 
         //public static FileStream GetDataFileAppend()
