@@ -2,17 +2,44 @@
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using Microsoft.Win32;
 
 namespace TrainingLog.Forms
 {
     public partial class TrainingEntryForm : Form
     {
+        #region Public Fields
+
         public static TrainingEntryForm GetInstance
         {
             get { return _instance ?? (_instance = new TrainingEntryForm()); }
         }
 
+        #endregion
+
+        #region Private Fields
+
+        private const string XmlValue1 = "value=";
+
+        private readonly string[] _xmlKeys1 = new[]
+                                        {
+                                            "exe.result.duration",
+                                            "exe.result.hrAvg",
+                                            "exe.result.calories",
+                                            "exe.result.distance",
+                                            "exe.time_date",
+                                            "exe.name"
+                                        };
+        private readonly string[] _xmlKeys2 = new[]
+                                        {
+                                            "exe.result.zones"
+                                        };
+
         private static TrainingEntryForm _instance;
+
+        #endregion
+
+        #region Constructor
 
         public TrainingEntryForm()
         {
@@ -37,7 +64,13 @@ namespace TrainingLog.Forms
             txtZone3.TextChanged += DurationChanged;
             txtZone4.TextChanged += DurationChanged;
             txtZone5.TextChanged += DurationChanged;
+
+            ButParseFileClick(null, null);
         }
+
+        #endregion
+
+        #region Main Methods
 
         private void ResetForm()
         {
@@ -63,48 +96,6 @@ namespace TrainingLog.Forms
             comFeeling.SelectedIndex = 0;
             labPace.Text = "Pace:   ";
             labSpeed.Text = "Speed: ";
-        }
-
-        private void TrainingEntryFormFormClosing(object sender, FormClosingEventArgs e)
-        {
-            Hide();
-
-            MainForm.GetInstance.Show();
-            MainForm.GetInstance.BringToFront();
-
-            e.Cancel = !MainForm.GetInstance.CloseForms;
-        }
-
-        private void ButOkClick(object sender, EventArgs e)
-        {
-            TimeSpan duration;
-            ZoneData zoneData;
-            if (!IsDataValid(out duration, out zoneData))
-                return;
-
-            var entry = new TrainingEntry(duration)
-                            {
-                                DateTime = datDate.Value.Date,
-                                Sport = (Common.Sport) comSport.SelectedIndex,
-                                TrainingType = GetTrainingType(),
-                                Calories = txtCalories.Text == "" ? 0 : int.Parse(txtCalories.Text),
-                                //TODO: save sweat data
-                                AverageHr = txtAvgHR.Text == "" ? 0 : int.Parse(txtAvgHR.Text),
-                                ZoneTime = zoneData,
-                                DistanceKm = txtDistance.Text == "" ? 0 : double.Parse(txtDistance.Text),
-                                Feeling =
-                                    comFeeling.Text != ""
-                                        ? (Common.Index) (int) Common.Index.Count - comFeeling.SelectedIndex
-                                        : Common.Index.None,
-                                Note = txtNotes.Text
-                            };
-
-            File.AppendAllText(Common.DataFilePath, entry.LogString + '\n');
-
-            Model.Instance.AddEntry(entry);
-
-            ResetForm();
-            Close();
         }
 
         private bool IsDataValid(out TimeSpan duration, out ZoneData zoneData)
@@ -204,6 +195,10 @@ namespace TrainingLog.Forms
                     return Common.TrainingType.None;
             }
         }
+
+#endregion
+
+        #region Event Handling
 
         private void ButCancelClick(object sender, EventArgs e)
         {
@@ -337,5 +332,128 @@ namespace TrainingLog.Forms
 
             txt.BackColor = valid ? Color.White : Color.Red;
         }
+
+        private void ButParseFileClick(object sender, EventArgs e)
+        {
+            var dlg = new OpenFileDialog { FileName = "polarpersonaltrainer.com.htm", InitialDirectory = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders", "{374DE290-123F-4565-9164-39C4925E467B}", string.Empty).ToString() };
+            if (dlg.ShowDialog() != DialogResult.OK)
+                return;
+
+            var lines = File.ReadAllLines(dlg.FileName);
+
+            var lineIndices = new int[_xmlKeys1.Length + _xmlKeys2.Length];
+
+            for (var i = 0; i < lines.Length; i++)
+            {
+                // check keys1
+                for (var j = 0; j < _xmlKeys1.Length; j++)
+                    if (lines[i].Contains(XmlValue1) && lines[i].Contains(_xmlKeys1[j]))
+                        if (lineIndices[j] == 0)
+                            lineIndices[j] = i;
+                        else
+                            MessageBox.Show("Possibly reading wrong data. Check key " + _xmlKeys1[j],
+                                            "Potential bad data", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+                // check keys2
+                for (var j = 0; j < _xmlKeys2.Length; j++)
+                    if (lines[i].Contains(_xmlKeys2[j]))
+                        if (lineIndices[_xmlKeys1.Length + j] == 0)
+                            lineIndices[_xmlKeys1.Length + j] = i;
+                        else
+                            MessageBox.Show("Possibly reading wrong data. Check key " + _xmlKeys2[j],
+                                            "Potential bad data", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+
+
+            var data = new string[lineIndices.Length];
+            for (var i = 0; i < _xmlKeys1.Length; i++)
+            {
+                // get the interesting part
+                data[i] = lines[lineIndices[i]].Substring(lines[lineIndices[i]].IndexOf(XmlValue1, StringComparison.Ordinal));
+                var firstQuote = data[i].IndexOf('\"');
+                // get substring between quotation marks
+                data[i] = data[i].Substring(firstQuote + 1, data[i].IndexOf('\"', firstQuote + 1) - firstQuote - 1);
+            }
+
+            var split = lines[lineIndices[_xmlKeys1.Length]].Split('<');
+            foreach (var t in split)
+            {
+                if (!t.Contains("zone-dur-time")) continue;
+                var firstQuote = t.IndexOf('\"');
+                var secondQuote = t.IndexOf('\"', firstQuote + 1);
+                data[_xmlKeys1.Length] += '_' + t.Substring(secondQuote + 2, 8);
+            }
+            data[_xmlKeys1.Length] = data[_xmlKeys1.Length].Substring(1);
+
+            txtDuration.Text = data[0].Replace(':', '.');
+            txtAvgHR.Text = data[1];
+            txtCalories.Text = data[2];
+            txtDistance.Text = data[3];
+            datDate.Value = DateTime.Parse(data[4]);
+            comSport.Text = data[5];
+
+            var zones = data[_xmlKeys1.Length].Split('_');
+            if (zones.Length != 5)
+                MessageBox.Show("Unable to process zone data properly (" + data[_xmlKeys1.Length] + ").", "Invalid zone data",
+                                MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            else
+            {
+                txtZone5.Text = zones[0].Replace(':', '.');
+                txtZone4.Text = zones[1].Replace(':', '.');
+                txtZone3.Text = zones[2].Replace(':', '.');
+                txtZone2.Text = zones[3].Replace(':', '.');
+                txtZone1.Text = zones[4].Replace(':', '.');
+            }
+
+        }
+
+        private void TrainingEntryFormFormClosing(object sender, FormClosingEventArgs e)
+        {
+            Hide();
+
+            MainForm.GetInstance.Show();
+            MainForm.GetInstance.BringToFront();
+
+            e.Cancel = !MainForm.GetInstance.CloseForms;
+        }
+
+        private void ButOkClick(object sender, EventArgs e)
+        {
+            TimeSpan duration;
+            ZoneData zoneData;
+            if (!IsDataValid(out duration, out zoneData))
+                return;
+
+            var entry = new TrainingEntry(duration)
+            {
+                DateTime = datDate.Value.Date,
+                Sport = (Common.Sport)comSport.SelectedIndex,
+                TrainingType = GetTrainingType(),
+                Calories = txtCalories.Text == "" ? 0 : int.Parse(txtCalories.Text),
+                //TODO: save sweat data
+                AverageHr = txtAvgHR.Text == "" ? 0 : int.Parse(txtAvgHR.Text),
+                ZoneTime = zoneData,
+                DistanceKm = txtDistance.Text == "" ? 0 : double.Parse(txtDistance.Text),
+                Feeling =
+                    comFeeling.Text != ""
+                        ? (Common.Index)(int)Common.Index.Count - comFeeling.SelectedIndex
+                        : Common.Index.None,
+                Note = txtNotes.Text
+            };
+
+            File.AppendAllText(Common.DataFilePath, entry.LogString + '\n');
+
+            Model.Instance.AddEntry(entry);
+
+            ResetForm();
+            Close();
+        }
+
+        private void ButClearClick(object sender, EventArgs e)
+        {
+            ResetForm();
+        }
+
+        #endregion
     }
 }

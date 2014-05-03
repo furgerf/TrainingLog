@@ -72,6 +72,8 @@
             this.label4 = new System.Windows.Forms.Label();
             this.txtAvgHR = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
+            this.butParseFile = new System.Windows.Forms.Button();
+            this.butClear = new System.Windows.Forms.Button();
             this.grpBase.SuspendLayout();
             this.grpNotes.SuspendLayout();
             this.grpDistance.SuspendLayout();
@@ -306,7 +308,7 @@
             // 
             // butCancel
             // 
-            this.butCancel.Location = new System.Drawing.Point(319, 271);
+            this.butCancel.Location = new System.Drawing.Point(159, 271);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(75, 23);
             this.butCancel.TabIndex = 4;
@@ -316,7 +318,7 @@
             // 
             // butOk
             // 
-            this.butOk.Location = new System.Drawing.Point(177, 271);
+            this.butOk.Location = new System.Drawing.Point(12, 271);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(75, 23);
             this.butOk.TabIndex = 3;
@@ -506,11 +508,33 @@
             this.label8.TabIndex = 4;
             this.label8.Text = "Avg. HR:";
             // 
+            // butParseFile
+            // 
+            this.butParseFile.Location = new System.Drawing.Point(448, 271);
+            this.butParseFile.Name = "butParseFile";
+            this.butParseFile.Size = new System.Drawing.Size(103, 23);
+            this.butParseFile.TabIndex = 5;
+            this.butParseFile.Text = "Add Info from File";
+            this.butParseFile.UseVisualStyleBackColor = true;
+            this.butParseFile.Click += new System.EventHandler(this.ButParseFileClick);
+            // 
+            // butClear
+            // 
+            this.butClear.Location = new System.Drawing.Point(296, 271);
+            this.butClear.Name = "butClear";
+            this.butClear.Size = new System.Drawing.Size(75, 23);
+            this.butClear.TabIndex = 6;
+            this.butClear.Text = "Clear";
+            this.butClear.UseVisualStyleBackColor = true;
+            this.butClear.Click += new System.EventHandler(this.ButClearClick);
+            // 
             // TrainingEntryForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(563, 304);
+            this.Controls.Add(this.butClear);
+            this.Controls.Add(this.butParseFile);
             this.Controls.Add(this.grpHeartRate);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOk);
@@ -578,5 +602,7 @@
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.ComboBox comFeeling;
         private System.Windows.Forms.DateTimePicker datDate;
+        private System.Windows.Forms.Button butParseFile;
+        private System.Windows.Forms.Button butClear;
     }
 }
