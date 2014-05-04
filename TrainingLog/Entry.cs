@@ -45,11 +45,11 @@ namespace TrainingLog
 
             switch (entryType)
             {
-                case "BioDataEntry":
+                case "BioData":
                     return BioDataEntry.ParseBioDataEntry(data);
-                case "RaceEntry":
+                case "Race":
                     return RaceEntry.ParseRaceEntry(data);
-                case "TrainingEntry":
+                case "Training":
                     return TrainingEntry.ParseTrainingEntry(data);
                 default:
                     return null;

@@ -414,7 +414,7 @@ namespace TrainingLog.Forms
             txtCalories.Text = data[2];
             txtDistance.Text = data[3];
             datDate.Value = DateTime.Parse(data[4]);
-            comSport.Text = data[_xmlKeys1.Length + 1];
+            comSport.Text = data[_xmlKeys1.Length + 1].Equals("Other sport") ? "Other" : data[_xmlKeys1.Length + 1];
 
             var zones = data[_xmlKeys1.Length].Split('_');
             if (zones.Length != 5)

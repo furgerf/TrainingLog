@@ -96,6 +96,12 @@ namespace TrainingLog
                             TrainingType = squ;
                             return true;
                         }
+                        Common.TrainingType tra;
+                        if (Enum.TryParse(value, out tra))
+                        {
+                            TrainingType = tra;
+                            return true;
+                        }
                         return false;
                     case "DistanceM":
                         DistanceM = int.Parse(value);
