@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace TrainingLog
 {
@@ -35,6 +36,11 @@ namespace TrainingLog
 
         #region Main Methods
 
+        public static void Initialize()
+        {
+            _instance = new Model();
+        }
+
         public void AddEntry(Entry entry)
         {
             _entries.Add(entry);
@@ -47,7 +53,14 @@ namespace TrainingLog
             var lines = File.ReadAllLines(Common.DataFilePath);
 
             foreach (var line in lines)
-                _entries.Add(Entry.Parse(line));
+            {
+                var entry = Entry.Parse(line);
+                if (entry == null)
+                    MessageBox.Show("Couldn\'t parse entry \"" + line + "\".", "Invalid entry", MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+                else
+                    _entries.Add(entry);
+            }
         }
 
         #endregion
