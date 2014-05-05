@@ -12,6 +12,8 @@ namespace TrainingLog
         [STAThread]
         static void Main()
         {
+            //Test.test();
+            //return;
             Model.Initialize();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

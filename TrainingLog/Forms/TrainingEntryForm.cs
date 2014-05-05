@@ -64,8 +64,6 @@ namespace TrainingLog.Forms
             txtZone3.TextChanged += DurationChanged;
             txtZone4.TextChanged += DurationChanged;
             txtZone5.TextChanged += DurationChanged;
-
-            ButParseFileClick(null, null);
         }
 
         #endregion
