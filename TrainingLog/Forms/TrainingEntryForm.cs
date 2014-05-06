@@ -475,6 +475,14 @@ namespace TrainingLog.Forms
             ResetForm();
         }
 
+        private void TrainingEntryFormKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                Close();
+            }
+        }
+
         #endregion
     }
 }

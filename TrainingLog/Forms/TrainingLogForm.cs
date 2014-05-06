@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 
 namespace TrainingLog.Forms
 {
@@ -14,6 +15,17 @@ namespace TrainingLog.Forms
         public TrainingLogForm()
         {
             InitializeComponent();
+            entryListControl1.SetColumnsHeaders(new []{ "Date", "Sport", "Type", "Duration", "Calories", "Avg. HR", "Zone Data", "Distance", "Feeling", "Notes" });
+
+            foreach(var entry in Model.Instance.TrainingEntries)
+            {
+                entryListControl1.AddEntry(new string[]
+                                               {
+                                                   entry.DateTime.ToShortDateString(), Enum.GetName(typeof (Common.Sport), entry.Sport),
+                                                   Enum.GetName(typeof (Common.TrainingType), entry.TrainingType),
+                                                   entry.Duration.ToString()
+                                               });
+            }
         }
 
         private void TrainingLogFormFormClosing(object sender, FormClosingEventArgs e)
@@ -24,6 +36,14 @@ namespace TrainingLog.Forms
             MainForm.GetInstance.BringToFront();
 
             e.Cancel = !MainForm.GetInstance.CloseForms;
+        }
+
+        private void TrainingLogFormKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                Close();
+            }
         }
     }
 }

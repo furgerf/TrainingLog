@@ -84,5 +84,13 @@ namespace TrainingLog.Forms
         {
             ((NumericUpDown)sender).Select(0, ((NumericUpDown)sender).Text.Length);
         }
+
+        private void BioDataEntryFormKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                Close();
+            }
+        }
     }
 }

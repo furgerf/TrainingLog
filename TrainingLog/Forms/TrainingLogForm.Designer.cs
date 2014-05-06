@@ -28,20 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.entryListControl1 = new TrainingLog.Forms.EntryListControl();
             this.SuspendLayout();
+            // 
+            // entryListControl1
+            // 
+            this.entryListControl1.Location = new System.Drawing.Point(12, 12);
+            this.entryListControl1.Name = "entryListControl1";
+            this.entryListControl1.Size = new System.Drawing.Size(600, 400);
+            this.entryListControl1.TabIndex = 0;
             // 
             // TrainingLogForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(292, 273);
+            this.ClientSize = new System.Drawing.Size(639, 432);
+            this.Controls.Add(this.entryListControl1);
+            this.KeyPreview = true;
             this.Name = "TrainingLogForm";
-            this.Text = "ShowTrainingLogForm";
+            this.Text = "Training Log";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TrainingLogFormFormClosing);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TrainingLogFormKeyDown);
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private EntryListControl entryListControl1;
     }
 }

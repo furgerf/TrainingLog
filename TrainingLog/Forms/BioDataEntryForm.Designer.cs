@@ -35,9 +35,15 @@
             this.numSleepDuration = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.grpHeartRate = new System.Windows.Forms.GroupBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.numOwnIndex = new System.Windows.Forms.NumericUpDown();
             this.numRestingHeartRate = new System.Windows.Forms.NumericUpDown();
             this.grpMisc = new System.Windows.Forms.GroupBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.comFeeling = new System.Windows.Forms.ComboBox();
             this.numWeight = new System.Windows.Forms.NumericUpDown();
             this.grpNibbles = new System.Windows.Forms.GroupBox();
             this.txtNibbles = new System.Windows.Forms.TextBox();
@@ -45,21 +51,15 @@
             this.txtNotes = new System.Windows.Forms.TextBox();
             this.butOk = new System.Windows.Forms.Button();
             this.butCancel = new System.Windows.Forms.Button();
-            this.label6 = new System.Windows.Forms.Label();
-            this.numOwnIndex = new System.Windows.Forms.NumericUpDown();
-            this.comFeeling = new System.Windows.Forms.ComboBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
             this.grpSleep.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numSleepDuration)).BeginInit();
             this.grpHeartRate.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numOwnIndex)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numRestingHeartRate)).BeginInit();
             this.grpMisc.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numWeight)).BeginInit();
             this.grpNibbles.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numOwnIndex)).BeginInit();
             this.SuspendLayout();
             // 
             // grpSleep
@@ -149,6 +149,37 @@
             this.grpHeartRate.TabStop = false;
             this.grpHeartRate.Text = "Resting Heart Rate";
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(6, 16);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(65, 13);
+            this.label7.TabIndex = 7;
+            this.label7.Text = "Resting HR:";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(6, 41);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(58, 13);
+            this.label6.TabIndex = 6;
+            this.label6.Text = "OwnIndex:";
+            // 
+            // numOwnIndex
+            // 
+            this.numOwnIndex.Location = new System.Drawing.Point(77, 38);
+            this.numOwnIndex.Maximum = new decimal(new int[] {
+            200,
+            0,
+            0,
+            0});
+            this.numOwnIndex.Name = "numOwnIndex";
+            this.numOwnIndex.Size = new System.Drawing.Size(81, 20);
+            this.numOwnIndex.TabIndex = 5;
+            this.numOwnIndex.Enter += new System.EventHandler(this.NumericEnter);
+            // 
             // numRestingHeartRate
             // 
             this.numRestingHeartRate.Location = new System.Drawing.Point(77, 14);
@@ -176,6 +207,15 @@
             this.grpMisc.TabStop = false;
             this.grpMisc.Text = "Miscellaneous";
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(6, 41);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(44, 13);
+            this.label8.TabIndex = 8;
+            this.label8.Text = "Feeling:";
+            // 
             // label5
             // 
             this.label5.AutoSize = true;
@@ -184,6 +224,24 @@
             this.label5.Size = new System.Drawing.Size(19, 13);
             this.label5.TabIndex = 5;
             this.label5.Text = "kg";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 16);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(44, 13);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "Weight:";
+            // 
+            // comFeeling
+            // 
+            this.comFeeling.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comFeeling.FormattingEnabled = true;
+            this.comFeeling.Location = new System.Drawing.Point(56, 38);
+            this.comFeeling.Name = "comFeeling";
+            this.comFeeling.Size = new System.Drawing.Size(93, 21);
+            this.comFeeling.TabIndex = 6;
             // 
             // numWeight
             // 
@@ -254,64 +312,6 @@
             this.butCancel.UseVisualStyleBackColor = true;
             this.butCancel.Click += new System.EventHandler(this.ButCancelClick);
             // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 41);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(58, 13);
-            this.label6.TabIndex = 6;
-            this.label6.Text = "OwnIndex:";
-            // 
-            // numOwnIndex
-            // 
-            this.numOwnIndex.Location = new System.Drawing.Point(77, 38);
-            this.numOwnIndex.Maximum = new decimal(new int[] {
-            200,
-            0,
-            0,
-            0});
-            this.numOwnIndex.Name = "numOwnIndex";
-            this.numOwnIndex.Size = new System.Drawing.Size(81, 20);
-            this.numOwnIndex.TabIndex = 5;
-            this.numOwnIndex.Enter += new System.EventHandler(this.NumericEnter);
-            // 
-            // comFeeling
-            // 
-            this.comFeeling.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comFeeling.FormattingEnabled = true;
-            this.comFeeling.Location = new System.Drawing.Point(56, 38);
-            this.comFeeling.Name = "comFeeling";
-            this.comFeeling.Size = new System.Drawing.Size(93, 21);
-            this.comFeeling.TabIndex = 6;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(6, 16);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(65, 13);
-            this.label7.TabIndex = 7;
-            this.label7.Text = "Resting HR:";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 16);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(44, 13);
-            this.label4.TabIndex = 7;
-            this.label4.Text = "Weight:";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(6, 41);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(44, 13);
-            this.label8.TabIndex = 8;
-            this.label8.Text = "Feeling:";
-            // 
             // BioDataEntryForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -324,14 +324,17 @@
             this.Controls.Add(this.grpMisc);
             this.Controls.Add(this.grpHeartRate);
             this.Controls.Add(this.grpSleep);
+            this.KeyPreview = true;
             this.Name = "BioDataEntryForm";
             this.Text = "Enter BioData";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BioDataEntryFormFormClosing);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.BioDataEntryFormKeyDown);
             this.grpSleep.ResumeLayout(false);
             this.grpSleep.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numSleepDuration)).EndInit();
             this.grpHeartRate.ResumeLayout(false);
             this.grpHeartRate.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numOwnIndex)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numRestingHeartRate)).EndInit();
             this.grpMisc.ResumeLayout(false);
             this.grpMisc.PerformLayout();
@@ -340,7 +343,6 @@
             this.grpNibbles.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numOwnIndex)).EndInit();
             this.ResumeLayout(false);
 
         }

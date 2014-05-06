@@ -541,9 +541,11 @@
             this.Controls.Add(this.grpDistance);
             this.Controls.Add(this.grpNotes);
             this.Controls.Add(this.grpBase);
+            this.KeyPreview = true;
             this.Name = "TrainingEntryForm";
             this.Text = "Enter Training Information";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TrainingEntryFormFormClosing);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TrainingEntryFormKeyDown);
             this.grpBase.ResumeLayout(false);
             this.grpBase.PerformLayout();
             this.grpNotes.ResumeLayout(false);
