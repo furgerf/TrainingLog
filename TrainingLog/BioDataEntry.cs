@@ -116,23 +116,25 @@ namespace TrainingLog
                 var sb = new StringBuilder();
                 sb.Append(EntryName);
 
-                if (RestingHeartRate != 0)
-                    sb.Append(AttributeSeparator + "RestingHeartRate" + AttributeDividor + RestingHeartRate);
-                if (OwnIndex != 0)
-                    sb.Append(AttributeSeparator + "OwnIndex" + AttributeDividor + RestingHeartRate);
-                if (Weight != 0)
-                    sb.Append(AttributeSeparator + "Weight" + AttributeDividor + Weight);
+                sb.Append(AttributeSeparator + "DateTime" + AttributeDividor + DateTime);
+
                 sb.Append(AttributeSeparator + "SleepDuration" + AttributeDividor + SleepDuration);
                 sb.Append(AttributeSeparator + "SleepQuality" + AttributeDividor + SleepQuality);
-                if (Nibbles != "")
-                    sb.Append(AttributeSeparator + "Nibbles" + AttributeDividor + Nibbles);
-                if (Note != "")
-                    sb.Append(AttributeSeparator + "Note" + AttributeDividor + Note);
-                sb.Append(AttributeSeparator + "DateTime" + AttributeDividor + DateTime);
 
                 if (Feeling != Common.Index.None)
                     sb.Append(AttributeSeparator + "Feeling" + AttributeDividor + Feeling);
 
+                if (RestingHeartRate != 0)
+                    sb.Append(AttributeSeparator + "RestingHeartRate" + AttributeDividor + RestingHeartRate);
+                if (OwnIndex != 0)
+                    sb.Append(AttributeSeparator + "OwnIndex" + AttributeDividor + OwnIndex);
+                if (Weight != 0)
+                    sb.Append(AttributeSeparator + "Weight" + AttributeDividor + Weight);
+                if (Nibbles != "")
+                    sb.Append(AttributeSeparator + "Nibbles" + AttributeDividor + Nibbles);
+                if (Note != "")
+                    sb.Append(AttributeSeparator + "Note" + AttributeDividor + Note);
+                
                 return sb.ToString();
             }
         }
