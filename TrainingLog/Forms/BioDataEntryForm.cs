@@ -57,6 +57,7 @@ namespace TrainingLog.Forms
                                 SleepDuration = new TimeSpan(0, (int) (60*numSleepDuration.Value), 0),
                                 SleepQuality = (Common.Index) (int) Common.Index.Count - comSleepQuality.SelectedIndex - 1,
                                 RestingHeartRate = (int) numRestingHeartRate.Value,
+                                OwnIndex = (int) numOwnIndex.Value,
                                 Weight = (int) numWeight.Value,
                                 Nibbles = txtNibbles.Text,
                                 Feeling =
