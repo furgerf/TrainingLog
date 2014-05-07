@@ -25,5 +25,10 @@ namespace TrainingLog.Forms
 
             e.Cancel = !MainForm.GetInstance.CloseForms;
         }
+
+        private void StatisticsFormKeyDown(object sender, KeyEventArgs e)
+        {
+            Close();
+        }
     }
 }

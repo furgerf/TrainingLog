@@ -35,9 +35,11 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(292, 273);
+            this.KeyPreview = true;
             this.Name = "SettingsForm";
             this.Text = "SettingsForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SettingsFormFormClosing);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SettingsFormKeyDown);
             this.ResumeLayout(false);
 
         }

@@ -35,9 +35,11 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(292, 273);
+            this.KeyPreview = true;
             this.Name = "StatisticsForm";
             this.Text = "StatisticsForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.StatisticsFormFormClosing);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.StatisticsFormKeyDown);
             this.ResumeLayout(false);
 
         }
