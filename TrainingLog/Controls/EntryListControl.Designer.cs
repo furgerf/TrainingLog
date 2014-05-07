@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            GlacialComponents.Controls.GLColumn glColumn1 = new GlacialComponents.Controls.GLColumn();
             this.grpFilter = new System.Windows.Forms.GroupBox();
             this.grpEntries = new System.Windows.Forms.GroupBox();
             this.gliEntries = new GlacialComponents.Controls.GlacialList();
@@ -62,6 +63,16 @@
             this.gliEntries.AutoHeight = true;
             this.gliEntries.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.gliEntries.BackgroundStretchToFit = true;
+            glColumn1.ActivatedEmbeddedType = GlacialComponents.Controls.GLActivatedEmbeddedTypes.None;
+            glColumn1.CheckBoxes = false;
+            glColumn1.ImageIndex = -1;
+            glColumn1.Name = "comDate";
+            glColumn1.NumericSort = true;
+            glColumn1.Text = "Date";
+            glColumn1.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
+            glColumn1.Width = 75;
+            this.gliEntries.Columns.AddRange(new GlacialComponents.Controls.GLColumn[] {
+            glColumn1});
             this.gliEntries.ControlStyle = GlacialComponents.Controls.GLControlStyles.XP;
             this.gliEntries.FullRowSelect = false;
             this.gliEntries.GridColor = System.Drawing.Color.LightGray;
@@ -77,7 +88,7 @@
             this.gliEntries.HoverEvents = false;
             this.gliEntries.HoverTime = 1;
             this.gliEntries.ImageList = null;
-            this.gliEntries.ItemHeight = 16;
+            this.gliEntries.ItemHeight = 17;
             this.gliEntries.ItemWordWrap = false;
             this.gliEntries.Location = new System.Drawing.Point(2, 12);
             this.gliEntries.Name = "gliEntries";

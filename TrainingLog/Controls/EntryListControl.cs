@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 using GlacialComponents.Controls;
 using TrainingLog.Forms;
@@ -28,25 +27,21 @@ namespace TrainingLog.Controls
             get { return _columns; }
             set
             {
-                var firstRun = _columns == null;
-
                 _columns = value;
 
                 gliEntries.Columns.Clear();
 
-                foreach (var s in _columns)
-                    gliEntries.Columns.Add(s.Header, s.Width);
+                for (var i = 0; i < _columns.Length; i++)
+                {
+                    gliEntries.Columns.Add(_columns[i].Header, _columns[i].Width);
+                    gliEntries.Columns[i].TextAlignment = ContentAlignment.MiddleCenter;
+                }
 
-                if (firstRun)
-                    new Thread(() =>
-                                   {
-                                       Thread.Sleep(100);
-                                       TrainingLogForm.GetInstance.Invoke(
-                                           (MethodInvoker)
-                                           (() => TrainingLogForm.GetInstance.WindowState = FormWindowState.Maximized));
-                                   }).Start();
+                EntryListControlSizeChanged(null, null);
             }
         }
+
+        public bool FilterVisible { get { return grpFilter.Visible; } set { grpFilter.Visible = value; EntryListControlSizeChanged(null, null); } }
 
         private EntryListColumn[] _columns;
 
@@ -65,12 +60,22 @@ namespace TrainingLog.Controls
         {
             InitializeComponent();
 
+            gliEntries.SortType = SortTypes.QuickSort;
+
             _comparableStrings.Add(typeof(TextBox), GetComparableStringTextBox);            // string:      compare directly
             _comparableStrings.Add(typeof(TimeSpanTextBox), GetComparableStringTextBox);    // TimeSpan:    compare directly
             _comparableStrings.Add(typeof(ComboBox), GetComparableStringTextBox);           // ComboBox:    compare directly
             _comparableStrings.Add(typeof(ColorDatePicker), GetComparableStringDateTime);   // DateTime:    compare YYYYMMDD
             _comparableStrings.Add(typeof(IntegerTextBox), GetComparableStringInteger);     // Integer:     fill with 0s and compare
             _comparableStrings.Add(typeof(DecimalTextBox), GetComparableStringDecimal);     // Decimal:     compare like integer
+
+            //EntryListControlSizeChanged(null, null);
+        }
+
+        public void SortByDate()
+        {
+            gliEntries.SortColumn(0);
+            SetBackColor();     
         }
 
         private string GetComparableStringDecimal(Control c)
@@ -136,7 +141,7 @@ namespace TrainingLog.Controls
             {
                 gliEntries.Items[i].BackColor = i%2 == 0 ? Color.White : Color.LightGray;
                 for (var j = 0; j < gliEntries.Items[i].SubItems.Count; j++)
-                    if (!(gliEntries.Items[i].SubItems[j].Control is ComboBox) || gliEntries.Items[i].SubItems[j].Text.Equals(string.Empty))
+                    if (!(gliEntries.Items[i].SubItems[j].Control is ComboBox) || !Enum.GetNames(typeof(Common.Index)).Contains(gliEntries.Items[i].SubItems[j].Text))
                         gliEntries.Items[i].SubItems[j].Control.BackColor = i%2 == 0 ? Color.White : Color.LightGray;
             }
         }
@@ -150,6 +155,8 @@ namespace TrainingLog.Controls
 
         private void EntryListControlSizeChanged(object sender, EventArgs e)
         {
+            grpEntries.Location = new Point(grpEntries.Location.X, grpFilter.Visible ? grpFilter.Height : 10);
+
             var listHeight = Height - grpEntries.Location.X - grpEntries.Location.X;
             gliEntries.Height = listHeight > 0 ? listHeight : 0;
 
