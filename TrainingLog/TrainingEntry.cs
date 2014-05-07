@@ -24,6 +24,8 @@ namespace TrainingLog
 
         public Enum TrainingType { get; set; }
 
+        public bool HasTrainingType { get { return TrainingType.ToString().Equals(Common.TrainingType.None.ToString()); } }
+
         public int Calories { get; set; }
 
         public int AverageHr { get; set; }
@@ -142,12 +144,19 @@ namespace TrainingLog
 
         public static TrainingEntry ParseTrainingEntry (string data)
         {
+            if (!data.Contains("DateTime" + AttributeDividor) || !data.Contains("Sport" + AttributeDividor) || !data.Contains("Duration" + AttributeDividor) || !data.Contains("TrainingType" + AttributeDividor))
+                return null;
+
             var attributes = data.Split(AttributeSeparator);
 
             if (attributes.Length <= 1)
                 return null;
 
-            var entry = new TrainingEntry();
+            var entry = new TrainingEntry
+                            {
+                                Note = "",
+                                Feeling = Common.Index.None
+                            };
 
             for (var i = 1; i < attributes.Length; i++)
             {
@@ -168,6 +177,7 @@ namespace TrainingLog
             {
                 var sb = new StringBuilder();
                 sb.Append(EntryName);
+
                 // mandatory fields
                 sb.Append(AttributeSeparator + "Duration" + AttributeDividor + Duration);
                 sb.Append(AttributeSeparator + "Sport" + AttributeDividor + Sport);
@@ -183,13 +193,12 @@ namespace TrainingLog
                     sb.Append(AttributeSeparator + "AverageHr" + AttributeDividor + AverageHr);
                 if (!ZoneTime.IsEmpty)
                     sb.Append(AttributeSeparator + "ZoneTime" + AttributeDividor + ZoneTime);
-                // TODO: Save SweatData
-
                 if (Note != "")
                     sb.Append(AttributeSeparator + "Note" + AttributeDividor + Note);
                 if (Feeling != Common.Index.None)
                     sb.Append(AttributeSeparator + "Feeling" + AttributeDividor + Feeling);
-
+                // TODO: Save SweatData
+                
                 return sb.ToString();
             }
         }

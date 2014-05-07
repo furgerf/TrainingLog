@@ -89,12 +89,20 @@ namespace TrainingLog
 
         public static BioDataEntry ParseBioDataEntry(string data)
         {
+            if (!data.Contains("DateTime" + AttributeDividor) || !data.Contains("SleepQuality" + AttributeDividor) || !data.Contains("SleepDuration" + AttributeDividor))
+                return null;
+
             var attributes = data.Split(AttributeSeparator);
 
             if (attributes.Length <= 1)
                 return null;
 
-            var entry = new BioDataEntry();
+            var entry = new BioDataEntry
+                            {
+                                Nibbles = "",
+                                Note = "",
+                                Feeling = Common.Index.None
+                            };
 
             for (var i = 1; i < attributes.Length; i++)
             {
@@ -116,14 +124,14 @@ namespace TrainingLog
                 var sb = new StringBuilder();
                 sb.Append(EntryName);
 
+                // mandatory
                 sb.Append(AttributeSeparator + "DateTime" + AttributeDividor + DateTime);
-
                 sb.Append(AttributeSeparator + "SleepDuration" + AttributeDividor + SleepDuration);
                 sb.Append(AttributeSeparator + "SleepQuality" + AttributeDividor + SleepQuality);
 
+                // optional
                 if (Feeling != Common.Index.None)
                     sb.Append(AttributeSeparator + "Feeling" + AttributeDividor + Feeling);
-
                 if (RestingHeartRate != 0)
                     sb.Append(AttributeSeparator + "RestingHeartRate" + AttributeDividor + RestingHeartRate);
                 if (OwnIndex != 0)
