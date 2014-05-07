@@ -1,4 +1,4 @@
-﻿namespace TrainingLog.Forms
+﻿namespace TrainingLog.Controls
 {
     partial class EntryListControl
     {
@@ -57,18 +57,18 @@
             // 
             this.gliEntries.AllowColumnResize = true;
             this.gliEntries.AllowMultiselect = false;
-            this.gliEntries.AlternateBackground = System.Drawing.Color.DarkGreen;
-            this.gliEntries.AlternatingColors = false;
+            this.gliEntries.AlternateBackground = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.gliEntries.AlternatingColors = true;
             this.gliEntries.AutoHeight = true;
             this.gliEntries.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.gliEntries.BackgroundStretchToFit = true;
-            this.gliEntries.ControlStyle = GlacialComponents.Controls.GLControlStyles.Normal;
-            this.gliEntries.FullRowSelect = true;
+            this.gliEntries.ControlStyle = GlacialComponents.Controls.GLControlStyles.XP;
+            this.gliEntries.FullRowSelect = false;
             this.gliEntries.GridColor = System.Drawing.Color.LightGray;
             this.gliEntries.GridLines = GlacialComponents.Controls.GLGridLines.gridBoth;
             this.gliEntries.GridLineStyle = GlacialComponents.Controls.GLGridLineStyles.gridDashed;
             this.gliEntries.GridTypes = GlacialComponents.Controls.GLGridTypes.gridOnExists;
-            this.gliEntries.HeaderHeight = 22;
+            this.gliEntries.HeaderHeight = 16;
             this.gliEntries.HeaderVisible = true;
             this.gliEntries.HeaderWordWrap = false;
             this.gliEntries.HotColumnTracking = false;
@@ -77,11 +77,11 @@
             this.gliEntries.HoverEvents = false;
             this.gliEntries.HoverTime = 1;
             this.gliEntries.ImageList = null;
-            this.gliEntries.ItemHeight = 18;
+            this.gliEntries.ItemHeight = 16;
             this.gliEntries.ItemWordWrap = false;
             this.gliEntries.Location = new System.Drawing.Point(2, 12);
             this.gliEntries.Name = "gliEntries";
-            this.gliEntries.Selectable = true;
+            this.gliEntries.Selectable = false;
             this.gliEntries.SelectedTextColor = System.Drawing.Color.White;
             this.gliEntries.SelectionColor = System.Drawing.Color.DarkBlue;
             this.gliEntries.ShowBorder = true;
@@ -90,6 +90,7 @@
             this.gliEntries.SortType = GlacialComponents.Controls.SortTypes.QuickSort;
             this.gliEntries.SuperFlatHeaderColor = System.Drawing.Color.White;
             this.gliEntries.TabIndex = 0;
+            this.gliEntries.ColumnClickedEvent += new GlacialComponents.Controls.GlacialList.ClickedEventHandler(this.GliEntriesColumnClickedEvent);
             // 
             // EntryListControl
             // 

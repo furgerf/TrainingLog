@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -56,14 +57,6 @@ namespace TrainingLog.Forms
             comFeeling.Items.Add("");
             for (var i = Common.Index.Count - 1; i >= 0; i--)
                 comFeeling.Items.Add(Enum.GetName(typeof(Common.Index), i));
-
-            // add event handles
-            txtDuration.TextChanged += DurationChanged;
-            txtZone1.TextChanged += DurationChanged;
-            txtZone2.TextChanged += DurationChanged;
-            txtZone3.TextChanged += DurationChanged;
-            txtZone4.TextChanged += DurationChanged;
-            txtZone5.TextChanged += DurationChanged;
         }
 
         #endregion
@@ -289,47 +282,6 @@ namespace TrainingLog.Forms
 
             // recalculate speed
             labSpeed.Text = "Speed: " + speed + " km/h";
-        }
-
-        private void DurationChanged(object sender, EventArgs e)
-        {
-            var valid = true;
-            var txt = (TextBox) sender;
-            var split = txt.Text.Split('.');
-            int foo;
-
-            switch (split.Length)
-            {
-                case 2:
-                    if (!int.TryParse(split[0], out foo))
-                        valid = false;
-                    if (foo >= 60 || foo < 0)
-                        valid = false;
-                    if (!int.TryParse(split[1], out foo))
-                        valid = false;
-                    if (foo >= 60 || foo < 0)
-                        valid = false;
-                    break;
-                case 3:
-                    if (!int.TryParse(split[0], out foo))
-                        valid = false;
-                    if (foo >= 24 || foo < 0)
-                        valid = false;
-                    if (!int.TryParse(split[1], out foo))
-                        valid = false;
-                    if (foo >= 60 || foo < 0)
-                        valid = false;
-                    if (!int.TryParse(split[2], out foo))
-                        valid = false;
-                    if (foo >= 60 || foo < 0)
-                        valid = false;
-                    break;
-                default:
-                    valid = false;
-                    break;
-            }
-
-            txt.BackColor = valid ? Color.White : Color.Red;
         }
 
         private void ButParseFileClick(object sender, EventArgs e)

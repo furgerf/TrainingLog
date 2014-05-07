@@ -1,4 +1,6 @@
-﻿namespace TrainingLog.Forms
+﻿using TrainingLog.Controls;
+
+namespace TrainingLog.Forms
 {
     partial class TrainingEntryForm
     {
@@ -40,7 +42,6 @@
             this.txtCalories = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.comTrainingType = new System.Windows.Forms.ComboBox();
-            this.txtDuration = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.grpNotes = new System.Windows.Forms.GroupBox();
             this.txtNotes = new System.Windows.Forms.TextBox();
@@ -56,24 +57,25 @@
             this.grpHeartRate = new System.Windows.Forms.GroupBox();
             this.label19 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
-            this.txtZone1 = new System.Windows.Forms.TextBox();
             this.label16 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
-            this.txtZone2 = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
-            this.txtZone3 = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
-            this.txtZone4 = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.txtZone5 = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.txtAvgHR = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.butParseFile = new System.Windows.Forms.Button();
             this.butClear = new System.Windows.Forms.Button();
+            this.txtZone4 = new TimeSpanTextBox();
+            this.txtZone5 = new TimeSpanTextBox();
+            this.txtDuration = new TimeSpanTextBox();
+            this.txtZone3 = new TimeSpanTextBox();
+            this.txtZone2 = new TimeSpanTextBox();
+            this.txtZone1 = new TimeSpanTextBox();
             this.grpBase.SuspendLayout();
             this.grpNotes.SuspendLayout();
             this.grpDistance.SuspendLayout();
@@ -82,6 +84,7 @@
             // 
             // grpBase
             // 
+            this.grpBase.Controls.Add(this.txtDuration);
             this.grpBase.Controls.Add(this.datDate);
             this.grpBase.Controls.Add(this.label20);
             this.grpBase.Controls.Add(this.label17);
@@ -93,7 +96,6 @@
             this.grpBase.Controls.Add(this.txtCalories);
             this.grpBase.Controls.Add(this.label1);
             this.grpBase.Controls.Add(this.comTrainingType);
-            this.grpBase.Controls.Add(this.txtDuration);
             this.grpBase.Controls.Add(this.label5);
             this.grpBase.Location = new System.Drawing.Point(12, 12);
             this.grpBase.Name = "grpBase";
@@ -201,14 +203,6 @@
             this.comTrainingType.Name = "comTrainingType";
             this.comTrainingType.Size = new System.Drawing.Size(121, 21);
             this.comTrainingType.TabIndex = 2;
-            // 
-            // txtDuration
-            // 
-            this.txtDuration.Location = new System.Drawing.Point(75, 100);
-            this.txtDuration.Name = "txtDuration";
-            this.txtDuration.Size = new System.Drawing.Size(62, 20);
-            this.txtDuration.TabIndex = 3;
-            this.txtDuration.TextChanged += new System.EventHandler(this.DistanceTimeChanged);
             // 
             // label5
             // 
@@ -328,21 +322,21 @@
             // 
             // grpHeartRate
             // 
+            this.grpHeartRate.Controls.Add(this.txtZone1);
+            this.grpHeartRate.Controls.Add(this.txtZone2);
+            this.grpHeartRate.Controls.Add(this.txtZone3);
+            this.grpHeartRate.Controls.Add(this.txtZone4);
+            this.grpHeartRate.Controls.Add(this.txtZone5);
             this.grpHeartRate.Controls.Add(this.label19);
             this.grpHeartRate.Controls.Add(this.label15);
-            this.grpHeartRate.Controls.Add(this.txtZone1);
             this.grpHeartRate.Controls.Add(this.label16);
             this.grpHeartRate.Controls.Add(this.label13);
-            this.grpHeartRate.Controls.Add(this.txtZone2);
             this.grpHeartRate.Controls.Add(this.label14);
             this.grpHeartRate.Controls.Add(this.label11);
-            this.grpHeartRate.Controls.Add(this.txtZone3);
             this.grpHeartRate.Controls.Add(this.label12);
             this.grpHeartRate.Controls.Add(this.label9);
-            this.grpHeartRate.Controls.Add(this.txtZone4);
             this.grpHeartRate.Controls.Add(this.label10);
             this.grpHeartRate.Controls.Add(this.label3);
-            this.grpHeartRate.Controls.Add(this.txtZone5);
             this.grpHeartRate.Controls.Add(this.label4);
             this.grpHeartRate.Controls.Add(this.txtAvgHR);
             this.grpHeartRate.Controls.Add(this.label8);
@@ -371,14 +365,6 @@
             this.label15.TabIndex = 23;
             this.label15.Text = "[h.] min.s";
             // 
-            // txtZone1
-            // 
-            this.txtZone1.Location = new System.Drawing.Point(76, 154);
-            this.txtZone1.Name = "txtZone1";
-            this.txtZone1.Size = new System.Drawing.Size(62, 20);
-            this.txtZone1.TabIndex = 6;
-            this.txtZone1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.DurationChanged);
-            // 
             // label16
             // 
             this.label16.AutoSize = true;
@@ -396,14 +382,6 @@
             this.label13.Size = new System.Drawing.Size(49, 13);
             this.label13.TabIndex = 20;
             this.label13.Text = "[h.] min.s";
-            // 
-            // txtZone2
-            // 
-            this.txtZone2.Location = new System.Drawing.Point(76, 127);
-            this.txtZone2.Name = "txtZone2";
-            this.txtZone2.Size = new System.Drawing.Size(62, 20);
-            this.txtZone2.TabIndex = 5;
-            this.txtZone2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.DurationChanged);
             // 
             // label14
             // 
@@ -423,14 +401,6 @@
             this.label11.TabIndex = 17;
             this.label11.Text = "[h.] min.s";
             // 
-            // txtZone3
-            // 
-            this.txtZone3.Location = new System.Drawing.Point(76, 100);
-            this.txtZone3.Name = "txtZone3";
-            this.txtZone3.Size = new System.Drawing.Size(62, 20);
-            this.txtZone3.TabIndex = 4;
-            this.txtZone3.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.DurationChanged);
-            // 
             // label12
             // 
             this.label12.AutoSize = true;
@@ -449,14 +419,6 @@
             this.label9.TabIndex = 14;
             this.label9.Text = "[h.] min.s";
             // 
-            // txtZone4
-            // 
-            this.txtZone4.Location = new System.Drawing.Point(76, 73);
-            this.txtZone4.Name = "txtZone4";
-            this.txtZone4.Size = new System.Drawing.Size(62, 20);
-            this.txtZone4.TabIndex = 3;
-            this.txtZone4.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.DurationChanged);
-            // 
             // label10
             // 
             this.label10.AutoSize = true;
@@ -474,14 +436,6 @@
             this.label3.Size = new System.Drawing.Size(49, 13);
             this.label3.TabIndex = 11;
             this.label3.Text = "[h.] min.s";
-            // 
-            // txtZone5
-            // 
-            this.txtZone5.Location = new System.Drawing.Point(76, 46);
-            this.txtZone5.Name = "txtZone5";
-            this.txtZone5.Size = new System.Drawing.Size(62, 20);
-            this.txtZone5.TabIndex = 2;
-            this.txtZone5.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.DurationChanged);
             // 
             // label4
             // 
@@ -528,6 +482,48 @@
             this.butClear.UseVisualStyleBackColor = true;
             this.butClear.Click += new System.EventHandler(this.ButClearClick);
             // 
+            // txtZone4
+            // 
+            this.txtZone4.Location = new System.Drawing.Point(76, 73);
+            this.txtZone4.Name = "txtZone4";
+            this.txtZone4.Size = new System.Drawing.Size(62, 20);
+            this.txtZone4.TabIndex = 26;
+            // 
+            // txtZone5
+            // 
+            this.txtZone5.Location = new System.Drawing.Point(76, 46);
+            this.txtZone5.Name = "txtZone5";
+            this.txtZone5.Size = new System.Drawing.Size(62, 20);
+            this.txtZone5.TabIndex = 25;
+            // 
+            // txtDuration
+            // 
+            this.txtDuration.Location = new System.Drawing.Point(75, 100);
+            this.txtDuration.Name = "txtDuration";
+            this.txtDuration.Size = new System.Drawing.Size(62, 20);
+            this.txtDuration.TabIndex = 16;
+            // 
+            // txtZone3
+            // 
+            this.txtZone3.Location = new System.Drawing.Point(76, 100);
+            this.txtZone3.Name = "txtZone3";
+            this.txtZone3.Size = new System.Drawing.Size(62, 20);
+            this.txtZone3.TabIndex = 27;
+            // 
+            // txtZone2
+            // 
+            this.txtZone2.Location = new System.Drawing.Point(76, 127);
+            this.txtZone2.Name = "txtZone2";
+            this.txtZone2.Size = new System.Drawing.Size(62, 20);
+            this.txtZone2.TabIndex = 28;
+            // 
+            // txtZone1
+            // 
+            this.txtZone1.Location = new System.Drawing.Point(76, 154);
+            this.txtZone1.Name = "txtZone1";
+            this.txtZone1.Size = new System.Drawing.Size(62, 20);
+            this.txtZone1.TabIndex = 29;
+            // 
             // TrainingEntryForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -564,7 +560,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox comSport;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox txtDuration;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.GroupBox grpNotes;
         private System.Windows.Forms.TextBox txtNotes;
@@ -585,19 +580,14 @@
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.TextBox txtCalories;
         private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.TextBox txtZone1;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.TextBox txtZone2;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.TextBox txtZone3;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.TextBox txtZone4;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox txtZone5;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label label19;
@@ -606,5 +596,11 @@
         private System.Windows.Forms.DateTimePicker datDate;
         private System.Windows.Forms.Button butParseFile;
         private System.Windows.Forms.Button butClear;
+        private TimeSpanTextBox txtDuration;
+        private TimeSpanTextBox txtZone5;
+        private TimeSpanTextBox txtZone4;
+        private TimeSpanTextBox txtZone1;
+        private TimeSpanTextBox txtZone2;
+        private TimeSpanTextBox txtZone3;
     }
 }
