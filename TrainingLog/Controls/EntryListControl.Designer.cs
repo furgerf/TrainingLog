@@ -66,8 +66,8 @@
             this.gliEntries.FullRowSelect = false;
             this.gliEntries.GridColor = System.Drawing.Color.LightGray;
             this.gliEntries.GridLines = GlacialComponents.Controls.GLGridLines.gridBoth;
-            this.gliEntries.GridLineStyle = GlacialComponents.Controls.GLGridLineStyles.gridDashed;
-            this.gliEntries.GridTypes = GlacialComponents.Controls.GLGridTypes.gridOnExists;
+            this.gliEntries.GridLineStyle = GlacialComponents.Controls.GLGridLineStyles.gridNone;
+            this.gliEntries.GridTypes = GlacialComponents.Controls.GLGridTypes.gridNormal;
             this.gliEntries.HeaderHeight = 16;
             this.gliEntries.HeaderVisible = true;
             this.gliEntries.HeaderWordWrap = false;

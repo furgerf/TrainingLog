@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using GlacialComponents.Controls;
 using TrainingLog.Forms;
@@ -27,18 +28,23 @@ namespace TrainingLog.Controls
             get { return _columns; }
             set
             {
+                var firstRun = _columns == null;
+
                 _columns = value;
 
                 gliEntries.Columns.Clear();
 
-                // adjust size to available width 
-                //var factor = Math.Floor(100*(double) _columns.Sum(w => w.Width)/gliEntries.Width)/100;
-                //for (var i = 0; i < _columns.Length; i++)
-                //    _columns[i].Width = (int)(factor * _columns[i].Width);
-                //_columns[_columns.Length - 1].Width = Width - _columns.Sum(w => w.Width);
-
                 foreach (var s in _columns)
                     gliEntries.Columns.Add(s.Header, s.Width);
+
+                if (firstRun)
+                    new Thread(() =>
+                                   {
+                                       Thread.Sleep(100);
+                                       TrainingLogForm.GetInstance.Invoke(
+                                           (MethodInvoker)
+                                           (() => TrainingLogForm.GetInstance.WindowState = FormWindowState.Maximized));
+                                   }).Start();
             }
         }
 
@@ -121,8 +127,6 @@ namespace TrainingLog.Controls
                 gli.SubItems[i].Control.TextChanged += ItemTextChanged;
             }
 
-            gliEntries.Columns[0].Width = 100;
-
             return true;
         }
 
@@ -132,7 +136,7 @@ namespace TrainingLog.Controls
             {
                 gliEntries.Items[i].BackColor = i%2 == 0 ? Color.White : Color.LightGray;
                 for (var j = 0; j < gliEntries.Items[i].SubItems.Count; j++)
-                    if (!(gliEntries.Items[i].SubItems[j].Control is ComboBox))
+                    if (!(gliEntries.Items[i].SubItems[j].Control is ComboBox) || gliEntries.Items[i].SubItems[j].Text.Equals(string.Empty))
                         gliEntries.Items[i].SubItems[j].Control.BackColor = i%2 == 0 ? Color.White : Color.LightGray;
             }
         }
@@ -152,6 +156,16 @@ namespace TrainingLog.Controls
             grpFilter.Width = Width;
             grpEntries.Size = new Size(Width, Height - grpEntries.Location.Y);
             gliEntries.Size = new Size(Width - 4, grpEntries.Height - 14);
+
+            // adjust size to available width 
+            var factor = Math.Floor(100 * gliEntries.Width / (double)_columns.Sum(w => w.Width)) / 100;
+            for (var i = 0; i < _columns.Length; i++)
+                _columns[i].Width = (int)(factor * _columns[i].Width);
+
+            for (var i = 0; i < gliEntries.Columns.Count - 1; i++)
+                gliEntries.Columns[i].Width = _columns[i].Width;
+
+            gliEntries.Columns[gliEntries.Columns.Count - 1].Width = Width - _columns.Sum(w => w.Width) + _columns[_columns.Length - 1].Width - 24;
         }
 
         private void LisEntriesItemActivate(object sender, EventArgs e)

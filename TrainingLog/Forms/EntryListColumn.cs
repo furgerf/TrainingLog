@@ -15,6 +15,6 @@ namespace TrainingLog.Forms
 
         public string Header { get; private set; }
 
-        public int Width { get; private set; }
+        public int Width { get; set; }
     }
 }

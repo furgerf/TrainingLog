@@ -13,13 +13,14 @@ namespace TrainingLog.Forms
         private readonly EntryListControl _elcRace = new EntryListControl { EntryName = "Race", Columns = MergeColumnData(RaceHeader, RaceTypes, RaceWidths) };
         private readonly EntryListControl _elcUnified = new EntryListControl { EntryName = "All", Columns = MergeColumnData(UnifiedHeader, UnifiedTypes, UnifiedWidths) };
 
-        private static EntryListColumn[] MergeColumnData(string[] headers, Type[] types, int[] widths)
+        private static EntryListColumn[] MergeColumnData(IList<string> headers, Type[] types, IList<int> widths)
         {
-            if (headers.Length != types.Length)
+            if (headers.Count != types.Length)
                 throw new ArgumentException();
 
-            var result = new EntryListColumn[headers.Length];
-            for (var i = 0; i < headers.Length; i++)
+
+            var result = new EntryListColumn[headers.Count];
+            for (var i = 0; i < headers.Count; i++)
                 result[i] = new EntryListColumn(headers[i], types[i], widths[i]);
 
             return result;
@@ -33,7 +34,7 @@ namespace TrainingLog.Forms
                                                           {
                                                               typeof(DateTimePicker), typeof(ComboBox), typeof(TimeSpanTextBox), typeof(IntegerTextBox), typeof(IntegerTextBox), typeof(TextBox), typeof(DecimalTextBox), typeof(TextBox), typeof(TextBox)
                                                           };
-        private static readonly int[] TrainingWidths = new[] { 10, 110, 300, 400, 100, 200, 300, 400, 100 };
+        private static readonly int[] TrainingWidths = new[] { 75, 110, 55, 50, 50, 100, 80, 70, 120 };
 
         private readonly static string[] BiodataHeader = new[]
                            {
@@ -85,6 +86,8 @@ namespace TrainingLog.Forms
         {
             InitializeComponent();
 
+            WindowState = FormWindowState.Normal;
+
             Controls.AddRange(new Control[]{ _elcTraining, _elcBiodata, _elcRace, _elcUnified });
             
             EntrySelectionChanged(null, null);
@@ -110,6 +113,9 @@ namespace TrainingLog.Forms
                         break;
                     case Common.Sport.Squash:
                         type = typeof(Common.SquashType);
+                        break;
+                    case Common.Sport.Other:
+                        comSport.Items.Add(Enum.GetName(typeof (Common.Sport), Common.Sport.Other));
                         break;
                 }
 
@@ -156,10 +162,6 @@ namespace TrainingLog.Forms
             return percentage < 0.5 ? GetColor(2*percentage, from, middle) : GetColor(2*(percentage - 0.5), middle, to);
         }
 
-        private static Color GetColor(int actual, int max, Color from, Color to)
-        {
-            return GetColor((double) actual/max, from, to);
-        }
         private static Color GetColor(double percentage, Color from, Color to)
         {
             return Color.FromArgb(from.R + (int)(percentage * (to.R - from.R)),

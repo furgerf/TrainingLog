@@ -42,7 +42,7 @@ namespace TrainingLog.Controls
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            Graphics g = CreateGraphics();
+            var g = CreateGraphics();
             //Graphics g = e.Graphics;
             
             //The dropDownRectangle defines position and size of dropdownbutton block, 
