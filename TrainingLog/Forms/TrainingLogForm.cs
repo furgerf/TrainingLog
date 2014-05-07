@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace TrainingLog.Forms
@@ -14,12 +15,11 @@ namespace TrainingLog.Forms
 
         private readonly static string[] TrainingHeader = new[]
                            {
-                               "Date", "Sport", "Type", "Duration", "Calories", "Avg. HR", "Zone Data", "Distance",
-                               "Feeling", "Notes"
+                               "Date", "Sport", "Duration", "Calories", "Avg. HR", "Zone Data", "Distance", "Feeling", "Notes"
                            };
         private readonly static string[] BiodataHeader = new[]
                            {
-                               "Date"
+                               "Date", "Sleep", "Resting HR", "OwnIndex", "Weight", "Feeling", "Nibbles", "Notes"
                            };
         private readonly static string[] RaceHeader = new[]
                            {
@@ -54,15 +54,30 @@ namespace TrainingLog.Forms
             
             EntrySelectionChanged(null, null);
 
-            foreach(var entry in Model.Instance.TrainingEntries)
-            {
-                _elcTraining.AddEntry(new[]
-                                               {
-                                                   entry.DateTime.ToShortDateString(), Enum.GetName(typeof (Common.Sport), entry.Sport),
-                                                   Enum.GetName(typeof (Common.TrainingType), entry.TrainingType),
-                                                   entry.Duration.ToString()
-                                               });
-            }
+            foreach (var entry in Model.Instance.TrainingEntries.Where(entry => !_elcTraining.AddEntry(new[]{
+                entry.DateTime.ToShortDateString(),
+                entry.Sport + (entry.HasTrainingType ? "" : " (" + entry.TrainingType + ")"),
+                entry.Duration.ToString(),
+                entry.Calories == 0 ? "" : entry.Calories.ToString(),
+                entry.AverageHr == 0 ? "" : entry.AverageHr.ToString(),
+                "<img>",
+                entry.DistanceKm > 0 ? entry.DistanceKm + " km" : "",
+                entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof(Common.Index), entry.Feeling),
+                entry.Note 
+                                                                                                           })))
+                    MessageBox.Show("Problem adding entry " + entry, "Problem adding entry", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            foreach (var entry in Model.Instance.BioDataEntries.Where(entry => !_elcBiodata.AddEntry(new[]{
+                entry.DateTime.ToShortDateString(),
+                entry.SleepDuration + " (" + Enum.GetName(typeof (Common.Index), entry.SleepQuality) + ")",
+                entry.RestingHeartRate == 0 ? "" : entry.RestingHeartRate.ToString(),
+                entry.OwnIndex == 0 ? "" : entry.OwnIndex.ToString(),
+                entry.Weight == 0 ? "" : entry.Weight.ToString(),
+                entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof(Common.Index), entry.Feeling),
+                entry.Nibbles,
+                entry.Note 
+                                                                                                            })))
+                    MessageBox.Show("Problem adding entry " + entry, "Problem adding entry", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void TrainingLogFormFormClosing(object sender, FormClosingEventArgs e)

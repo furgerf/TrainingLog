@@ -58,7 +58,7 @@ namespace TrainingLog.Forms
                                 SleepQuality = (Common.Index) (int) Common.Index.Count - comSleepQuality.SelectedIndex - 1,
                                 RestingHeartRate = (int) numRestingHeartRate.Value,
                                 OwnIndex = (int) numOwnIndex.Value,
-                                Weight = (int) numWeight.Value,
+                                Weight = numWeight.Value,
                                 Nibbles = txtNibbles.Text,
                                 Feeling =
                                     comFeeling.Text != ""

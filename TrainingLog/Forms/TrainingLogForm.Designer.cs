@@ -53,8 +53,6 @@
             // chkUnified
             // 
             this.chkUnified.AutoSize = true;
-            this.chkUnified.Checked = true;
-            this.chkUnified.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkUnified.Location = new System.Drawing.Point(136, 42);
             this.chkUnified.Name = "chkUnified";
             this.chkUnified.Size = new System.Drawing.Size(129, 17);

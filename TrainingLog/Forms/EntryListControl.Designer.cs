@@ -30,7 +30,7 @@
         {
             this.grpFilter = new System.Windows.Forms.GroupBox();
             this.grpEntries = new System.Windows.Forms.GroupBox();
-            this.lisEntries = new System.Windows.Forms.ListView();
+            this.gliEntries = new GlacialComponents.Controls.GlacialList();
             this.grpEntries.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -45,7 +45,7 @@
             // 
             // grpEntries
             // 
-            this.grpEntries.Controls.Add(this.lisEntries);
+            this.grpEntries.Controls.Add(this.gliEntries);
             this.grpEntries.Location = new System.Drawing.Point(0, 100);
             this.grpEntries.Name = "grpEntries";
             this.grpEntries.Size = new System.Drawing.Size(600, 300);
@@ -53,15 +53,43 @@
             this.grpEntries.TabStop = false;
             this.grpEntries.Text = "Entries";
             // 
-            // lisEntries
+            // gliEntries
             // 
-            this.lisEntries.GridLines = true;
-            this.lisEntries.Location = new System.Drawing.Point(2, 12);
-            this.lisEntries.Name = "lisEntries";
-            this.lisEntries.Size = new System.Drawing.Size(596, 280);
-            this.lisEntries.TabIndex = 0;
-            this.lisEntries.UseCompatibleStateImageBehavior = false;
-            this.lisEntries.View = System.Windows.Forms.View.Details;
+            this.gliEntries.AllowColumnResize = true;
+            this.gliEntries.AllowMultiselect = false;
+            this.gliEntries.AlternateBackground = System.Drawing.Color.DarkGreen;
+            this.gliEntries.AlternatingColors = false;
+            this.gliEntries.AutoHeight = true;
+            this.gliEntries.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.gliEntries.BackgroundStretchToFit = true;
+            this.gliEntries.ControlStyle = GlacialComponents.Controls.GLControlStyles.Normal;
+            this.gliEntries.FullRowSelect = true;
+            this.gliEntries.GridColor = System.Drawing.Color.LightGray;
+            this.gliEntries.GridLines = GlacialComponents.Controls.GLGridLines.gridBoth;
+            this.gliEntries.GridLineStyle = GlacialComponents.Controls.GLGridLineStyles.gridDashed;
+            this.gliEntries.GridTypes = GlacialComponents.Controls.GLGridTypes.gridOnExists;
+            this.gliEntries.HeaderHeight = 22;
+            this.gliEntries.HeaderVisible = true;
+            this.gliEntries.HeaderWordWrap = false;
+            this.gliEntries.HotColumnTracking = false;
+            this.gliEntries.HotItemTracking = false;
+            this.gliEntries.HotTrackingColor = System.Drawing.Color.LightGray;
+            this.gliEntries.HoverEvents = false;
+            this.gliEntries.HoverTime = 1;
+            this.gliEntries.ImageList = null;
+            this.gliEntries.ItemHeight = 18;
+            this.gliEntries.ItemWordWrap = false;
+            this.gliEntries.Location = new System.Drawing.Point(2, 12);
+            this.gliEntries.Name = "gliEntries";
+            this.gliEntries.Selectable = true;
+            this.gliEntries.SelectedTextColor = System.Drawing.Color.White;
+            this.gliEntries.SelectionColor = System.Drawing.Color.DarkBlue;
+            this.gliEntries.ShowBorder = true;
+            this.gliEntries.ShowFocusRect = false;
+            this.gliEntries.Size = new System.Drawing.Size(596, 286);
+            this.gliEntries.SortType = GlacialComponents.Controls.SortTypes.QuickSort;
+            this.gliEntries.SuperFlatHeaderColor = System.Drawing.Color.White;
+            this.gliEntries.TabIndex = 0;
             // 
             // EntryListControl
             // 
@@ -81,6 +109,6 @@
 
         private System.Windows.Forms.GroupBox grpFilter;
         private System.Windows.Forms.GroupBox grpEntries;
-        private System.Windows.Forms.ListView lisEntries;
+        private GlacialComponents.Controls.GlacialList gliEntries;
     }
 }

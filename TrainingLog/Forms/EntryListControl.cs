@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using GlacialComponents.Controls;
 
 namespace TrainingLog.Forms
 {
@@ -23,9 +24,10 @@ namespace TrainingLog.Forms
             set 
             { 
                 _columns = value;
-                lisEntries.Columns.Clear();
+                gliEntries.Columns.Clear();
+
                 foreach (var s in value)
-                    lisEntries.Columns.Add(s, s);
+                    gliEntries.Columns.Add(new GLColumn(s));
             }
         }
 
@@ -41,27 +43,41 @@ namespace TrainingLog.Forms
 
         public void ClearEntries()
         {
-            lisEntries.Items.Clear();
+            gliEntries.Items.Clear();
         }
 
         public bool AddEntry(string[] data)
         {
-            if (data.Length != lisEntries.Columns.Count)
+            if (data.Length != gliEntries.Columns.Count)
                 return false;
 
-            lisEntries.Items.Add(new ListViewItem(data));
+            var gli = gliEntries.Items.Add(data[0]);
 
+            for (var i = 1; i < data.Length; i++)
+                gli.SubItems[i].Text = data[i];
+
+            //gliEntries.Items.Add(gli);
             return true;
         }
 
         private void EntryListControlSizeChanged(object sender, EventArgs e)
         {
             var listHeight = Height - grpEntries.Location.X - grpEntries.Location.X;
-            lisEntries.Height = listHeight > 0 ? listHeight : 0;
+            gliEntries.Height = listHeight > 0 ? listHeight : 0;
 
             grpFilter.Width = Width;
             grpEntries.Size = new Size(Width, Height - grpEntries.Location.Y);
-            lisEntries.Size = new Size(Width - 4, grpEntries.Height - 14);
+            gliEntries.Size = new Size(Width - 4, grpEntries.Height - 14);
+        }
+
+        private void lisEntries_ItemActivate(object sender, EventArgs e)
+        {
+            //gliEntries.SelectedItems[0].BeginEdit();
+        }
+
+        private void lisEntries_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //MessageBox.Show(lisEntries.SelectedItems[0].Text);
         }
     }
 }
