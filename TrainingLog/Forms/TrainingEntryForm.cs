@@ -162,8 +162,19 @@ namespace TrainingLog.Forms
                 var diff = zoneData.GetDuration().CompareTo(duration) <= 0 ? zoneData.GetDuration().TotalSeconds / duration.TotalSeconds : duration.TotalSeconds / zoneData.GetDuration().TotalSeconds;
                 if (diff > 1 + Common.SignificancePercentage || diff < 1 - Common.SignificancePercentage)
                 {
-                    if (MessageBox.Show("Difference between sum of zone data and duration is too big (" + Math.Round((1 - diff) * 100, 2) + "%).", "Too big difference", MessageBoxButtons.OKCancel, MessageBoxIcon.Information) == DialogResult.Cancel)
-                    return false;
+                    var res = MessageBox.Show("Difference between sum of zone data and duration is too big (" + Math.Round((1 - diff) * 100, 2) + "%). Do you want to normalize?", "Too big difference", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
+                    
+                    if (res == DialogResult.Cancel)
+                        return false;
+
+                    if (res == DialogResult.Yes)
+                    {
+                        zoneData.Normailze(duration);
+
+                        diff = zoneData.GetDuration().CompareTo(duration) <= 0 ? zoneData.GetDuration().TotalSeconds / duration.TotalSeconds : duration.TotalSeconds / zoneData.GetDuration().TotalSeconds;
+
+                        MessageBox.Show("New difference after normalizing: " + Math.Round((1 - diff) * 100, 2) + "%. Times:\n" + zoneData.ToString().Replace('_', '\t'), "Results of Normalization", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 }
             }
 
@@ -194,22 +205,22 @@ namespace TrainingLog.Forms
             Close();
         }
 
-        private void NumericTextChanged(object sender, KeyPressEventArgs e)
-        {
-            if (!char.IsControl(e.KeyChar)
-                && !char.IsDigit(e.KeyChar)
-                && e.KeyChar != '.')
-            {
-                e.Handled = true;
-            }
+        //private void NumericTextChanged(object sender, KeyPressEventArgs e)
+        //{
+        //    if (!char.IsControl(e.KeyChar)
+        //        && !char.IsDigit(e.KeyChar)
+        //        && e.KeyChar != '.')
+        //    {
+        //        e.Handled = true;
+        //    }
 
-            // only allow one decimal point
-            if (e.KeyChar == '.'
-                && ((TextBox) sender).Text.IndexOf('.') > -1)
-            {
-                e.Handled = true;
-            }
-        }
+        //    // only allow one decimal point
+        //    if (e.KeyChar == '.'
+        //        && ((TextBox) sender).Text.IndexOf('.') > -1)
+        //    {
+        //        e.Handled = true;
+        //    }
+        //}
 
         private void ChkSweatDataCheckedChanged(object sender, EventArgs e)
         {

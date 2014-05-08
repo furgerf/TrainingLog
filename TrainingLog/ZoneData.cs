@@ -45,6 +45,41 @@ namespace TrainingLog
             return Zone5.Add(Zone4.Add(Zone3.Add(Zone2.Add(Zone1))));
         }
 
+        public void Normailze(TimeSpan duration)
+        {
+            var sum = Zone1.TotalSeconds + Zone2.TotalSeconds + Zone3.TotalSeconds + Zone4.TotalSeconds +
+                      Zone5.TotalSeconds;
+            
+            var seconds = duration.TotalSeconds - sum;
+
+            var perc2 = (int)(Zone2.TotalSeconds / sum * seconds);
+            var perc3 = (int)(Zone3.TotalSeconds / sum * seconds);
+            var perc4 = (int)(Zone4.TotalSeconds / sum * seconds);
+            var perc5 = (int)(Zone5.TotalSeconds / sum * seconds);
+
+            if (seconds > 0)
+            {
+                Zone5 = Zone5.Add(TimeSpan.FromSeconds(perc5));
+                Zone4 = Zone4.Add(TimeSpan.FromSeconds(perc4));
+                Zone3 = Zone3.Add(TimeSpan.FromSeconds(perc3));
+                Zone2 = Zone2.Add(TimeSpan.FromSeconds(perc2));
+                Zone1 = Zone1.Add(TimeSpan.FromSeconds(seconds - perc5 - perc4 - perc3 - perc2));
+            }
+            else if (seconds < 0)
+            {
+                perc2 *= -1;
+                perc3 *= -1;
+                perc4 *= -1;
+                perc5 *= -1;
+
+                Zone5 = Zone5.Subtract(TimeSpan.FromSeconds(perc5));
+                Zone4 = Zone4.Subtract(TimeSpan.FromSeconds(perc4));
+                Zone3 = Zone3.Subtract(TimeSpan.FromSeconds(perc3));
+                Zone2 = Zone2.Subtract(TimeSpan.FromSeconds(perc2));
+                Zone1 = Zone1.Subtract(TimeSpan.FromSeconds(-seconds - perc5 - perc4 - perc3 - perc2));
+            }
+        }
+
         private ZoneData(TimeSpan zone5, TimeSpan zone4, TimeSpan zone3, TimeSpan zone2, TimeSpan zone1)
         {
             Zone5 = zone5;
