@@ -36,12 +36,19 @@ namespace TrainingLog.Controls
                     gliEntries.Columns.Add(_columns[i].Header, _columns[i].Width);
                     gliEntries.Columns[i].TextAlignment = ContentAlignment.MiddleCenter;
                 }
-
-                EntryListControlSizeChanged(null, null);
             }
         }
 
-        public bool FilterVisible { get { return grpFilter.Visible; } set { grpFilter.Visible = value; EntryListControlSizeChanged(null, null); } }
+        public bool FilterVisible
+        {
+            get { return _filterVisible; }
+            set
+        {
+            if (_filterVisible == value) return; _filterVisible = value;
+            grpFilter.Visible = _filterVisible; EntryListControlSizeChanged(null, null);
+        } }
+
+        private bool _filterVisible = true;
 
         private EntryListColumn[] _columns;
 
@@ -155,7 +162,7 @@ namespace TrainingLog.Controls
 
         private void EntryListControlSizeChanged(object sender, EventArgs e)
         {
-            grpEntries.Location = new Point(grpEntries.Location.X, grpFilter.Visible ? grpFilter.Height : 10);
+            grpEntries.Location = new Point(grpEntries.Location.X, FilterVisible ? grpFilter.Height : 0);
 
             var listHeight = Height - grpEntries.Location.X - grpEntries.Location.X;
             gliEntries.Height = listHeight > 0 ? listHeight : 0;

@@ -8,10 +8,10 @@ namespace TrainingLog.Forms
 {
     public partial class TrainingLogForm : Form
     {
-        private readonly EntryListControl _elcTraining = new EntryListControl { EntryName = "Training", Columns = MergeColumnData(TrainingHeaders, TrainingTypes, TrainingWidths), FilterVisible = true };
-        private readonly EntryListControl _elcBiodata = new EntryListControl { EntryName = "Bio Data", Columns = MergeColumnData(BiodataHeader, BiodataTypes, BiodataWidths), FilterVisible = false };
-        private readonly EntryListControl _elcRace = new EntryListControl { EntryName = "Race", Columns = MergeColumnData(RaceHeader, RaceTypes, RaceWidths) };
-        private readonly EntryListControl _elcUnified = new EntryListControl { EntryName = "All", Columns = MergeColumnData(UnifiedHeader, UnifiedTypes, UnifiedWidths) };
+        private readonly EntryListControl _elcTraining;
+        private readonly EntryListControl _elcBiodata;
+        private readonly EntryListControl _elcRace;
+        private readonly EntryListControl _elcUnified;
 
         private static EntryListColumn[] MergeColumnData(IList<string> headers, Type[] types, IList<int> widths)
         {
@@ -85,12 +85,15 @@ namespace TrainingLog.Forms
         public TrainingLogForm()
         {
             InitializeComponent();
-            
+
+            _elcTraining = new EntryListControl { EntryName = "Training", Columns = MergeColumnData(TrainingHeaders, TrainingTypes, TrainingWidths) };
+            _elcBiodata = new EntryListControl { EntryName = "Bio Data", Columns = MergeColumnData(BiodataHeader, BiodataTypes, BiodataWidths), FilterVisible = false };
+            _elcRace = new EntryListControl { EntryName = "Race", Columns = MergeColumnData(RaceHeader, RaceTypes, RaceWidths) };
+            _elcUnified = new EntryListControl { EntryName = "All", Columns = MergeColumnData(UnifiedHeader, UnifiedTypes, UnifiedWidths) };
+
             //WindowState = FormWindowState.Normal;
 
             Controls.AddRange(new Control[]{ _elcTraining, _elcBiodata, _elcRace, _elcUnified });
-            
-            EntrySelectionChanged(null, null);
 
             foreach (var entry in Model.Instance.TrainingEntries)
             {
@@ -158,7 +161,7 @@ namespace TrainingLog.Forms
 
                 if (!_elcBiodata.AddEntry(new Control[]{
                 new ColorDatePicker{ Value = entry.DateTime, Format = DateTimePickerFormat.Short },
-                new DecimalTextBox { Text = entry.SleepDuration.ToString(), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
+                new TextBox { Text = entry.SleepDuration.ToString() + " (" + entry.SleepQuality + ")", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                 new IntegerTextBox{ Text = entry.RestingHeartRate == 0 ? "" : entry.RestingHeartRate.ToString(), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                 new IntegerTextBox{ Text = entry.OwnIndex == 0 ? "" : entry.OwnIndex.ToString(), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                 new DecimalTextBox { Text = entry.Weight.ToString(), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
