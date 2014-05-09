@@ -21,6 +21,7 @@ namespace TrainingLog
         public RaceEntry(TimeSpan duration)
             :base(duration, Common.Sport.Running,  Common.EntryType.Race)
         {
+            throw new NotImplementedException();
         }
 
         #endregion

@@ -46,6 +46,7 @@ namespace TrainingLog
 
         private TrainingEntry() : base(Common.EntryType.Training)
         {
+            // private constructor for parsing (when duration is not yet parsed)
         }
 
         public TrainingEntry(TimeSpan duration) : base(Common.EntryType.Training)
@@ -55,6 +56,7 @@ namespace TrainingLog
 
         protected TrainingEntry(TimeSpan duration, Common.Sport sport, Common.EntryType entryType) : base(entryType)
         {
+            // constructor for RaceEntry
             Duration = duration;
             Sport = sport;
         }
@@ -137,13 +139,17 @@ namespace TrainingLog
 
         public static TrainingEntry ParseTrainingEntry (string data)
         {
-            if (!data.Contains("DateTime" + AttributeDividor) || !data.Contains("Sport" + AttributeDividor) || !data.Contains("Duration" + AttributeDividor) || !data.Contains("TrainingType" + AttributeDividor))
+            if (!data.Contains("DateTime" + AttributeDividor) || !data.Contains("Sport" + AttributeDividor) ||
+                !data.Contains("Duration" + AttributeDividor) || !data.Contains("TrainingType" + AttributeDividor))
+            {
+                MessageBox.Show(
+                    "Error while parsing training entry: One or more required attribute (DateTime, Sport, TrainingType, Duration) was not found!",
+                    "Parsing error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
+            }
 
             var attributes = data.Split(AttributeSeparator);
-
-            if (attributes.Length <= 1)
-                return null;
 
             var entry = new TrainingEntry
                             {
@@ -156,6 +162,7 @@ namespace TrainingLog
                 var pair = attributes[i].Split(AttributeDividor);
 
                 if (entry.SetAttribute(pair[0], pair[1])) continue;
+
                 MessageBox.Show("Error while parsing \"" + attributes[i] + "\".", "Parsing error",
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;

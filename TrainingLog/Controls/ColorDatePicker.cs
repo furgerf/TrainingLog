@@ -39,7 +39,6 @@ namespace TrainingLog.Controls
             set { _backDisabledColor = value; }
         }
 
-
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = CreateGraphics();
@@ -78,7 +77,6 @@ namespace TrainingLog.Controls
                 ControlPaint.DrawComboButton(g, dropDownRectangle, btState);
             else
                 ComboBoxRenderer.DrawDropDownButton(g, dropDownRectangle, visualState);
-
 
             g.Dispose();
             bkgBrush.Dispose();

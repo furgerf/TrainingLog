@@ -90,12 +90,15 @@ namespace TrainingLog
         public static BioDataEntry ParseBioDataEntry(string data)
         {
             if (!data.Contains("DateTime" + AttributeDividor) || !data.Contains("SleepQuality" + AttributeDividor) || !data.Contains("SleepDuration" + AttributeDividor))
+            {
+                MessageBox.Show(
+                    "Error while parsing biodata entry: One or more required attribute (DateTime, SleepQuality, SleepDuration) was not found!",
+                    "Parsing error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
+            }
 
             var attributes = data.Split(AttributeSeparator);
-
-            if (attributes.Length <= 1)
-                return null;
 
             var entry = new BioDataEntry
                             {

@@ -10,7 +10,8 @@ namespace TrainingLog.Controls
 {
     public partial class EntryListControl : UserControl
     {
-        private int RowHeight { get { return gliEntries.ItemHeight; } }
+        #region Public Fields
+
         public string EntryName
         {
             get { return _entryName; }
@@ -48,6 +49,14 @@ namespace TrainingLog.Controls
             grpFilter.Visible = _filterVisible; EntryListControlSizeChanged(null, null);
         } }
 
+        #endregion
+
+        #region Private Fields
+
+        private const int IntMaxDigits = 10;
+
+        private int RowHeight { get { return gliEntries.ItemHeight; } }
+        
         private bool _filterVisible = true;
 
         private EntryListColumn[] _columns;
@@ -56,12 +65,11 @@ namespace TrainingLog.Controls
 
         private delegate string GetComparableString(Control c);
 
-        private readonly Dictionary<Type, GetComparableString> _comparableStrings = new Dictionary<Type, GetComparableString>(); 
+        private readonly Dictionary<Type, GetComparableString> _comparableStrings = new Dictionary<Type, GetComparableString>();
 
-        private static string GetComparableStringTextBox(Control c)
-        {
-            return c.Text;
-        }
+        #endregion
+
+        #region Constructor
 
         public EntryListControl()
         {
@@ -76,6 +84,15 @@ namespace TrainingLog.Controls
             _comparableStrings.Add(typeof(IntegerTextBox), GetComparableStringInteger);     // Integer:     fill with 0s and compare
             _comparableStrings.Add(typeof(DecimalTextBox), GetComparableStringDecimal);     // Decimal:     compare like integer
             _comparableStrings.Add(typeof(ZoneDataBox), GetComparableStringZoneData);       // ZoneData:    compare by weighted percentages
+        }
+
+        #endregion
+
+        #region Comparing Methods
+
+        private static string GetComparableStringTextBox(Control c)
+        {
+            return c.Text;
         }
 
         private static string GetComparableStringZoneData(Control c)
@@ -95,12 +112,6 @@ namespace TrainingLog.Controls
             return s;
         }
 
-        public void SortByDate()
-        {
-            gliEntries.SortColumn(0);
-            SetBackColor();     
-        }
-
         private string GetComparableStringDecimal(Control c)
         {
             var s = c.Text;
@@ -114,8 +125,6 @@ namespace TrainingLog.Controls
 
             return s;
         }
-
-        private const int IntMaxDigits = 10;
 
         private static string GetComparableStringInteger(Control c)
         {
@@ -131,6 +140,17 @@ namespace TrainingLog.Controls
         {
             return ((DateTimePicker)c).Value.ToString("yyyyMMdd");
         }
+
+        #endregion
+
+        #region Main Methods
+
+        public void SortByDate()
+        {
+            gliEntries.SortColumn(0);
+            SetBackColor();
+        }
+
 
         public void ClearEntries()
         {
@@ -187,6 +207,10 @@ namespace TrainingLog.Controls
             }
         }
 
+        #endregion
+
+        #region Event Handling
+
         private void ItemTextChanged(object sender, EventArgs args)
         {
             // irgendwie so:
@@ -230,5 +254,7 @@ namespace TrainingLog.Controls
         {
             SetBackColor();
         }
+
+        #endregion
     }
 }

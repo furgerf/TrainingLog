@@ -32,6 +32,8 @@ namespace TrainingLog
         {
             WeightBefore = weightBefore;
             WeightAfter = weightAfter;
+
+            throw new NotImplementedException();
         }
 
         #endregion

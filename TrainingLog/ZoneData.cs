@@ -4,48 +4,64 @@ namespace TrainingLog
 {
     public struct ZoneData
     {
-        public TimeSpan Zone5;
-        public TimeSpan Zone4;
-        public TimeSpan Zone3;
-        public TimeSpan Zone2;
-        public TimeSpan Zone1;
+        #region Public Fields
 
-        public TimeSpan GetZone(int index)
+        public TimeSpan Zone5 { get { return _zones[4]; } }
+        public TimeSpan Zone4 { get { return _zones[3]; } }
+        public TimeSpan Zone3 { get { return _zones[2]; } }
+        public TimeSpan Zone2 { get { return _zones[1]; } }
+        public TimeSpan Zone1 { get { return _zones[0]; } }
+
+        public TimeSpan Duration
         {
-            switch (index)
+            get
             {
-                case 1:
-                    return Zone1;
-                case 2:
-                    return Zone2;
-                case 3:
-                    return Zone3;
-                case 4:
-                    return Zone4;
-                case 5:
-                    return Zone5;
-                default:
-                    throw new ArgumentException();
+                return _zones[4].Add(_zones[3]).Add(_zones[2]).Add(_zones[1]).Add(_zones[0]);
             }
         }
-        public double GetZoneSeconds(int index)
+
+        public bool IsEmpty
+        {
+            get { return _zones == null || Duration == TimeSpan.Zero; }
+        }
+
+        #endregion
+
+        #region Private Fields
+
+        private readonly TimeSpan[] _zones;
+
+        #endregion
+
+        #region Constructor
+
+        private ZoneData(TimeSpan zone5, TimeSpan zone4, TimeSpan zone3, TimeSpan zone2, TimeSpan zone1)
+        {
+            _zones = new[] {zone1, zone2, zone3, zone4, zone5};
+        }
+
+        #endregion
+
+        #region Main Methods
+
+        private TimeSpan GetZone(int index)
+        {
+            return _zones[index - 1];
+        }
+
+        private double GetZoneSeconds(int index)
         {
             return GetZone(index).TotalSeconds;
         }
 
         public double GetZonePercentage(int index)
         {
-            return GetZoneSeconds(index)/Duration.TotalSeconds;
+            return GetZoneSeconds(index) / Duration.TotalSeconds;
         }
 
         public override string ToString()
         {
             return Zone5.ToString() + '_' + Zone4 + '_' + Zone3 + '_' + Zone2 + '_' + Zone1;
-        }
-
-        public bool IsEmpty
-        {
-            get { return Duration == TimeSpan.Zero; }
         }
 
         public static bool TryParse(string s, out ZoneData result)
@@ -68,13 +84,11 @@ namespace TrainingLog
             }
         }
 
-        public TimeSpan Duration { get { return Zone5.Add(Zone4.Add(Zone3.Add(Zone2.Add(Zone1)))); } }
-
         public void Normailze(TimeSpan duration)
         {
             var sum = Zone1.TotalSeconds + Zone2.TotalSeconds + Zone3.TotalSeconds + Zone4.TotalSeconds +
                       Zone5.TotalSeconds;
-            
+
             var seconds = duration.TotalSeconds - sum;
 
             var perc2 = (int)(Zone2.TotalSeconds / sum * seconds);
@@ -84,34 +98,22 @@ namespace TrainingLog
 
             if (seconds > 0)
             {
-                Zone5 = Zone5.Add(TimeSpan.FromSeconds(perc5));
-                Zone4 = Zone4.Add(TimeSpan.FromSeconds(perc4));
-                Zone3 = Zone3.Add(TimeSpan.FromSeconds(perc3));
-                Zone2 = Zone2.Add(TimeSpan.FromSeconds(perc2));
-                Zone1 = Zone1.Add(TimeSpan.FromSeconds(seconds - perc5 - perc4 - perc3 - perc2));
+                _zones[4] = Zone5.Add(TimeSpan.FromSeconds(perc5));
+                _zones[3] = Zone4.Add(TimeSpan.FromSeconds(perc4));
+                _zones[2] = Zone3.Add(TimeSpan.FromSeconds(perc3));
+                _zones[1] = Zone2.Add(TimeSpan.FromSeconds(perc2));
+                _zones[0] = Zone1.Add(TimeSpan.FromSeconds(seconds - perc5 - perc4 - perc3 - perc2));
             }
             else if (seconds < 0)
             {
-                perc2 *= -1;
-                perc3 *= -1;
-                perc4 *= -1;
-                perc5 *= -1;
-
-                Zone5 = Zone5.Subtract(TimeSpan.FromSeconds(perc5));
-                Zone4 = Zone4.Subtract(TimeSpan.FromSeconds(perc4));
-                Zone3 = Zone3.Subtract(TimeSpan.FromSeconds(perc3));
-                Zone2 = Zone2.Subtract(TimeSpan.FromSeconds(perc2));
-                Zone1 = Zone1.Subtract(TimeSpan.FromSeconds(-seconds - perc5 - perc4 - perc3 - perc2));
+                _zones[4] = Zone5.Subtract(TimeSpan.FromSeconds(-perc5));
+                _zones[3] = Zone4.Subtract(TimeSpan.FromSeconds(-perc4));
+                _zones[2] = Zone3.Subtract(TimeSpan.FromSeconds(-perc3));
+                _zones[1] = Zone2.Subtract(TimeSpan.FromSeconds(-perc2));
+                _zones[0] = Zone1.Subtract(TimeSpan.FromSeconds(-seconds - perc5 - perc4 - perc3 - perc2));
             }
         }
 
-        private ZoneData(TimeSpan zone5, TimeSpan zone4, TimeSpan zone3, TimeSpan zone2, TimeSpan zone1)
-        {
-            Zone5 = zone5;
-            Zone4 = zone4;
-            Zone3 = zone3;
-            Zone2 = zone2;
-            Zone1 = zone1;
-        }
+        #endregion
     }
 }

@@ -5,11 +5,7 @@ namespace TrainingLog.Controls
 {
     public partial class ZoneDataBox : UserControl
     {
-        public Color Color1 { get; set; }
-        public Color Color2 { get; set; }
-        public Color Color3 { get; set; }
-        public Color Color4 { get; set; }
-        public Color Color5 { get; set; }
+        #region Public Fields
 
         public Brush Brush1 { get; set; }
         public Brush Brush2 { get; set; }
@@ -17,38 +13,40 @@ namespace TrainingLog.Controls
         public Brush Brush4 { get; set; }
         public Brush Brush5 { get; set; }
 
+        public ZoneData ZoneData { get; set; }
+
+        #endregion
+
+        #region Private Fields
+
         private Brush[] Brushes
         {
             get { return new[] {Brush1, Brush2, Brush3, Brush4, Brush5}; }
         }
 
-        public ZoneData ZoneData { get; set; }
+        #endregion
+
+        #region Constructor
 
         public ZoneDataBox()
         {
-            Color1 = Color.DarkGray;
-            Color2 = Color.LightSkyBlue;
-            Color3 = Color.YellowGreen;
-            Color4 = Color.Orange;
-            Color5 = Color.OrangeRed;
-            
-            Brush1 = new SolidBrush(Color1);
-            Brush2 = new SolidBrush(Color2);
-            Brush3 = new SolidBrush(Color3);
-            Brush4 = new SolidBrush(Color4);
-            Brush5 = new SolidBrush(Color5);
+            Brush1 = new SolidBrush(Color.DarkGray);
+            Brush2 = new SolidBrush(Color.LightSkyBlue);
+            Brush3 = new SolidBrush(Color.YellowGreen);
+            Brush4 = new SolidBrush(Color.Orange);
+            Brush5 = new SolidBrush(Color.OrangeRed);
 
             InitializeComponent();
         }
+
+        #endregion
+
+        #region Event Handling
 
         private void ZoneDataBoxPaint(object sender, PaintEventArgs e)
         {
             if (ZoneData.IsEmpty)
                 return;
-
-            var seconds = ZoneData.Duration.TotalSeconds;
-
-            var pixelPerSecond = Width/seconds;
 
             var x = 0;
 
@@ -56,17 +54,19 @@ namespace TrainingLog.Controls
             {
                 for (var i = 0; i < Brushes.Length; i++)
                 {
-                    var foo = (int) (ZoneData.GetZone(i + 1).TotalSeconds*pixelPerSecond);
+                    var curWidth = (int) (ZoneData.GetZonePercentage(i + 1) * Width);
                     if (i == Brushes.Length - 1)
-                        foo = Width - x;
+                        curWidth = Width - x;
 
-                    if (foo == 0)
+                    if (curWidth == 0)
                         continue;
 
-                    g.FillRectangle(Brushes[i], x, 0, foo, Height);
-                    x += foo;
+                    g.FillRectangle(Brushes[i], x, 0, curWidth, Height);
+                    x += curWidth;
                 }
             }
         }
+
+        #endregion
     }
 }

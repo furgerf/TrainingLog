@@ -22,12 +22,6 @@ namespace TrainingLog.Controls
 
         #endregion
 
-        #region Private Fields
-
-
-
-        #endregion
-
         #region Constructor
 
         public IntegerTextBox()
@@ -35,12 +29,6 @@ namespace TrainingLog.Controls
             KeyPress += ValidateKey;
             TextChanged += ValidateText;
         }
-
-        #endregion
-
-        #region Main Methods
-
-
 
         #endregion
 

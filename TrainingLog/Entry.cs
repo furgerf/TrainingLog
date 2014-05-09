@@ -41,15 +41,15 @@ namespace TrainingLog
 
         public static Entry Parse(string data)
         {
-            var entryType = data.Substring(0, data.IndexOf(AttributeSeparator));
+            var entryType = (int)Enum.Parse(typeof(Common.EntryType), data.Substring(0, data.IndexOf(AttributeSeparator)));
 
             switch (entryType)
             {
-                case "BioData":
+                case (int)Common.EntryType.BioData:
                     return BioDataEntry.ParseBioDataEntry(data);
-                case "Race":
+                case (int)Common.EntryType.Race:
                     return RaceEntry.ParseRaceEntry(data);
-                case "Training":
+                case (int)Common.EntryType.Training:
                     return TrainingEntry.ParseTrainingEntry(data);
                 default:
                     return null;

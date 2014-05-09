@@ -29,12 +29,6 @@ namespace TrainingLog.Controls
 
         #endregion
 
-        #region Private Fields
-
-
-
-        #endregion
-
         #region Constructor
 
         public TimeSpanTextBox()
@@ -42,12 +36,6 @@ namespace TrainingLog.Controls
             KeyPress += ValidateKey;
             TextChanged += ValidateText;
         }
-
-        #endregion
-
-        #region Main Methods
-
-
 
         #endregion
 
