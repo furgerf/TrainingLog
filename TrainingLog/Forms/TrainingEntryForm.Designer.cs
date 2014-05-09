@@ -31,6 +31,8 @@ namespace TrainingLog.Forms
         private void InitializeComponent()
         {
             this.grpBase = new System.Windows.Forms.GroupBox();
+            this.txtCalories = new TrainingLog.Controls.IntegerTextBox();
+            this.txtDuration = new TrainingLog.Controls.TimeSpanTextBox();
             this.datDate = new System.Windows.Forms.DateTimePicker();
             this.label20 = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
@@ -45,6 +47,7 @@ namespace TrainingLog.Forms
             this.grpNotes = new System.Windows.Forms.GroupBox();
             this.txtNotes = new System.Windows.Forms.TextBox();
             this.grpDistance = new System.Windows.Forms.GroupBox();
+            this.txtDistance = new TrainingLog.Controls.DecimalTextBox();
             this.label21 = new System.Windows.Forms.Label();
             this.comFeeling = new System.Windows.Forms.ComboBox();
             this.labSpeed = new System.Windows.Forms.Label();
@@ -53,6 +56,12 @@ namespace TrainingLog.Forms
             this.butCancel = new System.Windows.Forms.Button();
             this.butOk = new System.Windows.Forms.Button();
             this.grpHeartRate = new System.Windows.Forms.GroupBox();
+            this.txtAvgHR = new TrainingLog.Controls.IntegerTextBox();
+            this.txtZone1 = new TrainingLog.Controls.TimeSpanTextBox();
+            this.txtZone2 = new TrainingLog.Controls.TimeSpanTextBox();
+            this.txtZone3 = new TrainingLog.Controls.TimeSpanTextBox();
+            this.txtZone4 = new TrainingLog.Controls.TimeSpanTextBox();
+            this.txtZone5 = new TrainingLog.Controls.TimeSpanTextBox();
             this.label19 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
@@ -65,17 +74,9 @@ namespace TrainingLog.Forms
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.butParseFile = new System.Windows.Forms.Button();
+            this.butParseHtml = new System.Windows.Forms.Button();
             this.butClear = new System.Windows.Forms.Button();
-            this.txtAvgHR = new TrainingLog.Controls.IntegerTextBox();
-            this.txtZone1 = new TrainingLog.Controls.TimeSpanTextBox();
-            this.txtZone2 = new TrainingLog.Controls.TimeSpanTextBox();
-            this.txtZone3 = new TrainingLog.Controls.TimeSpanTextBox();
-            this.txtZone4 = new TrainingLog.Controls.TimeSpanTextBox();
-            this.txtZone5 = new TrainingLog.Controls.TimeSpanTextBox();
-            this.txtDistance = new TrainingLog.Controls.DecimalTextBox();
-            this.txtCalories = new TrainingLog.Controls.IntegerTextBox();
-            this.txtDuration = new TrainingLog.Controls.TimeSpanTextBox();
+            this.butParseXml = new System.Windows.Forms.Button();
             this.grpBase.SuspendLayout();
             this.grpNotes.SuspendLayout();
             this.grpDistance.SuspendLayout();
@@ -103,6 +104,21 @@ namespace TrainingLog.Forms
             this.grpBase.TabIndex = 0;
             this.grpBase.TabStop = false;
             this.grpBase.Text = "Base Information";
+            // 
+            // txtCalories
+            // 
+            this.txtCalories.BackColor = System.Drawing.Color.White;
+            this.txtCalories.Location = new System.Drawing.Point(75, 127);
+            this.txtCalories.Name = "txtCalories";
+            this.txtCalories.Size = new System.Drawing.Size(62, 20);
+            this.txtCalories.TabIndex = 4;
+            // 
+            // txtDuration
+            // 
+            this.txtDuration.Location = new System.Drawing.Point(75, 100);
+            this.txtDuration.Name = "txtDuration";
+            this.txtDuration.Size = new System.Drawing.Size(62, 20);
+            this.txtDuration.TabIndex = 3;
             // 
             // datDate
             // 
@@ -239,6 +255,15 @@ namespace TrainingLog.Forms
             this.grpDistance.TabStop = false;
             this.grpDistance.Text = "Distance/Feeling";
             // 
+            // txtDistance
+            // 
+            this.txtDistance.BackColor = System.Drawing.Color.White;
+            this.txtDistance.Location = new System.Drawing.Point(9, 22);
+            this.txtDistance.Name = "txtDistance";
+            this.txtDistance.Size = new System.Drawing.Size(76, 20);
+            this.txtDistance.TabIndex = 11;
+            this.txtDistance.TextChanged += new System.EventHandler(this.DistanceTimeChanged);
+            // 
             // label21
             // 
             this.label21.AutoSize = true;
@@ -286,7 +311,7 @@ namespace TrainingLog.Forms
             // 
             // butCancel
             // 
-            this.butCancel.Location = new System.Drawing.Point(159, 271);
+            this.butCancel.Location = new System.Drawing.Point(112, 271);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(75, 23);
             this.butCancel.TabIndex = 4;
@@ -330,6 +355,49 @@ namespace TrainingLog.Forms
             this.grpHeartRate.TabIndex = 1;
             this.grpHeartRate.TabStop = false;
             this.grpHeartRate.Text = "Heart Rate";
+            // 
+            // txtAvgHR
+            // 
+            this.txtAvgHR.BackColor = System.Drawing.Color.White;
+            this.txtAvgHR.Location = new System.Drawing.Point(76, 22);
+            this.txtAvgHR.Name = "txtAvgHR";
+            this.txtAvgHR.Size = new System.Drawing.Size(62, 20);
+            this.txtAvgHR.TabIndex = 1;
+            // 
+            // txtZone1
+            // 
+            this.txtZone1.Location = new System.Drawing.Point(76, 154);
+            this.txtZone1.Name = "txtZone1";
+            this.txtZone1.Size = new System.Drawing.Size(62, 20);
+            this.txtZone1.TabIndex = 6;
+            // 
+            // txtZone2
+            // 
+            this.txtZone2.Location = new System.Drawing.Point(76, 127);
+            this.txtZone2.Name = "txtZone2";
+            this.txtZone2.Size = new System.Drawing.Size(62, 20);
+            this.txtZone2.TabIndex = 5;
+            // 
+            // txtZone3
+            // 
+            this.txtZone3.Location = new System.Drawing.Point(76, 100);
+            this.txtZone3.Name = "txtZone3";
+            this.txtZone3.Size = new System.Drawing.Size(62, 20);
+            this.txtZone3.TabIndex = 4;
+            // 
+            // txtZone4
+            // 
+            this.txtZone4.Location = new System.Drawing.Point(76, 73);
+            this.txtZone4.Name = "txtZone4";
+            this.txtZone4.Size = new System.Drawing.Size(62, 20);
+            this.txtZone4.TabIndex = 3;
+            // 
+            // txtZone5
+            // 
+            this.txtZone5.Location = new System.Drawing.Point(76, 46);
+            this.txtZone5.Name = "txtZone5";
+            this.txtZone5.Size = new System.Drawing.Size(62, 20);
+            this.txtZone5.TabIndex = 2;
             // 
             // label19
             // 
@@ -439,100 +507,44 @@ namespace TrainingLog.Forms
             this.label8.TabIndex = 4;
             this.label8.Text = "Avg. HR:";
             // 
-            // butParseFile
+            // butParseHtml
             // 
-            this.butParseFile.Location = new System.Drawing.Point(448, 271);
-            this.butParseFile.Name = "butParseFile";
-            this.butParseFile.Size = new System.Drawing.Size(103, 23);
-            this.butParseFile.TabIndex = 7;
-            this.butParseFile.Text = "Add Info from File";
-            this.butParseFile.UseVisualStyleBackColor = true;
-            this.butParseFile.Click += new System.EventHandler(this.ButParseFileClick);
+            this.butParseHtml.Location = new System.Drawing.Point(448, 271);
+            this.butParseHtml.Name = "butParseHtml";
+            this.butParseHtml.Size = new System.Drawing.Size(103, 23);
+            this.butParseHtml.TabIndex = 7;
+            this.butParseHtml.Text = "Add Info from html";
+            this.butParseHtml.UseVisualStyleBackColor = true;
+            this.butParseHtml.Click += new System.EventHandler(this.ButParseFileClick);
             // 
             // butClear
             // 
-            this.butClear.Location = new System.Drawing.Point(296, 271);
+            this.butClear.Location = new System.Drawing.Point(212, 271);
             this.butClear.Name = "butClear";
             this.butClear.Size = new System.Drawing.Size(75, 23);
-            this.butClear.TabIndex = 6;
+            this.butClear.TabIndex = 5;
             this.butClear.Text = "Clear";
             this.butClear.UseVisualStyleBackColor = true;
             this.butClear.Click += new System.EventHandler(this.ButClearClick);
             // 
-            // txtAvgHR
+            // butParseXml
             // 
-            this.txtAvgHR.BackColor = System.Drawing.Color.White;
-            this.txtAvgHR.Location = new System.Drawing.Point(76, 22);
-            this.txtAvgHR.Name = "txtAvgHR";
-            this.txtAvgHR.Size = new System.Drawing.Size(62, 20);
-            this.txtAvgHR.TabIndex = 1;
-            // 
-            // txtZone1
-            // 
-            this.txtZone1.Location = new System.Drawing.Point(76, 154);
-            this.txtZone1.Name = "txtZone1";
-            this.txtZone1.Size = new System.Drawing.Size(62, 20);
-            this.txtZone1.TabIndex = 6;
-            // 
-            // txtZone2
-            // 
-            this.txtZone2.Location = new System.Drawing.Point(76, 127);
-            this.txtZone2.Name = "txtZone2";
-            this.txtZone2.Size = new System.Drawing.Size(62, 20);
-            this.txtZone2.TabIndex = 5;
-            // 
-            // txtZone3
-            // 
-            this.txtZone3.Location = new System.Drawing.Point(76, 100);
-            this.txtZone3.Name = "txtZone3";
-            this.txtZone3.Size = new System.Drawing.Size(62, 20);
-            this.txtZone3.TabIndex = 4;
-            // 
-            // txtZone4
-            // 
-            this.txtZone4.Location = new System.Drawing.Point(76, 73);
-            this.txtZone4.Name = "txtZone4";
-            this.txtZone4.Size = new System.Drawing.Size(62, 20);
-            this.txtZone4.TabIndex = 3;
-            // 
-            // txtZone5
-            // 
-            this.txtZone5.Location = new System.Drawing.Point(76, 46);
-            this.txtZone5.Name = "txtZone5";
-            this.txtZone5.Size = new System.Drawing.Size(62, 20);
-            this.txtZone5.TabIndex = 2;
-            // 
-            // txtDistance
-            // 
-            this.txtDistance.BackColor = System.Drawing.Color.White;
-            this.txtDistance.Location = new System.Drawing.Point(9, 22);
-            this.txtDistance.Name = "txtDistance";
-            this.txtDistance.Size = new System.Drawing.Size(76, 20);
-            this.txtDistance.TabIndex = 11;
-            this.txtDistance.TextChanged += new System.EventHandler(this.DistanceTimeChanged);
-            // 
-            // txtCalories
-            // 
-            this.txtCalories.BackColor = System.Drawing.Color.White;
-            this.txtCalories.Location = new System.Drawing.Point(75, 127);
-            this.txtCalories.Name = "txtCalories";
-            this.txtCalories.Size = new System.Drawing.Size(62, 20);
-            this.txtCalories.TabIndex = 4;
-            // 
-            // txtDuration
-            // 
-            this.txtDuration.Location = new System.Drawing.Point(75, 100);
-            this.txtDuration.Name = "txtDuration";
-            this.txtDuration.Size = new System.Drawing.Size(62, 20);
-            this.txtDuration.TabIndex = 3;
+            this.butParseXml.Location = new System.Drawing.Point(320, 271);
+            this.butParseXml.Name = "butParseXml";
+            this.butParseXml.Size = new System.Drawing.Size(103, 23);
+            this.butParseXml.TabIndex = 6;
+            this.butParseXml.Text = "Add Info from XML";
+            this.butParseXml.UseVisualStyleBackColor = true;
+            this.butParseXml.Click += new System.EventHandler(this.ButParseXmlClick);
             // 
             // TrainingEntryForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(563, 304);
+            this.Controls.Add(this.butParseXml);
             this.Controls.Add(this.butClear);
-            this.Controls.Add(this.butParseFile);
+            this.Controls.Add(this.butParseHtml);
             this.Controls.Add(this.grpHeartRate);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOk);
@@ -593,7 +605,7 @@ namespace TrainingLog.Forms
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.ComboBox comFeeling;
         private System.Windows.Forms.DateTimePicker datDate;
-        private System.Windows.Forms.Button butParseFile;
+        private System.Windows.Forms.Button butParseHtml;
         private System.Windows.Forms.Button butClear;
         private TimeSpanTextBox txtDuration;
         private TimeSpanTextBox txtZone5;
@@ -604,5 +616,6 @@ namespace TrainingLog.Forms
         private IntegerTextBox txtCalories;
         private IntegerTextBox txtAvgHR;
         private DecimalTextBox txtDistance;
+        private System.Windows.Forms.Button butParseXml;
     }
 }

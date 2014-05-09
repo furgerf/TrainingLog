@@ -10,6 +10,34 @@ namespace TrainingLog
         public TimeSpan Zone2;
         public TimeSpan Zone1;
 
+        public TimeSpan GetZone(int index)
+        {
+            switch (index)
+            {
+                case 1:
+                    return Zone1;
+                case 2:
+                    return Zone2;
+                case 3:
+                    return Zone3;
+                case 4:
+                    return Zone4;
+                case 5:
+                    return Zone5;
+                default:
+                    throw new ArgumentException();
+            }
+        }
+        public double GetZoneSeconds(int index)
+        {
+            return GetZone(index).TotalSeconds;
+        }
+
+        public double GetZonePercentage(int index)
+        {
+            return GetZoneSeconds(index)/Duration.TotalSeconds;
+        }
+
         public override string ToString()
         {
             return Zone5.ToString() + '_' + Zone4 + '_' + Zone3 + '_' + Zone2 + '_' + Zone1;
@@ -17,7 +45,7 @@ namespace TrainingLog
 
         public bool IsEmpty
         {
-            get { return GetDuration() == TimeSpan.Zero; }
+            get { return Duration == TimeSpan.Zero; }
         }
 
         public static bool TryParse(string s, out ZoneData result)
@@ -40,10 +68,7 @@ namespace TrainingLog
             }
         }
 
-        public TimeSpan GetDuration()
-        {
-            return Zone5.Add(Zone4.Add(Zone3.Add(Zone2.Add(Zone1))));
-        }
+        public TimeSpan Duration { get { return Zone5.Add(Zone4.Add(Zone3.Add(Zone2.Add(Zone1)))); } }
 
         public void Normailze(TimeSpan duration)
         {

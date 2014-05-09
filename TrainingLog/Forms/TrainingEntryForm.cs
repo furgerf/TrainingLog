@@ -159,7 +159,7 @@ namespace TrainingLog.Forms
                     return false;
                 }
 
-                var diff = zoneData.GetDuration().CompareTo(duration) <= 0 ? zoneData.GetDuration().TotalSeconds / duration.TotalSeconds : duration.TotalSeconds / zoneData.GetDuration().TotalSeconds;
+                var diff = zoneData.Duration.CompareTo(duration) <= 0 ? zoneData.Duration.TotalSeconds / duration.TotalSeconds : duration.TotalSeconds / zoneData.Duration.TotalSeconds;
                 if (diff > 1 + Common.SignificancePercentage || diff < 1 - Common.SignificancePercentage)
                 {
                     var res = MessageBox.Show("Difference between sum of zone data and duration is too big (" + Math.Round((1 - diff) * 100, 2) + "%). Do you want to normalize?", "Too big difference", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
@@ -171,7 +171,7 @@ namespace TrainingLog.Forms
                     {
                         zoneData.Normailze(duration);
 
-                        diff = zoneData.GetDuration().CompareTo(duration) <= 0 ? zoneData.GetDuration().TotalSeconds / duration.TotalSeconds : duration.TotalSeconds / zoneData.GetDuration().TotalSeconds;
+                        diff = zoneData.Duration.CompareTo(duration) <= 0 ? zoneData.Duration.TotalSeconds / duration.TotalSeconds : duration.TotalSeconds / zoneData.Duration.TotalSeconds;
 
                         MessageBox.Show("New difference after normalizing: " + Math.Round((1 - diff) * 100, 2) + "%. Times:\n" + zoneData.ToString().Replace('_', '\t'), "Results of Normalization", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -416,7 +416,7 @@ namespace TrainingLog.Forms
                 Calories = txtCalories.Text == "" ? 0 : int.Parse(txtCalories.Text),
                 //TODO: save sweat data
                 AverageHr = txtAvgHR.Text == "" ? 0 : int.Parse(txtAvgHR.Text),
-                ZoneTime = zoneData,
+                ZoneData = zoneData,
                 DistanceKm = txtDistance.Text == "" ? 0 : double.Parse(txtDistance.Text),
                 Feeling =
                     comFeeling.Text != ""
@@ -444,6 +444,11 @@ namespace TrainingLog.Forms
             {
                 Close();
             }
+        }
+
+        private void ButParseXmlClick(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

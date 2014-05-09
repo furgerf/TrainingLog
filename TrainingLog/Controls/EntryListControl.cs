@@ -75,8 +75,24 @@ namespace TrainingLog.Controls
             _comparableStrings.Add(typeof(ColorDatePicker), GetComparableStringDateTime);   // DateTime:    compare YYYYMMDD
             _comparableStrings.Add(typeof(IntegerTextBox), GetComparableStringInteger);     // Integer:     fill with 0s and compare
             _comparableStrings.Add(typeof(DecimalTextBox), GetComparableStringDecimal);     // Decimal:     compare like integer
+            _comparableStrings.Add(typeof(ZoneDataBox), GetComparableStringZoneData);       // ZoneData:    compare by weighted percentages
+        }
 
-            //EntryListControlSizeChanged(null, null);
+        private static string GetComparableStringZoneData(Control c)
+        {
+            var zd = ((ZoneDataBox) c).ZoneData;
+
+            var s = zd.IsEmpty ? "0" : (zd.GetZonePercentage(5)*5 + zd.GetZonePercentage(4)*4 + zd.GetZonePercentage(3)*3 +
+                       zd.GetZonePercentage(2)*2 + zd.GetZonePercentage(1)).ToString();
+
+            if (s.IndexOf('.') == -1)
+                while (s.Length < IntMaxDigits)
+                    s = "0" + s;
+            else
+                while (s.IndexOf('.') < IntMaxDigits)
+                    s = "0" + s;
+
+            return s;
         }
 
         public void SortByDate()

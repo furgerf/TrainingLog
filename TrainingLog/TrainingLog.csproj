@@ -58,6 +58,12 @@
     <Compile Include="Controls\DecimalTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\ZoneDataBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ZoneDataBox.Designer.cs">
+      <DependentUpon>ZoneDataBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Entry.cs" />
     <Compile Include="Forms\BioDataEntryForm.cs">
       <SubType>Form</SubType>
@@ -113,6 +119,9 @@
     <Compile Include="TrainingEntry.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="ZoneData.cs" />
+    <EmbeddedResource Include="Controls\ZoneDataBox.resx">
+      <DependentUpon>ZoneDataBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\BioDataEntryForm.resx">
       <DependentUpon>BioDataEntryForm.cs</DependentUpon>
     </EmbeddedResource>

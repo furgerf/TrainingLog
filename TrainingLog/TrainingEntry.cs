@@ -30,9 +30,7 @@ namespace TrainingLog
 
         public int AverageHr { get; set; }
 
-        public ZoneData ZoneTime { get; set; }
-
-        public ZoneData ZoneData { get { return _zoneData; } }
+        public ZoneData ZoneData { get; set; }
 
         #endregion
 
@@ -42,26 +40,21 @@ namespace TrainingLog
 
         private SweatData _sweatData;
 
-        private readonly ZoneData _zoneData;
-
         #endregion
 
         #region Constructor
 
         private TrainingEntry() : base(Common.EntryType.Training)
         {
-            _zoneData = new ZoneData();
         }
 
         public TrainingEntry(TimeSpan duration) : base(Common.EntryType.Training)
         {
-            _zoneData = new ZoneData();
             Duration = duration;
         }
 
         protected TrainingEntry(TimeSpan duration, Common.Sport sport, Common.EntryType entryType) : base(entryType)
         {
-            _zoneData = new ZoneData();
             Duration = duration;
             Sport = sport;
         }
@@ -114,11 +107,11 @@ namespace TrainingLog
                     case "AverageHr":
                         AverageHr = int.Parse(value);
                         return true;
-                    case "ZoneTime":
+                    case "ZoneData":
                         ZoneData zd;
                         var b = ZoneData.TryParse(value, out zd);
                         if (b)
-                            ZoneTime = zd;
+                            ZoneData = zd;
                         return b;
                     case "Note":
                         Note = value;
@@ -191,8 +184,8 @@ namespace TrainingLog
                     sb.Append(AttributeSeparator + "Calories" + AttributeDividor + Calories);
                 if (AverageHr != 0)
                     sb.Append(AttributeSeparator + "AverageHr" + AttributeDividor + AverageHr);
-                if (!ZoneTime.IsEmpty)
-                    sb.Append(AttributeSeparator + "ZoneTime" + AttributeDividor + ZoneTime);
+                if (!ZoneData.IsEmpty)
+                    sb.Append(AttributeSeparator + "ZoneData" + AttributeDividor + ZoneData);
                 if (Note != "")
                     sb.Append(AttributeSeparator + "Note" + AttributeDividor + Note);
                 if (Feeling != Common.Index.None)

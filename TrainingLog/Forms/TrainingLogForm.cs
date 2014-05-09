@@ -138,7 +138,8 @@ namespace TrainingLog.Forms
                 new TimeSpanTextBox{ Text = entry.Duration.ToString().Replace(':', '.'), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                 new IntegerTextBox{ Text = entry.Calories == 0 ? "" : entry.Calories.ToString(), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                 new IntegerTextBox{ Text = entry.AverageHr == 0 ? "" : entry.AverageHr.ToString(), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
-                new TextBox{ Text = "<img>", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
+                new ZoneDataBox { ZoneData = entry.ZoneData },
+                //new TextBox{ Text = "<img>", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                 new DecimalTextBox{ Text = entry.DistanceKm > 0 ? entry.DistanceKm.ToString() : "", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                 comFeeling,
                 new TextBox{ Text = entry.Note, BorderStyle = BorderStyle.None }}))
