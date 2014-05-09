@@ -135,7 +135,7 @@ namespace TrainingLog.Forms
                 if (!_elcTraining.AddEntry(new Control[]{
                 new ColorDatePicker{ Value = entry.DateTime, Format = DateTimePickerFormat.Short },
                 comSport,
-                new TimeSpanTextBox{ Text = entry.Duration.ToString(), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
+                new TimeSpanTextBox{ Text = entry.Duration.ToString().Replace(':', '.'), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                 new IntegerTextBox{ Text = entry.Calories == 0 ? "" : entry.Calories.ToString(), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                 new IntegerTextBox{ Text = entry.AverageHr == 0 ? "" : entry.AverageHr.ToString(), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                 new TextBox{ Text = "<img>", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
@@ -159,14 +159,34 @@ namespace TrainingLog.Forms
                 comFeeling.Text = entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof(Common.Index), entry.Feeling);
                 comFeeling.SelectedIndexChanged += (s, e) => comFeeling.BackColor = GetColor((double)comFeeling.SelectedIndex / (comFeeling.Items.Count - 1), Color.Red, Color.Yellow, Color.Green);
 
+                var txtSleep = new TextBox
+                                   {
+                                       Text = entry.SleepDuration.ToString() + " (" + entry.SleepQuality + ")",
+                                       BorderStyle = BorderStyle.None,
+                                       TextAlign = HorizontalAlignment.Center,
+                                       BackColor = Color.Purple,
+                                       //Multiline = true 
+                                   };
+
+                foreach (var s in Enum.GetNames(typeof (Common.Index)))
+                {
+                    if (
+                        txtSleep.Text.Substring(txtSleep.Text.IndexOf('(') + 1,
+                                                txtSleep.Text.IndexOf(')') - txtSleep.Text.IndexOf('(') - 1).Equals(s))
+                    {
+                        txtSleep.BackColor = GetColor(((double)(int) Enum.Parse(typeof (Common.Index), s)/((int) Common.Index.Count - 1)), Color.Red, Color.Yellow, Color.Green);
+                        break;
+                    }
+                }
+
                 if (!_elcBiodata.AddEntry(new Control[]{
                 new ColorDatePicker{ Value = entry.DateTime, Format = DateTimePickerFormat.Short },
-                new TextBox { Text = entry.SleepDuration.ToString() + " (" + entry.SleepQuality + ")", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
+                txtSleep,
                 new IntegerTextBox{ Text = entry.RestingHeartRate == 0 ? "" : entry.RestingHeartRate.ToString(), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                 new IntegerTextBox{ Text = entry.OwnIndex == 0 ? "" : entry.OwnIndex.ToString(), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                 new DecimalTextBox { Text = entry.Weight.ToString(), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                 comFeeling,
-                new TextBox{ Text = entry.Nibbles, BorderStyle = BorderStyle.None },
+                new TextBox{ Text = entry.Nibbles, BorderStyle = BorderStyle.None  },
                 new TextBox{ Text = entry.Note, BorderStyle = BorderStyle.None }}))
                     MessageBox.Show("Problem adding entry " + entry, "Problem adding entry", MessageBoxButtons.OK, MessageBoxIcon.Error);
 

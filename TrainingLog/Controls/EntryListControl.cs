@@ -135,7 +135,7 @@ namespace TrainingLog.Controls
                 gli.SubItems[i].Text = _comparableStrings[data[i].GetType()](data[i]);
                 gli.SubItems[i].Control = data[i];
                 gli.SubItems[i].Control.Height = RowHeight;
-                gli.SubItems[i].Control.BackColor = gliEntries.Count % 2 == 1 ? Color.White : Color.LightGray;
+                //gli.SubItems[i].Control.BackColor = gliEntries.Count % 2 == 1 ? Color.White : Color.LightGray;
                 gli.SubItems[i].Control.TextChanged += ItemTextChanged;
             }
 
@@ -148,8 +148,26 @@ namespace TrainingLog.Controls
             {
                 gliEntries.Items[i].BackColor = i%2 == 0 ? Color.White : Color.LightGray;
                 for (var j = 0; j < gliEntries.Items[i].SubItems.Count; j++)
-                    if (!(gliEntries.Items[i].SubItems[j].Control is ComboBox) || !Enum.GetNames(typeof(Common.Index)).Contains(gliEntries.Items[i].SubItems[j].Text))
+                {
+                    var txt = gliEntries.Items[i].SubItems[j].Text;
+                    var index = txt.Contains('(') && txt.Contains(')') ? txt.Substring(txt.IndexOf('(') + 1,
+                        txt.IndexOf(')') - txt.IndexOf('(') - 1) : "";
+
+                    if ((gliEntries.Items[i].SubItems[j].Control is ComboBox) &&
+                        Enum.GetNames(typeof (Common.Index)).Contains(gliEntries.Items[i].SubItems[j].Text))
+                    {
+                        //comfeeling
+                    }
+                    else if ((gliEntries.Items[i].SubItems[j].Control is TextBox) && txt.Contains('(') && txt.Contains(')') &&
+                        Enum.GetNames(typeof(Common.Index)).Contains(index))
+                    {
+                        //txtsleep
+                    }
+                    else
+                    {
                         gliEntries.Items[i].SubItems[j].Control.BackColor = i%2 == 0 ? Color.White : Color.LightGray;
+                    }
+                }
             }
         }
 
