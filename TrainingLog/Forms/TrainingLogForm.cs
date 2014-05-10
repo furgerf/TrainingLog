@@ -86,10 +86,10 @@ namespace TrainingLog.Forms
         {
             InitializeComponent();
 
-            _elcTraining = new EntryListControl { EntryName = "Training", Columns = MergeColumnData(TrainingHeaders, TrainingTypes, TrainingWidths) };
-            _elcBiodata = new EntryListControl { EntryName = "Bio Data", Columns = MergeColumnData(BiodataHeader, BiodataTypes, BiodataWidths), FilterVisible = false };
-            _elcRace = new EntryListControl { EntryName = "Race", Columns = MergeColumnData(RaceHeader, RaceTypes, RaceWidths) };
-            _elcUnified = new EntryListControl { EntryName = "All", Columns = MergeColumnData(UnifiedHeader, UnifiedTypes, UnifiedWidths) };
+            _elcTraining = new EntryListControl { EntryName = "Training", Columns = MergeColumnData(TrainingHeaders, TrainingTypes, TrainingWidths), ControlsEnabled = chkEdit.Checked };
+            _elcBiodata = new EntryListControl { EntryName = "Bio Data", Columns = MergeColumnData(BiodataHeader, BiodataTypes, BiodataWidths), FilterVisible = false, ControlsEnabled = chkEdit.Checked };
+            _elcRace = new EntryListControl { EntryName = "Race", Columns = MergeColumnData(RaceHeader, RaceTypes, RaceWidths), ControlsEnabled = chkEdit.Checked };
+            _elcUnified = new EntryListControl { EntryName = "All", Columns = MergeColumnData(UnifiedHeader, UnifiedTypes, UnifiedWidths), ControlsEnabled = chkEdit.Checked };
 
             //WindowState = FormWindowState.Normal;
 
@@ -311,6 +311,25 @@ namespace TrainingLog.Forms
         private void TrainingLogFormSizeChanged(object sender, EventArgs e)
         {
             EntrySelectionChanged(null, null);
+        }
+
+        private void ChkEditCheckedChanged(object sender, EventArgs e)
+        {
+            if (chkEdit.Checked)
+            {
+                if (
+                    MessageBox.Show("Are you sure you want to edit the data?", "Enable editing", MessageBoxButtons.YesNo,
+                                    MessageBoxIcon.Question) == DialogResult.No)
+                {
+                    chkEdit.Checked = false;
+                    return;
+                }
+            }
+
+            _elcTraining.ControlsEnabled = chkEdit.Checked;
+            _elcBiodata.ControlsEnabled = chkEdit.Checked;
+            _elcRace.ControlsEnabled = chkEdit.Checked;
+            _elcUnified.ControlsEnabled = chkEdit.Checked;
         }
     }
 }

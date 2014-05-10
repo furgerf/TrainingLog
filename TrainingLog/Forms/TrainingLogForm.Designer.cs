@@ -34,11 +34,13 @@
             this.chkBiodata = new System.Windows.Forms.CheckBox();
             this.chkTraining = new System.Windows.Forms.CheckBox();
             this.butClose = new System.Windows.Forms.Button();
+            this.chkEdit = new System.Windows.Forms.CheckBox();
             this.grpMain.SuspendLayout();
             this.SuspendLayout();
             // 
             // grpMain
             // 
+            this.grpMain.Controls.Add(this.chkEdit);
             this.grpMain.Controls.Add(this.chkUnified);
             this.grpMain.Controls.Add(this.chkRace);
             this.grpMain.Controls.Add(this.chkBiodata);
@@ -53,7 +55,7 @@
             // chkUnified
             // 
             this.chkUnified.AutoSize = true;
-            this.chkUnified.Location = new System.Drawing.Point(136, 42);
+            this.chkUnified.Location = new System.Drawing.Point(136, 19);
             this.chkUnified.Name = "chkUnified";
             this.chkUnified.Size = new System.Drawing.Size(129, 17);
             this.chkUnified.TabIndex = 3;
@@ -108,6 +110,17 @@
             this.butClose.UseVisualStyleBackColor = true;
             this.butClose.Click += new System.EventHandler(this.ButCloseClick);
             // 
+            // chkEdit
+            // 
+            this.chkEdit.AutoSize = true;
+            this.chkEdit.Location = new System.Drawing.Point(136, 65);
+            this.chkEdit.Name = "chkEdit";
+            this.chkEdit.Size = new System.Drawing.Size(78, 17);
+            this.chkEdit.TabIndex = 4;
+            this.chkEdit.Text = "Edit entries";
+            this.chkEdit.UseVisualStyleBackColor = true;
+            this.chkEdit.CheckedChanged += new System.EventHandler(this.ChkEditCheckedChanged);
+            // 
             // TrainingLogForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -136,5 +149,6 @@
         private System.Windows.Forms.CheckBox chkBiodata;
         private System.Windows.Forms.CheckBox chkTraining;
         private System.Windows.Forms.Button butClose;
+        private System.Windows.Forms.CheckBox chkEdit;
     }
 }

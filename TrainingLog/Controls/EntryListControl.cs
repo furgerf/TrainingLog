@@ -49,6 +49,20 @@ namespace TrainingLog.Controls
             grpFilter.Visible = _filterVisible; EntryListControlSizeChanged(null, null);
         } }
 
+        public bool ControlsEnabled
+        {
+            get { return _controlsEnabled; }
+            set
+            {
+                if (value == _controlsEnabled) return;
+                _controlsEnabled = value;
+                foreach (
+                    var subItem in
+                        from GLItem item in gliEntries.Items from GLSubItem subItem in item.SubItems select subItem)
+                    subItem.Control.Enabled = _controlsEnabled;
+            }
+        }
+
         #endregion
 
         #region Private Fields
@@ -58,6 +72,8 @@ namespace TrainingLog.Controls
         private int RowHeight { get { return gliEntries.ItemHeight; } }
         
         private bool _filterVisible = true;
+
+        private bool _controlsEnabled;
 
         private EntryListColumn[] _columns;
 
@@ -171,6 +187,7 @@ namespace TrainingLog.Controls
                 gli.SubItems[i].Text = _comparableStrings[data[i].GetType()](data[i]);
                 gli.SubItems[i].Control = data[i];
                 gli.SubItems[i].Control.Height = RowHeight;
+                gli.SubItems[i].Control.Enabled = _controlsEnabled;
                 //gli.SubItems[i].Control.BackColor = gliEntries.Count % 2 == 1 ? Color.White : Color.LightGray;
                 gli.SubItems[i].Control.TextChanged += ItemTextChanged;
             }
