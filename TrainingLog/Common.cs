@@ -1,3 +1,7 @@
+
+using System.Drawing;
+using TrainingLog.Properties;
+
 namespace TrainingLog
 {
     public class Common
@@ -41,6 +45,20 @@ namespace TrainingLog
         public const double SignificancePercentage = 0.05;
 
         public const string DataFilePath = "training.log";
+
+        public static readonly Icon IconDelete;
+
+        public static readonly Icon IconSave;
+
+        #endregion
+
+        #region Static Constructor
+
+        static Common()
+        {
+            IconDelete = (Icon)Resources.ResourceManager.GetObject("delete");
+            IconSave = (Icon)Resources.ResourceManager.GetObject("save");
+        }
 
         #endregion
     }
