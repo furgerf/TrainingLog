@@ -104,7 +104,11 @@ namespace TrainingLog.Forms
                     else
                         comFeeling.Items.Add(i);
                 comFeeling.Text = entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof (Common.Index), entry.Feeling);
-                comFeeling.SelectedIndexChanged += (s, e) => comFeeling.BackColor = GetColor((double) comFeeling.SelectedIndex/(comFeeling.Items.Count - 1), Color.Red, Color.Yellow, Color.Green);
+                comFeeling.SelectedIndexChanged += (s, e) =>
+                {
+                    comFeeling.BackColor = GetColor((double)comFeeling.SelectedIndex / (comFeeling.Items.Count - 1), Color.Red, Color.Yellow, Color.Green);
+                    comFeeling.Text = comFeeling.SelectedText;
+                };
 
                 var comSport = new ComboBox {FlatStyle = FlatStyle.Flat, DropDownStyle = ComboBoxStyle.DropDownList};
                 Type type = null;
@@ -131,6 +135,7 @@ namespace TrainingLog.Forms
                             comSport.Items.Add(Enum.GetName(typeof (Common.Sport), entry.Sport) + " (" + t + ')');
                 }
                 comSport.Text = entry.Sport + (entry.HasTrainingType ? "" : " (" + entry.TrainingType + ")");
+                comSport.SelectedIndexChanged += (s, e) => comSport.Text = comSport.SelectedText;
 
                 if (!_elcTraining.AddEntry(new Control[]{
                 new ColorDatePicker{ Value = entry.DateTime, Format = DateTimePickerFormat.Short },
@@ -158,7 +163,11 @@ namespace TrainingLog.Forms
                     else
                         comFeeling.Items.Add(i);
                 comFeeling.Text = entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof(Common.Index), entry.Feeling);
-                comFeeling.SelectedIndexChanged += (s, e) => comFeeling.BackColor = GetColor((double)comFeeling.SelectedIndex / (comFeeling.Items.Count - 1), Color.Red, Color.Yellow, Color.Green);
+                comFeeling.SelectedIndexChanged += (s, e) =>
+                                                       {
+                                                           comFeeling.BackColor = GetColor((double)comFeeling.SelectedIndex / (comFeeling.Items.Count - 1), Color.Red, Color.Yellow, Color.Green);
+                                                           comFeeling.Text = comFeeling.SelectedText;
+                                                       };
 
                 var txtSleep = new TextBox
                                    {
@@ -325,16 +334,16 @@ namespace TrainingLog.Forms
 
         private void ChkEditCheckedChanged(object sender, EventArgs e)
         {
-            if (chkEdit.Checked)
-            {
-                if (
-                    MessageBox.Show("Are you sure you want to edit the data?", "Enable editing", MessageBoxButtons.YesNo,
-                                    MessageBoxIcon.Question) == DialogResult.No)
-                {
-                    chkEdit.Checked = false;
-                    return;
-                }
-            }
+            //if (chkEdit.Checked)
+            //{
+            //    if (
+            //        MessageBox.Show("Are you sure you want to edit the data?", "Enable editing", MessageBoxButtons.YesNo,
+            //                        MessageBoxIcon.Question) == DialogResult.No)
+            //    {
+            //        chkEdit.Checked = false;
+            //        return;
+            //    }
+            //}
 
             _elcTraining.ControlsEnabled = chkEdit.Checked;
             _elcBiodata.ControlsEnabled = chkEdit.Checked;

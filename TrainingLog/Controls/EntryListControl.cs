@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using GlacialComponents.Controls;
 using TrainingLog.Forms;
+using TrainingLog.Properties;
 
 namespace TrainingLog.Controls
 {
@@ -44,10 +45,13 @@ namespace TrainingLog.Controls
         {
             get { return _filterVisible; }
             set
-        {
-            if (_filterVisible == value) return; _filterVisible = value;
-            grpFilter.Visible = _filterVisible; EntryListControlSizeChanged(null, null);
-        } }
+            {
+                if (_filterVisible == value) return;
+                _filterVisible = value;
+                grpFilter.Visible = _filterVisible;
+                EntryListControlSizeChanged(null, null);
+            }
+        }
 
         public bool ControlsEnabled
         {
@@ -82,6 +86,8 @@ namespace TrainingLog.Controls
         private delegate string GetComparableString(Control c);
 
         private readonly Dictionary<Type, GetComparableString> _comparableStrings = new Dictionary<Type, GetComparableString>();
+
+        private readonly Dictionary<Control, GLSubItem> _controlToSubitem = new Dictionary<Control, GLSubItem>(); 
 
         #endregion
 
@@ -188,8 +194,19 @@ namespace TrainingLog.Controls
                 gli.SubItems[i].Control = data[i];
                 gli.SubItems[i].Control.Height = RowHeight;
                 gli.SubItems[i].Control.Enabled = _controlsEnabled;
-                //gli.SubItems[i].Control.BackColor = gliEntries.Count % 2 == 1 ? Color.White : Color.LightGray;
-                gli.SubItems[i].Control.TextChanged += ItemTextChanged;
+                var i1 = i;
+                gli.SubItems[i].Control.TextChanged += (s, e) =>
+                                                           {
+                                                               // set text
+                                                               gli.SubItems[i1].Text = _comparableStrings[gli.SubItems[i1].Control.GetType()](gli.SubItems[i1].Control);
+                                                               // ensure edited column is sorted but don't change sort direction
+                                                               gliEntries.SortColumn(i1);
+                                                               gliEntries.SortColumn(i1);
+                                                               // set proper color of sorted columns
+                                                               SetBackColor();
+                                                           };
+
+                _controlToSubitem.Add(data[i], gli.SubItems[i]);
             }
 
             return true;
@@ -227,13 +244,6 @@ namespace TrainingLog.Controls
         #endregion
 
         #region Event Handling
-
-        private void ItemTextChanged(object sender, EventArgs args)
-        {
-            // irgendwie so:
-            //gli.SubItems[i].Text = _comparableStrings[data[i].GetType()](data[i]);
-             
-        }
 
         private void EntryListControlSizeChanged(object sender, EventArgs e)
         {
