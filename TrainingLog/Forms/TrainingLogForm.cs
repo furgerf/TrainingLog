@@ -166,8 +166,18 @@ namespace TrainingLog.Forms
                                        BorderStyle = BorderStyle.None,
                                        TextAlign = HorizontalAlignment.Center,
                                        BackColor = Color.Purple,
-                                       //Multiline = true 
                                    };
+                // "disable" manual entry
+                txtSleep.KeyDown += (s, e) =>
+                                        {
+                                            e.Handled = true;
+                                        };
+                // show entry form on double click
+                txtSleep.DoubleClick += (s, e) =>
+                                            {
+                                                var txt = ((TextBox) s).Text;
+                                                new SleepForm{ Duration = TimeSpan.Parse(txt.Substring(0, txt.IndexOf('('))), Quality = (Common.Index)Enum.Parse(typeof(Common.Index), txt.Substring(txt.IndexOf('(') + 1, txt.IndexOf(')') - txt.IndexOf('(') - 1)), OriginalText = (TextBox)s }.Show();
+                                            };
 
                 foreach (var s in Enum.GetNames(typeof (Common.Index)))
                 {
@@ -196,7 +206,7 @@ namespace TrainingLog.Forms
             _elcBiodata.SortByDate();
         }
 
-        private static Color GetColor(double percentage, Color from, Color middle, Color to)
+        public static Color GetColor(double percentage, Color from, Color middle, Color to)
         {
             return percentage < 0.5 ? GetColor(2*percentage, from, middle) : GetColor(2*(percentage - 0.5), middle, to);
         }
