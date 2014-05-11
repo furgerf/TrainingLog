@@ -176,7 +176,7 @@ namespace TrainingLog.Controls
 
         public void SortByDate()
         {
-            gliEntries.SortColumn(0);
+            gliEntries.SortColumn(2);
             SetBackColor();
         }
 

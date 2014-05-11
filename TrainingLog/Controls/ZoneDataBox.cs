@@ -15,6 +15,8 @@ namespace TrainingLog.Controls
 
         public ZoneData ZoneData { get; set; }
 
+        public string OverlayText { get { return labText.Text; } set { labText.Text = value; } }
+
         #endregion
 
         #region Private Fields
@@ -65,6 +67,11 @@ namespace TrainingLog.Controls
                     x += curWidth;
                 }
             }
+        }
+
+        private void ZoneDataBoxSizeChanged(object sender, System.EventArgs e)
+        {
+            labText.Location = new Point((Width - labText.Width) / 2, (Height - labText.Height) / 2);
         }
 
         #endregion
