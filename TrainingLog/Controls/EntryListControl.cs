@@ -5,7 +5,6 @@ using System.Linq;
 using System.Windows.Forms;
 using GlacialComponents.Controls;
 using TrainingLog.Forms;
-using TrainingLog.Properties;
 
 namespace TrainingLog.Controls
 {
@@ -32,6 +31,9 @@ namespace TrainingLog.Controls
                 _columns = value;
 
                 gliEntries.Columns.Clear();
+
+                gliEntries.Columns.Add(_glcSave);
+                gliEntries.Columns.Add(_glcDelete);
 
                 for (var i = 0; i < _columns.Length; i++)
                 {
@@ -71,6 +73,10 @@ namespace TrainingLog.Controls
 
         #region Private Fields
 
+        private readonly GLColumn _glcSave;
+
+        private readonly GLColumn _glcDelete;
+
         private const int IntMaxDigits = 10;
 
         private int RowHeight { get { return gliEntries.ItemHeight; } }
@@ -87,8 +93,6 @@ namespace TrainingLog.Controls
 
         private readonly Dictionary<Type, GetComparableString> _comparableStrings = new Dictionary<Type, GetComparableString>();
 
-        private readonly Dictionary<Control, GLSubItem> _controlToSubitem = new Dictionary<Control, GLSubItem>(); 
-
         #endregion
 
         #region Constructor
@@ -96,6 +100,9 @@ namespace TrainingLog.Controls
         public EntryListControl()
         {
             InitializeComponent();
+
+            _glcSave = new GLColumn { Text = "", Width = 23 };
+            _glcDelete = new GLColumn { Text = "", Width = 23 };
 
             gliEntries.SortType = SortTypes.QuickSort;
 
@@ -173,7 +180,6 @@ namespace TrainingLog.Controls
             SetBackColor();
         }
 
-
         public void ClearEntries()
         {
             gliEntries.Items.Clear();
@@ -181,34 +187,36 @@ namespace TrainingLog.Controls
 
         public bool AddEntry(Control[] data)
         {
-            if (data.Length != gliEntries.Columns.Count)
+            if (data.Length != gliEntries.Columns.Count - 2)
                 return false;
 
-            var gli = gliEntries.Items.Add(data[0].Text);
-            
+            //var gli = gliEntries.Items.Add(data[0].Text);
+            var gli = gliEntries.Items.Add("foo");
+
             gli.BackColor = gliEntries.Count % 2 == 1 ? Color.White : Color.LightGray;
+
+            // save/delete
+            gli.SubItems[0].Control = new Button { Image = Common.IconSave.ToBitmap(), ImageAlign = ContentAlignment.MiddleCenter, FlatStyle = FlatStyle.Flat };
+            gli.SubItems[1].Control = new Button { Image = Common.IconDelete.ToBitmap(), ImageAlign = ContentAlignment.MiddleCenter, FlatStyle = FlatStyle.Flat };
 
             for (var i = 0; i < data.Length; i++)
             {
-                gli.SubItems[i].Text = _comparableStrings[data[i].GetType()](data[i]);
-                gli.SubItems[i].Control = data[i];
-                gli.SubItems[i].Control.Height = RowHeight;
-                gli.SubItems[i].Control.Enabled = _controlsEnabled;
+                gli.SubItems[i+2].Text = _comparableStrings[data[i].GetType()](data[i]);
+                gli.SubItems[i+2].Control = data[i];
+                gli.SubItems[i+2].Control.Height = RowHeight;
+                gli.SubItems[i+2].Control.Enabled = _controlsEnabled;
                 var i1 = i;
-                gli.SubItems[i].Control.TextChanged += (s, e) =>
+                gli.SubItems[i+2].Control.TextChanged += (s, e) =>
                                                            {
                                                                // set text
-                                                               gli.SubItems[i1].Text = _comparableStrings[gli.SubItems[i1].Control.GetType()](gli.SubItems[i1].Control);
+                                                               gli.SubItems[i1 + 2].Text = _comparableStrings[gli.SubItems[i1 + 2].Control.GetType()](gli.SubItems[i1 + 2].Control);
                                                                // ensure edited column is sorted but don't change sort direction
-                                                               gliEntries.SortColumn(i1);
-                                                               gliEntries.SortColumn(i1);
+                                                               gliEntries.SortColumn(i1 + 2);
+                                                               gliEntries.SortColumn(i1 + 2);
                                                                // set proper color of sorted columns
                                                                SetBackColor();
                                                            };
-
-                _controlToSubitem.Add(data[i], gli.SubItems[i]);
             }
-
             return true;
         }
 
@@ -261,20 +269,10 @@ namespace TrainingLog.Controls
             for (var i = 0; i < _columns.Length; i++)
                 _columns[i].Width = (int)(factor * _columns[i].Width);
 
-            for (var i = 0; i < gliEntries.Columns.Count - 1; i++)
-                gliEntries.Columns[i].Width = _columns[i].Width;
+            for (var i = 2; i < gliEntries.Columns.Count - 1; i++)
+                gliEntries.Columns[i].Width = _columns[i-2].Width;
 
-            gliEntries.Columns[gliEntries.Columns.Count - 1].Width = Width - _columns.Sum(w => w.Width) + _columns[_columns.Length - 1].Width - 24;
-        }
-
-        private void LisEntriesItemActivate(object sender, EventArgs e)
-        {
-            //gliEntries.SelectedItems[0].BeginEdit();
-        }
-
-        private void LisEntriesSelectedIndexChanged(object sender, EventArgs e)
-        {
-            //MessageBox.Show(lisEntries.SelectedItems[0].Text);
+            gliEntries.Columns[gliEntries.Columns.Count - 1].Width = Width - _columns.Sum(w => w.Width) + _columns[_columns.Length - 1].Width - _glcSave.Width - _glcDelete.Width - 24;
         }
 
         private void GliEntriesColumnClickedEvent(object source, ClickEventArgs e)

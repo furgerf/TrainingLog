@@ -12,10 +12,17 @@ namespace TrainingLog.Controls
     {
         private Color _backDisabledColor;
 
+        private Color _backColor;
+
         public ColorDatePicker()
         {
             SetStyle(ControlStyles.UserPaint, true);
             _backDisabledColor = Color.FromKnownColor(KnownColor.Control);
+            BackColorChanged += (s, e) =>
+                                    {
+                                        if (Enabled)
+                                            _backColor = ((ColorDatePicker) s).BackColor;
+                                    };
         }
 
         /// <summary>
@@ -54,12 +61,12 @@ namespace TrainingLog.Controls
             //When the control is enabled the brush is set to Backcolor, 
             //otherwise to color stored in _backDisabledColor
             if (Enabled) {
-                 bkgBrush = new SolidBrush(BackColor);
+                bkgBrush = new SolidBrush(_backColor);
                  visualState = ComboBoxState.Normal;
                 btState = ButtonState.Normal;
             }
             else {
-                bkgBrush = new SolidBrush(_backDisabledColor);
+                bkgBrush = new SolidBrush(_backColor);
                 visualState = ComboBoxState.Disabled;
                 btState = ButtonState.Inactive;
             }
