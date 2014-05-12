@@ -28,12 +28,13 @@ namespace TrainingLog.Forms
                                             "exe.result.hrAvg",
                                             "exe.result.calories",
                                             "exe.result.distance",
-                                            "exe.time_date",
+                                            "exe.time_date"
                                         };
         private readonly string[] _xmlKeys2 = new[]
                                         {
                                             "exe.result.zones",
-                                            "single_sport_name"
+                                            "single_sport_name",
+                                            "outputid=\"exe.note"
                                         };
 
         private static TrainingEntryForm _instance;
@@ -369,13 +370,21 @@ namespace TrainingLog.Forms
                 var secondQuote = s.IndexOf('\"', firstQuote + 1);
                 data[_xmlKeys1.Length + 1] = s.Substring(secondQuote + 2);
             }
-
+            
+            split = lines[lineIndices[_xmlKeys1.Length + 2]].Split('<');
+            foreach (var s in split)
+            {
+                if (!s.Contains(_xmlKeys2[2]))
+                    continue;
+                data[_xmlKeys1.Length + 2] = s.Substring(s.IndexOf('>') + 1);
+            }
             txtDuration.Text = data[0].Replace(':', '.');
             txtAvgHR.Text = data[1];
             txtCalories.Text = data[2];
             txtDistance.Text = data[3];
             datDate.Value = DateTime.Parse(data[4]);
             comSport.Text = data[_xmlKeys1.Length + 1].Equals("Other sport") ? "Other" : data[_xmlKeys1.Length + 1];
+            txtNotes.Text = data[_xmlKeys1.Length + 2];
 
             var zones = data[_xmlKeys1.Length].Split('_');
             if (zones.Length != 5)

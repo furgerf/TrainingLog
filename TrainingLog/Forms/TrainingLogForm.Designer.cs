@@ -55,6 +55,8 @@
             // chkEdit
             // 
             this.chkEdit.AutoSize = true;
+            this.chkEdit.Checked = true;
+            this.chkEdit.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkEdit.Location = new System.Drawing.Point(136, 65);
             this.chkEdit.Name = "chkEdit";
             this.chkEdit.Size = new System.Drawing.Size(78, 17);

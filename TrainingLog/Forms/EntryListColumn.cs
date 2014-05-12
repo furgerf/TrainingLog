@@ -1,17 +1,12 @@
-using System;
-
 namespace TrainingLog.Forms
 {
     public struct EntryListColumn
     {
-        public EntryListColumn(string header, Type type, int width) : this()
+        public EntryListColumn(string header, int width) : this()
         {
             Width = width;
-            Type = type;
             Header = header;
         }
-
-        public Type Type { get; private set; }
 
         public string Header { get; private set; }
 

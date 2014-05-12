@@ -11,6 +11,7 @@ namespace TrainingLog
 
         public static Model Instance { get { return _instance ?? (_instance = new Model()); } }
 
+        public Entry[] Entries { get { return _entries.ToArray(); } }
         public RaceEntry[] RaceEntries { get { return _entries.Where(e => e is RaceEntry).Cast<RaceEntry>().ToArray(); } }
         public BioDataEntry[] BioDataEntries { get { return _entries.Where(e => e is BioDataEntry).Cast<BioDataEntry>().ToArray(); } }
         public TrainingEntry[] TrainingEntries { get { return _entries.Where(e => e is TrainingEntry).Cast<TrainingEntry>().ToArray(); } }

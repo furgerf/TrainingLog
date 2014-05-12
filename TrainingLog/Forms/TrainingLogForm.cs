@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Windows.Forms;
 using TrainingLog.Controls;
 
@@ -13,15 +14,15 @@ namespace TrainingLog.Forms
         private readonly EntryListControl _elcRace;
         private readonly EntryListControl _elcUnified;
 
-        private static EntryListColumn[] MergeColumnData(IList<string> headers, Type[] types, IList<int> widths)
+        private static EntryListColumn[] MergeColumnData(IList<string> headers, IList<int> widths)
         {
-            if (headers.Count != types.Length)
+            if (headers.Count != widths.Count)
                 throw new ArgumentException();
 
 
             var result = new EntryListColumn[headers.Count];
             for (var i = 0; i < headers.Count; i++)
-                result[i] = new EntryListColumn(headers[i], types[i], widths[i]);
+                result[i] = new EntryListColumn(headers[i], widths[i]);
 
             return result;
         }
@@ -30,41 +31,25 @@ namespace TrainingLog.Forms
                            {
                                "Date", "Sport", "Duration", "Calories", "Avg. HR", "Zone Data", "Distance (km)", "Feeling", "Notes"
                            };
-        private readonly static Type[] TrainingTypes = new []
-                                                          {
-                                                              typeof(DateTimePicker), typeof(ComboBox), typeof(TimeSpanTextBox), typeof(IntegerTextBox), typeof(IntegerTextBox), typeof(TextBox), typeof(DecimalTextBox), typeof(TextBox), typeof(TextBox)
-                                                          };
         private static readonly int[] TrainingWidths = new[] { 75, 110, 55, 50, 50, 100, 80, 70, 150 };
 
         private readonly static string[] BiodataHeader = new[]
                            {
                                "Date", "Sleep", "Rest HR", "OwnIndex", "Weight", "Feeling", "Nibbles", "Notes"
                            };
-        private readonly static Type[] BiodataTypes = new[]
-                                                          {
-                                                              typeof(DateTimePicker), typeof(TextBox), typeof(IntegerTextBox), typeof(IntegerTextBox), typeof(DecimalTextBox), typeof(ComboBox), typeof(TextBox), typeof(TextBox)
-                                                          };
-        private static readonly int[] BiodataWidths = new[] { 75, 50, 60, 60, 45, 70, 110, 150 };
+        private static readonly int[] BiodataWidths = new[] { 75, 100, 60, 60, 45, 70, 110, 150 };
         
         private readonly static string[] RaceHeader = new[]
                            {
                                "Date"
                            };
-        private readonly static Type[] RaceTypes = new[]
-                                                          {
-                                                              typeof(DateTimePicker)
-                                                          };
         private static readonly int[] RaceWidths = new[] { 1 };
         
         private readonly static string[] UnifiedHeader = new[]
                            {
-                               "Date"
+                               "Date", "Description", "Feeling", "Heart Rate", "Distance/Weight", "Calories", "Notes"
                            };
-        private readonly static Type[] UnifiedTypes = new[]
-                                                          {
-                                                              typeof(DateTimePicker)
-                                                          };
-        private static readonly int[] UnifiedWidths = new[] { 1 };
+        private static readonly int[] UnifiedWidths = new[] { 75, 140, 50, 120, 95, 50, 150 };
 
         private Size ScreenSize
         {
@@ -86,132 +71,14 @@ namespace TrainingLog.Forms
         {
             InitializeComponent();
 
-            _elcTraining = new EntryListControl { EntryName = "Training", Columns = MergeColumnData(TrainingHeaders, TrainingTypes, TrainingWidths), ControlsEnabled = chkEdit.Checked };
-            _elcBiodata = new EntryListControl { EntryName = "Bio Data", Columns = MergeColumnData(BiodataHeader, BiodataTypes, BiodataWidths), FilterVisible = false, ControlsEnabled = chkEdit.Checked };
-            _elcRace = new EntryListControl { EntryName = "Race", Columns = MergeColumnData(RaceHeader, RaceTypes, RaceWidths), ControlsEnabled = chkEdit.Checked };
-            _elcUnified = new EntryListControl { EntryName = "All", Columns = MergeColumnData(UnifiedHeader, UnifiedTypes, UnifiedWidths), ControlsEnabled = chkEdit.Checked };
+            _elcTraining = new EntryListControl { EntryName = "Training", Columns = MergeColumnData(TrainingHeaders, TrainingWidths), ControlsEnabled = chkEdit.Checked };
+            _elcBiodata = new EntryListControl { EntryName = "Bio Data", Columns = MergeColumnData(BiodataHeader, BiodataWidths), FilterVisible = false, ControlsEnabled = chkEdit.Checked };
+            _elcRace = new EntryListControl { EntryName = "Race", Columns = MergeColumnData(RaceHeader, RaceWidths), ControlsEnabled = chkEdit.Checked };
+            _elcUnified = new EntryListControl { EntryName = "All", Columns = MergeColumnData(UnifiedHeader, UnifiedWidths), ControlsEnabled = chkEdit.Checked };
 
             //WindowState = FormWindowState.Normal;
 
             Controls.AddRange(new Control[]{ _elcTraining, _elcBiodata, _elcRace, _elcUnified });
-
-            foreach (var entry in Model.Instance.TrainingEntries)
-            {
-                var comFeeling = new ComboBox { FlatStyle = FlatStyle.Flat, DropDownStyle = ComboBoxStyle.DropDownList };
-                foreach (var i in Enum.GetNames(typeof(Common.Index)))
-                    if (i.Equals("Count"))
-                        break;
-                    else
-                        comFeeling.Items.Add(i);
-                comFeeling.Text = entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof (Common.Index), entry.Feeling);
-                comFeeling.SelectedIndexChanged += (s, e) =>
-                {
-                    comFeeling.BackColor = GetColor((double)comFeeling.SelectedIndex / (comFeeling.Items.Count - 1), Color.Red, Color.Yellow, Color.Green);
-                    comFeeling.Text = comFeeling.SelectedText;
-                };
-
-                var comSport = new ComboBox {FlatStyle = FlatStyle.Flat, DropDownStyle = ComboBoxStyle.DropDownList};
-                Type type = null;
-                switch (entry.Sport)
-                {
-                    case Common.Sport.Running:
-                    case Common.Sport.Cycling:
-                        type = typeof(Common.EnduranceType);
-                        break;
-                    case Common.Sport.Squash:
-                        type = typeof(Common.SquashType);
-                        break;
-                    case Common.Sport.Other:
-                        comSport.Items.Add(Enum.GetName(typeof (Common.Sport), Common.Sport.Other));
-                        break;
-                }
-
-                if (type != null)
-                {
-                    foreach (var t in Enum.GetNames(type))
-                        if (t.Equals("Count"))
-                            break;
-                        else
-                            comSport.Items.Add(Enum.GetName(typeof (Common.Sport), entry.Sport) + " (" + t + ')');
-                }
-                comSport.Text = entry.Sport + (entry.HasTrainingType ? "" : " (" + entry.TrainingType + ")");
-                comSport.SelectedIndexChanged += (s, e) => comSport.Text = comSport.SelectedText;
-
-                if (!_elcTraining.AddEntry(new Control[]{
-                new ColorDatePicker{ Value = entry.DateTime, Format = DateTimePickerFormat.Short },
-                comSport,
-                new TimeSpanTextBox{ Text = entry.Duration.ToString().Replace(':', '.'), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
-                new IntegerTextBox{ Text = entry.Calories == 0 ? "" : entry.Calories.ToString(), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
-                new IntegerTextBox{ Text = entry.AverageHr == 0 ? "" : entry.AverageHr.ToString(), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
-                new ZoneDataBox { ZoneData = entry.ZoneData },
-                new DecimalTextBox{ Text = entry.DistanceKm > 0 ? entry.DistanceKm.ToString() : "", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
-                comFeeling,
-                new TextBox{ Text = entry.Note, BorderStyle = BorderStyle.None }}))
-                    MessageBox.Show("Problem adding entry " + entry, "Problem adding entry", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                comFeeling.BackColor = entry.Feeling < Common.Index.Count ? GetColor((double)entry.Feeling/((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) : comFeeling.BackColor;
-            }
-            _elcTraining.SortByDate();
-
-            foreach (var entry in Model.Instance.BioDataEntries)
-            {
-                var comFeeling = new ComboBox { FlatStyle = FlatStyle.Flat, DropDownStyle = ComboBoxStyle.DropDownList };
-                foreach (var i in Enum.GetNames(typeof(Common.Index)))
-                    if (i.Equals("Count"))
-                        break;
-                    else
-                        comFeeling.Items.Add(i);
-                comFeeling.Text = entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof(Common.Index), entry.Feeling);
-                comFeeling.SelectedIndexChanged += (s, e) =>
-                                                       {
-                                                           comFeeling.BackColor = GetColor((double)comFeeling.SelectedIndex / (comFeeling.Items.Count - 1), Color.Red, Color.Yellow, Color.Green);
-                                                           comFeeling.Text = comFeeling.SelectedText;
-                                                       };
-
-                var txtSleep = new TextBox
-                                   {
-                                       Text = entry.SleepDuration.ToString() + " (" + entry.SleepQuality + ")",
-                                       BorderStyle = BorderStyle.None,
-                                       TextAlign = HorizontalAlignment.Center,
-                                       BackColor = Color.Purple,
-                                   };
-                // "disable" manual entry
-                txtSleep.KeyDown += (s, e) =>
-                                        {
-                                            e.Handled = true;
-                                        };
-                // show entry form on double click
-                txtSleep.DoubleClick += (s, e) =>
-                                            {
-                                                var txt = ((TextBox) s).Text;
-                                                new SleepForm{ Duration = TimeSpan.Parse(txt.Substring(0, txt.IndexOf('('))), Quality = (Common.Index)Enum.Parse(typeof(Common.Index), txt.Substring(txt.IndexOf('(') + 1, txt.IndexOf(')') - txt.IndexOf('(') - 1)), OriginalText = (TextBox)s }.Show();
-                                            };
-
-                foreach (var s in Enum.GetNames(typeof (Common.Index)))
-                {
-                    if (
-                        txtSleep.Text.Substring(txtSleep.Text.IndexOf('(') + 1,
-                                                txtSleep.Text.IndexOf(')') - txtSleep.Text.IndexOf('(') - 1).Equals(s))
-                    {
-                        txtSleep.BackColor = GetColor(((double)(int) Enum.Parse(typeof (Common.Index), s)/((int) Common.Index.Count - 1)), Color.Red, Color.Yellow, Color.Green);
-                        break;
-                    }
-                }
-
-                if (!_elcBiodata.AddEntry(new Control[]{
-                new ColorDatePicker{ Value = entry.DateTime, Format = DateTimePickerFormat.Short },
-                txtSleep,
-                new IntegerTextBox{ Text = entry.RestingHeartRate == 0 ? "" : entry.RestingHeartRate.ToString(), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
-                new IntegerTextBox{ Text = entry.OwnIndex == 0 ? "" : entry.OwnIndex.ToString(), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
-                new DecimalTextBox { Text = entry.Weight.ToString(), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
-                comFeeling,
-                new TextBox{ Text = entry.Nibbles, BorderStyle = BorderStyle.None  },
-                new TextBox{ Text = entry.Note, BorderStyle = BorderStyle.None }}))
-                    MessageBox.Show("Problem adding entry " + entry, "Problem adding entry", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                comFeeling.BackColor = entry.Feeling < Common.Index.Count ? GetColor((double)entry.Feeling / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) : comFeeling.BackColor;
-            }
-            _elcBiodata.SortByDate();
         }
 
         public static Color GetColor(double percentage, Color from, Color middle, Color to)
@@ -252,6 +119,9 @@ namespace TrainingLog.Forms
                 _elcRace.Visible = false;
 
                 PlaceOneEntryList(_elcUnified);
+
+                AddUnifiedEntries();
+
                 return;
             }
 
@@ -259,7 +129,6 @@ namespace TrainingLog.Forms
 
             var visible = new List<EntryListControl>();
             var invisible = new List<EntryListControl>();
-
 
             (chkTraining.Checked ? visible : invisible).Add(_elcTraining);
             (chkBiodata.Checked ? visible : invisible).Add(_elcBiodata);
@@ -274,18 +143,26 @@ namespace TrainingLog.Forms
             switch (visible.Count)
             {
                 case 0:
-                    return;
+                    break;
                 case 1:
                     PlaceOneEntryList(visible[0]);
-                    return;
+                    break;
                 case 2:
                     PlaceTwoEntryLists(visible[0], visible[1]);
-                    return;
+                    break;
                 case 3:
                     PlaceThreeEntryLists(visible[0], visible[1], visible[2]);
-                    return;
+                    break;
+                default:
+                    throw new Exception();
             }
-            throw new Exception();
+
+            if (chkTraining.Checked)
+                AddTrainingEntries();
+            if (chkBiodata.Checked)
+                AddBiodataEntries();
+            if (chkRace.Checked)
+                AddRaceEntries();
         }
 
         private void PlaceThreeEntryLists(Control elc1, Control elc2, Control elc3)
@@ -348,6 +225,182 @@ namespace TrainingLog.Forms
             _elcBiodata.ControlsEnabled = chkEdit.Checked;
             _elcRace.ControlsEnabled = chkEdit.Checked;
             _elcUnified.ControlsEnabled = chkEdit.Checked;
+        }
+
+        private void AddTrainingEntries()
+        {
+            _elcTraining.ClearEntries();
+            foreach (var entry in Model.Instance.TrainingEntries)
+            {
+                var comFeeling = new ComboBox { FlatStyle = FlatStyle.Flat, DropDownStyle = ComboBoxStyle.DropDownList };
+                foreach (var i in Enum.GetNames(typeof(Common.Index)))
+                    if (i.Equals("Count"))
+                        break;
+                    else
+                        comFeeling.Items.Add(i);
+                comFeeling.Text = entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof(Common.Index), entry.Feeling);
+                comFeeling.SelectedIndexChanged += (s, e) =>
+                {
+                    comFeeling.BackColor = GetColor((double)comFeeling.SelectedIndex / (comFeeling.Items.Count - 1), Color.Red, Color.Yellow, Color.Green);
+                    comFeeling.Text = comFeeling.SelectedText;
+                };
+
+                var comSport = new ComboBox { FlatStyle = FlatStyle.Flat, DropDownStyle = ComboBoxStyle.DropDownList };
+                Type type = null;
+                switch (entry.Sport)
+                {
+                    case Common.Sport.Running:
+                    case Common.Sport.Cycling:
+                        type = typeof(Common.EnduranceType);
+                        break;
+                    case Common.Sport.Squash:
+                        type = typeof(Common.SquashType);
+                        break;
+                    case Common.Sport.Other:
+                        comSport.Items.Add(Enum.GetName(typeof(Common.Sport), Common.Sport.Other));
+                        break;
+                }
+
+                if (type != null)
+                {
+                    foreach (var t in Enum.GetNames(type))
+                        if (t.Equals("Count"))
+                            break;
+                        else
+                            comSport.Items.Add(Enum.GetName(typeof(Common.Sport), entry.Sport) + " (" + t + ')');
+                }
+                comSport.Text = entry.Sport + (entry.HasTrainingType ? "" : " (" + entry.TrainingType + ")");
+                comSport.SelectedIndexChanged += (s, e) => comSport.Text = comSport.SelectedText;
+
+                if (!_elcTraining.AddEntry(new Control[]{
+                new ColorDatePicker{ Value = entry.DateTime, Format = DateTimePickerFormat.Short },
+                comSport,
+                new TimeSpanTextBox{ Text = entry.Duration.ToString().Replace(':', '.'), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
+                new IntegerTextBox{ Text = entry.Calories == 0 ? "" : entry.Calories.ToString(CultureInfo.InvariantCulture), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
+                new IntegerTextBox{ Text = entry.AverageHr == 0 ? "" : entry.AverageHr.ToString(CultureInfo.InvariantCulture), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
+                new ZoneDataBox { ZoneData = entry.ZoneData },
+                new DecimalTextBox{ Text = entry.DistanceKm > 0 ? entry.DistanceKm.ToString(CultureInfo.InvariantCulture) : "", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
+                comFeeling,
+                new TextBox{ Text = entry.Note, BorderStyle = BorderStyle.None }}))
+                    MessageBox.Show("Problem adding entry " + entry, "Problem adding entry", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                comFeeling.BackColor = entry.Feeling < Common.Index.Count ? GetColor((double)entry.Feeling / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) : comFeeling.BackColor;
+            }
+            _elcTraining.SortByDate();
+        }
+
+        private void AddBiodataEntries()
+        {
+            _elcBiodata.ClearEntries();
+            foreach (var entry in Model.Instance.BioDataEntries)
+            {
+                var comFeeling = new ComboBox { FlatStyle = FlatStyle.Flat, DropDownStyle = ComboBoxStyle.DropDownList };
+                foreach (var i in Enum.GetNames(typeof(Common.Index)))
+                    if (i.Equals("Count"))
+                        break;
+                    else
+                        comFeeling.Items.Add(i);
+                comFeeling.Text = entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof(Common.Index), entry.Feeling);
+                comFeeling.SelectedIndexChanged += (s, e) =>
+                {
+                    comFeeling.BackColor = GetColor((double)comFeeling.SelectedIndex / (comFeeling.Items.Count - 1), Color.Red, Color.Yellow, Color.Green);
+                    comFeeling.Text = comFeeling.SelectedText;
+                };
+
+                var txtSleep = new TextBox
+                {
+                    Text = entry.SleepDuration.ToString() + " (" + entry.SleepQuality + ")",
+                    BorderStyle = BorderStyle.None,
+                    TextAlign = HorizontalAlignment.Center,
+                    BackColor = Color.Purple,
+                };
+                // "disable" manual entry
+                txtSleep.KeyDown += (s, e) =>
+                {
+                    e.Handled = true;
+                };
+                // show entry form on double click
+                txtSleep.DoubleClick += (s, e) =>
+                {
+                    var txt = ((TextBox)s).Text;
+                    new SleepForm { Duration = TimeSpan.Parse(txt.Substring(0, txt.IndexOf('('))), Quality = (Common.Index)Enum.Parse(typeof(Common.Index), txt.Substring(txt.IndexOf('(') + 1, txt.IndexOf(')') - txt.IndexOf('(') - 1)), OriginalText = (TextBox)s }.Show();
+                };
+
+                foreach (var s in Enum.GetNames(typeof(Common.Index)))
+                {
+                    if (
+                        txtSleep.Text.Substring(txtSleep.Text.IndexOf('(') + 1,
+                                                txtSleep.Text.IndexOf(')') - txtSleep.Text.IndexOf('(') - 1).Equals(s))
+                    {
+                        txtSleep.BackColor = GetColor(((double)(int)Enum.Parse(typeof(Common.Index), s) / ((int)Common.Index.Count - 1)), Color.Red, Color.Yellow, Color.Green);
+                        break;
+                    }
+                }
+
+                if (!_elcBiodata.AddEntry(new Control[]{
+                new ColorDatePicker{ Value = entry.DateTime, Format = DateTimePickerFormat.Short },
+                txtSleep,
+                new IntegerTextBox{ Text = entry.RestingHeartRate == 0 ? "" : entry.RestingHeartRate.ToString(CultureInfo.InvariantCulture), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
+                new IntegerTextBox{ Text = entry.OwnIndex == 0 ? "" : entry.OwnIndex.ToString(CultureInfo.InvariantCulture), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
+                new DecimalTextBox { Text = entry.Weight > 0 ? entry.Weight.ToString(CultureInfo.InvariantCulture) : "", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
+                comFeeling,
+                new TextBox{ Text = entry.Nibbles, BorderStyle = BorderStyle.None  },
+                new TextBox{ Text = entry.Note, BorderStyle = BorderStyle.None }}))
+                    MessageBox.Show("Problem adding entry " + entry, "Problem adding entry", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                comFeeling.BackColor = entry.Feeling < Common.Index.Count ? GetColor((double)entry.Feeling / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) : comFeeling.BackColor;
+            }
+            _elcBiodata.SortByDate();
+        }
+
+        private void AddUnifiedEntries()
+        {
+            _elcUnified.ClearEntries();
+            foreach (var entry in Model.Instance.Entries)
+            {
+                if (entry is TrainingEntry)
+                {
+                    var training = entry as TrainingEntry;
+
+                    if (!_elcUnified.AddEntry(new Control[]{
+                    new ColorDatePicker{ Value = entry.DateTime, Format = DateTimePickerFormat.Short },
+                    new TextBox{ Text = training.Sport + (training.HasTrainingType ? "" : " (" + training.TrainingType + ") - " + training.Duration), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
+                    new TextBox{ Text = entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof(Common.Index), entry.Feeling), BackColor = entry.Feeling < Common.Index.Count ? GetColor((double)entry.Feeling / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) : BackColor, TextAlign = HorizontalAlignment.Center, BorderStyle = BorderStyle.None },
+                    new ZoneDataBox { ZoneData = training.ZoneData, OverlayText = training.AverageHr > 0 ? training.AverageHr.ToString(CultureInfo.InvariantCulture) : "", Font = new Font(FontFamily.GenericSansSerif, 12, FontStyle.Bold)},
+                    new TextBox{ Text = training.DistanceKm > 0 ? training.DistanceKm.ToString(CultureInfo.InvariantCulture) + " km" : "", BorderStyle =  BorderStyle.None, TextAlign = HorizontalAlignment.Center },
+                    new TextBox{ Text = training.Calories > 0 ? training.Calories.ToString(CultureInfo.InvariantCulture) + " kcal" : "", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
+                    new TextBox{ Text = entry.Note, BorderStyle = BorderStyle.None }}))
+                        MessageBox.Show("Problem adding entry " + entry, "Problem adding entry", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else if (entry is BioDataEntry)
+                {
+                    var biodata = entry as BioDataEntry;
+                    var hr = biodata.RestingHeartRate != 0 ? "Rest: " + biodata.RestingHeartRate : "";
+                    if (biodata.OwnIndex != 0)
+                        if (hr.Length == 0)
+                            hr = "OwnIndex " + biodata.OwnIndex;
+                        else
+                            hr += " - OwnIndex " + biodata.OwnIndex;
+
+                    if (!_elcUnified.AddEntry(new Control[]{
+                    new ColorDatePicker{ Value = entry.DateTime, Format = DateTimePickerFormat.Short },
+                    new TextBox { Text = "Sleep: " + biodata.SleepDuration + " (" + biodata.SleepQuality + ")", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center, BackColor = biodata.SleepQuality < Common.Index.Count ? GetColor((double)biodata.SleepQuality / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) : BackColor },
+                    new TextBox{ Text = entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof(Common.Index), entry.Feeling), BackColor = entry.Feeling < Common.Index.Count ? GetColor((double)entry.Feeling / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) : BackColor, TextAlign = HorizontalAlignment.Center, BorderStyle = BorderStyle.None },
+                    new TextBox{ Text = hr, BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
+                    new TextBox{ Text = biodata.Weight > 0 ? biodata.Weight.ToString(CultureInfo.InvariantCulture) + " kg" : "", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
+                    new TextBox{ BorderStyle = BorderStyle.None },
+                    new TextBox{ Text = entry.Note, BorderStyle = BorderStyle.None }}))
+                        MessageBox.Show("Problem adding entry " + entry, "Problem adding entry", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                    throw new Exception();
+            }
+            _elcUnified.SortByDate();
+        }
+
+        private void AddRaceEntries()
+        {
+            throw new NotImplementedException();
         }
     }
 }

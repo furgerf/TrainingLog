@@ -199,6 +199,11 @@ namespace TrainingLog.Controls
             gli.SubItems[0].Control = new Button { Image = Common.IconSave.ToBitmap(), ImageAlign = ContentAlignment.MiddleCenter, FlatStyle = FlatStyle.Flat };
             gli.SubItems[1].Control = new Button { Image = Common.IconDelete.ToBitmap(), ImageAlign = ContentAlignment.MiddleCenter, FlatStyle = FlatStyle.Flat };
 
+            if (data.Length == 7)
+            {
+                
+            }
+
             for (var i = 0; i < data.Length; i++)
             {
                 gli.SubItems[i+2].Text = _comparableStrings[data[i].GetType()](data[i]);
@@ -231,7 +236,7 @@ namespace TrainingLog.Controls
                     var index = txt.Contains('(') && txt.Contains(')') ? txt.Substring(txt.IndexOf('(') + 1,
                         txt.IndexOf(')') - txt.IndexOf('(') - 1) : "";
 
-                    if ((gliEntries.Items[i].SubItems[j].Control is ComboBox) &&
+                    if (//(gliEntries.Items[i].SubItems[j].Control is ComboBox) &&
                         Enum.GetNames(typeof (Common.Index)).Contains(gliEntries.Items[i].SubItems[j].Text))
                     {
                         //comfeeling
@@ -263,7 +268,7 @@ namespace TrainingLog.Controls
             grpFilter.Width = Width;
             grpEntries.Size = new Size(Width, Height - grpEntries.Location.Y);
             gliEntries.Size = new Size(Width - 4, grpEntries.Height - 14);
-
+            
             // adjust size to available width 
             var factor = Math.Floor(100 * gliEntries.Width / (double)_columns.Sum(w => w.Width)) / 100;
             for (var i = 0; i < _columns.Length; i++)
