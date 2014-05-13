@@ -71,7 +71,7 @@ namespace TrainingLog.Forms
         {
             InitializeComponent();
 
-            _elcTraining = new EntryListControl { EntryName = "Training", Columns = MergeColumnData(TrainingHeaders, TrainingWidths), ControlsEnabled = chkEdit.Checked };
+            _elcTraining = new EntryListControl { EntryName = "Training", Columns = MergeColumnData(TrainingHeaders, TrainingWidths), ControlsEnabled = chkEdit.Checked, ParseableString = GetParseableStringTraining};
             _elcBiodata = new EntryListControl { EntryName = "Bio Data", Columns = MergeColumnData(BiodataHeader, BiodataWidths), FilterVisible = false, ControlsEnabled = chkEdit.Checked };
             _elcRace = new EntryListControl { EntryName = "Race", Columns = MergeColumnData(RaceHeader, RaceWidths), ControlsEnabled = chkEdit.Checked };
             _elcUnified = new EntryListControl { EntryName = "All", Columns = MergeColumnData(UnifiedHeader, UnifiedWidths), ControlsEnabled = chkEdit.Checked };
@@ -281,7 +281,7 @@ namespace TrainingLog.Forms
                 new ZoneDataBox { ZoneData = entry.ZoneData },
                 new DecimalTextBox{ Text = entry.DistanceKm > 0 ? entry.DistanceKm.ToString(CultureInfo.InvariantCulture) : "", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                 comFeeling,
-                new TextBox{ Text = entry.Note, BorderStyle = BorderStyle.None }}))
+                new TextBox{ Text = entry.Note, BorderStyle = BorderStyle.None }}, entry))
                     MessageBox.Show("Problem adding entry " + entry, "Problem adding entry", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 comFeeling.BackColor = entry.Feeling < Common.Index.Count ? GetColor((double)entry.Feeling / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) : comFeeling.BackColor;
@@ -345,7 +345,7 @@ namespace TrainingLog.Forms
                 new DecimalTextBox { Text = entry.Weight > 0 ? entry.Weight.ToString(CultureInfo.InvariantCulture) : "", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                 comFeeling,
                 new TextBox{ Text = entry.Nibbles, BorderStyle = BorderStyle.None  },
-                new TextBox{ Text = entry.Note, BorderStyle = BorderStyle.None }}))
+                new TextBox{ Text = entry.Note, BorderStyle = BorderStyle.None }}, entry))
                     MessageBox.Show("Problem adding entry " + entry, "Problem adding entry", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 comFeeling.BackColor = entry.Feeling < Common.Index.Count ? GetColor((double)entry.Feeling / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) : comFeeling.BackColor;
@@ -369,7 +369,7 @@ namespace TrainingLog.Forms
                     new ZoneDataBox { ZoneData = training.ZoneData, OverlayText = training.AverageHr > 0 ? training.AverageHr.ToString(CultureInfo.InvariantCulture) : "", Font = new Font(FontFamily.GenericSansSerif, 12, FontStyle.Bold)},
                     new TextBox{ Text = training.DistanceKm > 0 ? training.DistanceKm.ToString(CultureInfo.InvariantCulture) + " km" : "", BorderStyle =  BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                     new TextBox{ Text = training.Calories > 0 ? training.Calories.ToString(CultureInfo.InvariantCulture) + " kcal" : "", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
-                    new TextBox{ Text = entry.Note, BorderStyle = BorderStyle.None }}))
+                    new TextBox{ Text = entry.Note, BorderStyle = BorderStyle.None }}, entry))
                         MessageBox.Show("Problem adding entry " + entry, "Problem adding entry", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else if (entry is BioDataEntry)
@@ -389,7 +389,7 @@ namespace TrainingLog.Forms
                     new TextBox{ Text = hr, BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                     new TextBox{ Text = biodata.Weight > 0 ? biodata.Weight.ToString(CultureInfo.InvariantCulture) + " kg" : "", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                     new TextBox{ BorderStyle = BorderStyle.None },
-                    new TextBox{ Text = entry.Note, BorderStyle = BorderStyle.None }}))
+                    new TextBox{ Text = entry.Note, BorderStyle = BorderStyle.None }}, entry))
                         MessageBox.Show("Problem adding entry " + entry, "Problem adding entry", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else
@@ -402,5 +402,56 @@ namespace TrainingLog.Forms
         {
             throw new NotImplementedException();
         }
+
+        private string GetParseableStringTraining(string[] data)
+        {
+            ZoneData zd;
+            if (!ZoneData.TryParse(data[5].Split('\t')[1], out zd))
+                return null;
+            Common.Sport sport;
+            object trainingType;
+
+            if (data[1].IndexOf('(') > 0)
+            {
+                sport = (Common.Sport) Enum.Parse(typeof (Common.Sport), data[1].Substring(0, data[1].IndexOf('(') - 1));
+                var type = GetType();
+                switch (sport)
+                {
+                    case Common.Sport.Running:
+                    case Common.Sport.Cycling:
+                        type = typeof(Common.EnduranceType);
+                        break;
+                    case Common.Sport.Squash:
+                        type = typeof(Common.SquashType);
+                        break;
+                }
+
+                trainingType = (Common.TrainingType)Enum.Parse(type, data[1].Substring(data[1].IndexOf('(') + 1, data[1].IndexOf(')') - data[1].IndexOf('(') - 1));
+
+                if (type == typeof (Common.EnduranceType))
+                    trainingType = (Common.EnduranceType) trainingType;
+                if (type == typeof (Common.SquashType))
+                    trainingType = (Common.SquashType) trainingType;
+            } else
+            {
+                sport = (Common.Sport) Enum.Parse(typeof (Common.Sport), data[1]);
+                trainingType = Common.TrainingType.None;
+            }
+
+            var entry = new TrainingEntry(TimeSpan.Parse(data[2].Replace('.', ':')))
+                            {
+                                AverageHr = int.Parse(data[4]),
+                                Calories = int.Parse(data[3]),
+                                DateTime = DateTime.ParseExact(data[0], "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None),
+                                DistanceKm = double.Parse(data[6]),
+                                Feeling = (Common.Index) Enum.Parse(typeof (Common.Index), data[7]),
+                                Note = data[8],
+                                ZoneData = zd,
+                                Sport = sport,
+                                TrainingType = (Enum)trainingType
+                            };
+            return entry.LogString;
+        }
+
     }
 }

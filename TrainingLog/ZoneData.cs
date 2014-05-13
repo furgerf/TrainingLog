@@ -1,8 +1,10 @@
 using System;
+using System.Runtime.Serialization;
 
 namespace TrainingLog
 {
-    public struct ZoneData
+    [Serializable]
+    public struct ZoneData : ISerializable
     {
         #region Public Fields
 
@@ -40,9 +42,30 @@ namespace TrainingLog
             _zones = new[] {zone1, zone2, zone3, zone4, zone5};
         }
 
+        public ZoneData(SerializationInfo info, StreamingContext ctxt)
+        {
+            _zones = new[]
+                         {
+                             TimeSpan.Parse(info.GetValue("zone1", typeof (TimeSpan)).ToString()),
+                             TimeSpan.Parse(info.GetValue("zone2", typeof (TimeSpan)).ToString()),
+                             TimeSpan.Parse(info.GetValue("zone3", typeof (TimeSpan)).ToString()),
+                             TimeSpan.Parse(info.GetValue("zone4", typeof (TimeSpan)).ToString()),
+                             TimeSpan.Parse(info.GetValue("zone5", typeof (TimeSpan)).ToString()),
+                         };
+        }
+
         #endregion
 
         #region Main Methods
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("zone1", Zone1, typeof(TimeSpan));
+            info.AddValue("zone2", Zone2, typeof(TimeSpan));
+            info.AddValue("zone3", Zone3, typeof(TimeSpan));
+            info.AddValue("zone4", Zone4, typeof(TimeSpan));
+            info.AddValue("zone5", Zone5, typeof(TimeSpan));
+        }
 
         private TimeSpan GetZone(int index)
         {

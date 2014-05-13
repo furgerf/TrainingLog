@@ -20,6 +20,8 @@ namespace TrainingLog
 
         #region Private Fields
 
+        private const string DataFilePath = "training.log";
+
         private static Model _instance;
 
         private readonly List<Entry> _entries = new List<Entry>();
@@ -42,16 +44,30 @@ namespace TrainingLog
             _instance = new Model();
         }
 
+        public void RemoveEntry(Entry entry)
+        {
+            _entries.Remove(entry);
+
+            var data = new string[_entries.Count];
+
+            for (var i = 0; i < data.Length; i++)
+                data[i] = _entries[i].LogString;
+
+            File.WriteAllLines(DataFilePath, data);
+        }
+
         public void AddEntry(Entry entry)
         {
             _entries.Add(entry);
+
+            File.AppendAllText(DataFilePath, entry.LogString + '\n');
         }
 
         private void ReadEntries()
         {
             _entries.Clear();
 
-            var lines = File.ReadAllLines(Common.DataFilePath);
+            var lines = File.ReadAllLines(DataFilePath);
 
             foreach (var line in lines)
             {

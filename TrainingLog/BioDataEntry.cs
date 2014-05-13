@@ -1,10 +1,12 @@
 using System;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Windows.Forms;
 
 namespace TrainingLog
 {
-    public class BioDataEntry : Entry
+    [Serializable]
+    public class BioDataEntry : Entry, ISerializable
     {
         #region Public Fields
 
@@ -38,6 +40,11 @@ namespace TrainingLog
         #endregion
 
         #region Main Methods
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            throw new NotImplementedException();
+        }
 
         private bool SetAttribute(string attribute, string value)
         {

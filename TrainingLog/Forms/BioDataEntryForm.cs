@@ -67,8 +67,6 @@ namespace TrainingLog.Forms
                                 Note = txtNotes.Text
                             };
 
-            File.AppendAllText(Common.DataFilePath, entry.LogString + '\n');
-
             Model.Instance.AddEntry(entry);
 
             ResetForm();

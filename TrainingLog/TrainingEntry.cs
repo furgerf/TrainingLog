@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Windows.Forms;
 
 namespace TrainingLog
 {
-    public class TrainingEntry : Entry
+    [Serializable]
+    public class TrainingEntry : Entry, ISerializable
     {
         #region Public Fields
 
@@ -36,6 +39,17 @@ namespace TrainingLog
 
         #region Private Fields
 
+        private const string NoteKey = "note";
+        private const string DateKey = "date";
+        private const string FeelingKey = "feeling";
+        private const string DurationKey = "duration";
+        private const string DistanceKey = "distance";
+        private const string SportKey = "sport";
+        private const string TrainingTypeKey = "trainingtype";
+        private const string CaloriesKey = "calories";
+        private const string AverageHrKey = "averagehr";
+        private const string ZoneDataKey = "zonedata";
+
         private int _distanceM;
 
         private SweatData _sweatData;
@@ -61,9 +75,40 @@ namespace TrainingLog
             Sport = sport;
         }
 
+        public TrainingEntry(SerializationInfo info, StreamingContext ctxt) : base(Common.EntryType.Training)
+        {
+            Note = info.GetValue(NoteKey, typeof (string)).ToString();
+            DateTime = DateTime.Parse(info.GetValue(DateKey, typeof (DateTime)).ToString());
+            Feeling = (Common.Index) info.GetValue(FeelingKey, typeof (Common.Index));
+		    Duration = TimeSpan.Parse(info.GetValue(DurationKey, typeof(TimeSpan)).ToString());
+            DistanceM = info.GetInt32(DistanceKey);
+            Sport = (Common.Sport) info.GetValue(SportKey, typeof (Common.Sport));
+            TrainingType = (Common.TrainingType) info.GetValue(TrainingTypeKey, typeof (Common.TrainingType));
+            Calories = info.GetInt32(CaloriesKey);
+            AverageHr = info.GetInt32(AverageHrKey);
+
+            ZoneData zd;
+            ZoneData.TryParse(info.GetValue(ZoneDataKey, typeof (ZoneData)).ToString(), out zd);
+            ZoneData = zd;
+        }
+
         #endregion
 
         #region Main Methods
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue(NoteKey, Note);
+            info.AddValue(DateKey, DateTime);
+            info.AddValue(FeelingKey, Feeling);
+            info.AddValue(DurationKey, Duration);
+            info.AddValue(DistanceKey, DistanceM);
+            info.AddValue(SportKey, Sport);
+            info.AddValue(TrainingTypeKey, TrainingType);
+            info.AddValue(CaloriesKey, Calories);
+            info.AddValue(AverageHrKey, AverageHr);
+            info.AddValue(ZoneDataKey, ZoneData);
+        }
 
         private bool SetAttribute(string attribute, string value)
         {

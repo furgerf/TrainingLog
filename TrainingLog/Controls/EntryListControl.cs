@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using GlacialComponents.Controls;
 using TrainingLog.Forms;
@@ -69,6 +71,10 @@ namespace TrainingLog.Controls
             }
         }
 
+        public GetParseableString ParseableString { get; set; }
+
+        public delegate string GetParseableString(string[] data);
+
         #endregion
 
         #region Private Fields
@@ -92,6 +98,8 @@ namespace TrainingLog.Controls
         private delegate string GetComparableString(Control c);
 
         private readonly Dictionary<Type, GetComparableString> _comparableStrings = new Dictionary<Type, GetComparableString>();
+
+        private readonly Dictionary<int, Entry> _entryMap = new Dictionary<int, Entry>();
 
         #endregion
 
@@ -138,7 +146,7 @@ namespace TrainingLog.Controls
                 while (s.IndexOf('.') < IntMaxDigits)
                     s = "0" + s;
 
-            return s;
+            return zd.IsEmpty ? s : s + '\t' + zd;
         }
 
         private string GetComparableStringDecimal(Control c)
@@ -185,24 +193,40 @@ namespace TrainingLog.Controls
             gliEntries.Items.Clear();
         }
 
-        public bool AddEntry(Control[] data)
+        public bool AddEntry(Control[] data, Entry entry)
         {
             if (data.Length != gliEntries.Columns.Count - 2)
                 return false;
 
-            //var gli = gliEntries.Items.Add(data[0].Text);
+            var id = _entryMap.Keys.Count;
+            if (_entryMap.ContainsKey(id))
+            {
+                id = -1;
+
+                // there must be an unused key
+                for (var i = 0; i < id; i++)
+                    if (!_entryMap.ContainsKey(i))
+                    {
+                        id = i;
+                        break;
+                    }
+
+                if (id == -1)
+                    throw new Exception();
+            }
+
+            _entryMap.Add(id, entry);
+
             var gli = gliEntries.Items.Add("foo");
 
             gli.BackColor = gliEntries.Count % 2 == 1 ? Color.White : Color.LightGray;
 
             // save/delete
-            gli.SubItems[0].Control = new Button { Image = Common.IconSave.ToBitmap(), ImageAlign = ContentAlignment.MiddleCenter, FlatStyle = FlatStyle.Flat };
-            gli.SubItems[1].Control = new Button { Image = Common.IconDelete.ToBitmap(), ImageAlign = ContentAlignment.MiddleCenter, FlatStyle = FlatStyle.Flat };
+            gli.SubItems[0].Control = new Button { Image = Common.IconSave.ToBitmap(), ImageAlign = ContentAlignment.MiddleCenter, FlatStyle = FlatStyle.Flat, Name = id.ToString(CultureInfo.InvariantCulture) };
+            gli.SubItems[1].Control = new Button { Image = Common.IconDelete.ToBitmap(), ImageAlign = ContentAlignment.MiddleCenter, FlatStyle = FlatStyle.Flat, Name = id.ToString(CultureInfo.InvariantCulture) };
 
-            if (data.Length == 7)
-            {
-                
-            }
+            gli.SubItems[0].Control.Click += SaveEntry;
+            gli.SubItems[1].Control.Click += DeleteEntry;
 
             for (var i = 0; i < data.Length; i++)
             {
@@ -218,6 +242,7 @@ namespace TrainingLog.Controls
                                                                // ensure edited column is sorted but don't change sort direction
                                                                gliEntries.SortColumn(i1 + 2);
                                                                gliEntries.SortColumn(i1 + 2);
+
                                                                // set proper color of sorted columns
                                                                SetBackColor();
                                                            };
@@ -283,6 +308,71 @@ namespace TrainingLog.Controls
         private void GliEntriesColumnClickedEvent(object source, ClickEventArgs e)
         {
             SetBackColor();
+        }
+
+        private void DeleteEntry(object sender, EventArgs e)
+        {
+            var entry = _entryMap[int.Parse(((Control) sender).Name)];
+
+            if (
+                MessageBox.Show("Are you sure you want to delete the entry?", "Confirm delete", MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
+
+            // remove from model (and text)
+            Model.Instance.RemoveEntry(entry);
+
+            foreach (var c in from object c in gliEntries.Items where ((GLItem) c).SubItems[1].Control.Equals(sender) select c)
+            {
+                // remove from list
+                gliEntries.Items.Remove((GLItem) c);
+
+                // remove from map
+                _entryMap.Remove(int.Parse(((Control)sender).Name));
+
+                // cleanup list
+                SetBackColor();
+                gliEntries.Invalidate();
+                return;
+            }
+
+            MessageBox.Show("Error while removing entry from list: Item not found", "Error while removing",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        private void SaveEntry(object sender, EventArgs e)
+        {
+            if (ParseableString == null)
+            {
+                MessageBox.Show("Saving modified entry is not possible", "Saving not possible", MessageBoxButtons.OK,
+                                MessageBoxIcon.Exclamation);
+                return;
+            }
+
+            var id = int.Parse(((Control)sender).Name);
+            var itemIndex = -1;
+            foreach (var i in from object i in gliEntries.Items where ((GLItem) i).SubItems[0].Control.Name.Equals(id.ToString()) select i)
+            {
+                itemIndex = gliEntries.Items.FindItemIndex((GLItem)i);
+                break;
+            }
+
+            var data = new string[gliEntries.Columns.Count - 2];
+            for (var i = 0; i < data.Length; i++)
+                data[i] = gliEntries.Items[itemIndex].SubItems[i + 2].Text;
+
+            // parse modified item
+            var entry = Entry.Parse(ParseableString(data));
+
+            return;
+            // udpate model
+            Model.Instance.RemoveEntry(_entryMap[id]);
+            Model.Instance.AddEntry(entry);
+
+            // update dictionary
+            _entryMap[id] = entry;
+
+            // update controls
         }
 
         #endregion
