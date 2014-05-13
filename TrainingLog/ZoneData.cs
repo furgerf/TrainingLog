@@ -44,6 +44,7 @@ namespace TrainingLog
 
         public ZoneData(SerializationInfo info, StreamingContext ctxt)
         {
+            if (info.MemberCount > 0)
             _zones = new[]
                          {
                              TimeSpan.Parse(info.GetValue("zone1", typeof (TimeSpan)).ToString()),
@@ -52,14 +53,23 @@ namespace TrainingLog
                              TimeSpan.Parse(info.GetValue("zone4", typeof (TimeSpan)).ToString()),
                              TimeSpan.Parse(info.GetValue("zone5", typeof (TimeSpan)).ToString()),
                          };
+            else 
+                _zones = new TimeSpan[5];
         }
 
         #endregion
 
         #region Main Methods
 
+        public static ZoneData Empty()
+        {
+            return new ZoneData(TimeSpan.Zero, TimeSpan.Zero, TimeSpan.Zero, TimeSpan.Zero, TimeSpan.Zero);
+        }
+
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
+            if (IsEmpty)
+                return;
             info.AddValue("zone1", Zone1, typeof(TimeSpan));
             info.AddValue("zone2", Zone2, typeof(TimeSpan));
             info.AddValue("zone3", Zone3, typeof(TimeSpan));

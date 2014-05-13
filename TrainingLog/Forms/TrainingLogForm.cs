@@ -273,12 +273,12 @@ namespace TrainingLog.Forms
                 comSport.SelectedIndexChanged += (s, e) => comSport.Text = comSport.SelectedText;
 
                 if (!_elcTraining.AddEntry(new Control[]{
-                new ColorDatePicker{ Value = entry.DateTime, Format = DateTimePickerFormat.Short },
+                new ColorDatePicker{ Value = entry.Date ?? DateTime.MinValue, Format = DateTimePickerFormat.Short },
                 comSport,
                 new TimeSpanTextBox{ Text = entry.Duration.ToString().Replace(':', '.'), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
-                new IntegerTextBox{ Text = entry.Calories == 0 ? "" : entry.Calories.ToString(CultureInfo.InvariantCulture), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
-                new IntegerTextBox{ Text = entry.AverageHr == 0 ? "" : entry.AverageHr.ToString(CultureInfo.InvariantCulture), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
-                new ZoneDataBox { ZoneData = entry.ZoneData },
+                new IntegerTextBox{ Text = entry.Calories == 0 ? "" : entry.Calories.ToString(), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
+                new IntegerTextBox{ Text = entry.AverageHr == 0 ? "" : entry.AverageHr.ToString(), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
+                new ZoneDataBox { ZoneData = entry.HrZones ?? ZoneData.Empty() },
                 new DecimalTextBox{ Text = entry.DistanceKm > 0 ? entry.DistanceKm.ToString(CultureInfo.InvariantCulture) : "", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                 comFeeling,
                 new TextBox{ Text = entry.Note, BorderStyle = BorderStyle.None }}, entry))
@@ -338,11 +338,11 @@ namespace TrainingLog.Forms
                 }
 
                 if (!_elcBiodata.AddEntry(new Control[]{
-                new ColorDatePicker{ Value = entry.DateTime, Format = DateTimePickerFormat.Short },
+                new ColorDatePicker{ Value = entry.Date ?? DateTime.MinValue, Format = DateTimePickerFormat.Short },
                 txtSleep,
-                new IntegerTextBox{ Text = entry.RestingHeartRate == 0 ? "" : entry.RestingHeartRate.ToString(CultureInfo.InvariantCulture), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
-                new IntegerTextBox{ Text = entry.OwnIndex == 0 ? "" : entry.OwnIndex.ToString(CultureInfo.InvariantCulture), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
-                new DecimalTextBox { Text = entry.Weight > 0 ? entry.Weight.ToString(CultureInfo.InvariantCulture) : "", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
+                new IntegerTextBox{ Text = entry.RestingHeartRate == 0 ? "" : entry.RestingHeartRate.ToString(), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
+                new IntegerTextBox{ Text = entry.OwnIndex == 0 ? "" : entry.OwnIndex.ToString(), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
+                new DecimalTextBox { Text = entry.Weight > 0 ? entry.Weight.ToString() : "", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                 comFeeling,
                 new TextBox{ Text = entry.Nibbles, BorderStyle = BorderStyle.None  },
                 new TextBox{ Text = entry.Note, BorderStyle = BorderStyle.None }}, entry))
@@ -363,12 +363,12 @@ namespace TrainingLog.Forms
                     var training = entry as TrainingEntry;
 
                     if (!_elcUnified.AddEntry(new Control[]{
-                    new ColorDatePicker{ Value = entry.DateTime, Format = DateTimePickerFormat.Short },
+                    new ColorDatePicker{ Value = entry.Date ?? DateTime.MinValue, Format = DateTimePickerFormat.Short },
                     new TextBox{ Text = training.Sport + (training.HasTrainingType ? "" : " (" + training.TrainingType + ") - " + training.Duration), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                     new TextBox{ Text = entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof(Common.Index), entry.Feeling), BackColor = entry.Feeling < Common.Index.Count ? GetColor((double)entry.Feeling / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) : BackColor, TextAlign = HorizontalAlignment.Center, BorderStyle = BorderStyle.None },
-                    new ZoneDataBox { ZoneData = training.ZoneData, OverlayText = training.AverageHr > 0 ? training.AverageHr.ToString(CultureInfo.InvariantCulture) : "", Font = new Font(FontFamily.GenericSansSerif, 12, FontStyle.Bold)},
+                    new ZoneDataBox { ZoneData = training.HrZones ?? ZoneData.Empty(), OverlayText = training.AverageHr > 0 ? training.AverageHr.ToString() : "", Font = new Font(FontFamily.GenericSansSerif, 12, FontStyle.Bold)},
                     new TextBox{ Text = training.DistanceKm > 0 ? training.DistanceKm.ToString(CultureInfo.InvariantCulture) + " km" : "", BorderStyle =  BorderStyle.None, TextAlign = HorizontalAlignment.Center },
-                    new TextBox{ Text = training.Calories > 0 ? training.Calories.ToString(CultureInfo.InvariantCulture) + " kcal" : "", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
+                    new TextBox{ Text = training.Calories > 0 ? training.Calories.ToString() + " kcal" : "", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                     new TextBox{ Text = entry.Note, BorderStyle = BorderStyle.None }}, entry))
                         MessageBox.Show("Problem adding entry " + entry, "Problem adding entry", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -383,11 +383,11 @@ namespace TrainingLog.Forms
                             hr += " - OwnIndex " + biodata.OwnIndex;
 
                     if (!_elcUnified.AddEntry(new Control[]{
-                    new ColorDatePicker{ Value = entry.DateTime, Format = DateTimePickerFormat.Short },
+                    new ColorDatePicker{ Value = entry.Date ?? DateTime.MinValue, Format = DateTimePickerFormat.Short },
                     new TextBox { Text = "Sleep: " + biodata.SleepDuration + " (" + biodata.SleepQuality + ")", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center, BackColor = biodata.SleepQuality < Common.Index.Count ? GetColor((double)biodata.SleepQuality / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) : BackColor },
                     new TextBox{ Text = entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof(Common.Index), entry.Feeling), BackColor = entry.Feeling < Common.Index.Count ? GetColor((double)entry.Feeling / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) : BackColor, TextAlign = HorizontalAlignment.Center, BorderStyle = BorderStyle.None },
                     new TextBox{ Text = hr, BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
-                    new TextBox{ Text = biodata.Weight > 0 ? biodata.Weight.ToString(CultureInfo.InvariantCulture) + " kg" : "", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
+                    new TextBox{ Text = biodata.Weight > 0 ? biodata.Weight.ToString() + " kg" : "", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                     new TextBox{ BorderStyle = BorderStyle.None },
                     new TextBox{ Text = entry.Note, BorderStyle = BorderStyle.None }}, entry))
                         MessageBox.Show("Problem adding entry " + entry, "Problem adding entry", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -442,11 +442,11 @@ namespace TrainingLog.Forms
                             {
                                 AverageHr = int.Parse(data[4]),
                                 Calories = int.Parse(data[3]),
-                                DateTime = DateTime.ParseExact(data[0], "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None),
+                                Date = DateTime.ParseExact(data[0], "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None),
                                 DistanceKm = double.Parse(data[6]),
                                 Feeling = (Common.Index) Enum.Parse(typeof (Common.Index), data[7]),
                                 Note = data[8],
-                                ZoneData = zd,
+                                HrZones = zd,
                                 Sport = sport,
                                 TrainingType = (Enum)trainingType
                             };

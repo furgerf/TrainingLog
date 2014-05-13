@@ -2,25 +2,37 @@ using System;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace TrainingLog
 {
-    [Serializable]
-    public class BioDataEntry : Entry, ISerializable
+    [XmlRoot("BioDataEntry")]
+    public class BioDataEntry : Entry
     {
         #region Public Fields
 
-        public int RestingHeartRate { get; set; }
+        [XmlElement("RestingHR")]
+        public int? RestingHeartRate { get; set; }
+        public bool RestingHeartRateSpecified { get { return RestingHeartRate != null; } }
 
-        public int OwnIndex { get; set; }
+        [XmlElement("OwnIndex")]
+        public int? OwnIndex { get; set; }
+        public bool OwnIndexSpecified { get { return OwnIndex != null; } }  
 
-        public decimal Weight { get; set; }
+        [XmlElement("Weight")]
+        public decimal? Weight { get; set; }
+        public bool WeightSpecified { get { return Weight != null; } } 
 
-        public TimeSpan SleepDuration { get; set; }
+        [XmlElement("SleepDuration")]
+        public TimeSpan? SleepDuration { get; set; }
+        public bool SleepDurationSpecified { get { return SleepDuration != null; } } 
 
-        public Common.Index SleepQuality { get; set; }
+        [XmlElement("SleepQuality")]
+        public Common.Index? SleepQuality { get; set; }
+        public bool SleepQualitySpecified { get { return SleepQuality != null; } } 
 
-        public String Nibbles { get; set; }
+        [XmlElement("Nibbles")]
+        public string Nibbles { get; set; }
 
         #endregion
 
@@ -40,11 +52,6 @@ namespace TrainingLog
         #endregion
 
         #region Main Methods
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            throw new NotImplementedException();
-        }
 
         private bool SetAttribute(string attribute, string value)
         {
@@ -76,8 +83,8 @@ namespace TrainingLog
                     case "Note":
                         Note = value;
                         return true;
-                    case "DateTime":
-                        DateTime = DateTime.Parse(value);
+                    case "Date":
+                        Date = DateTime.Parse(value);
                         return true;
                     case "Feeling":
                         if (!Enum.TryParse(value, out foo))
@@ -96,10 +103,10 @@ namespace TrainingLog
 
         public static BioDataEntry ParseBioDataEntry(string data)
         {
-            if (!data.Contains("DateTime" + AttributeDividor) || !data.Contains("SleepQuality" + AttributeDividor) || !data.Contains("SleepDuration" + AttributeDividor))
+            if (!data.Contains("Date" + AttributeDividor) || !data.Contains("SleepQuality" + AttributeDividor) || !data.Contains("SleepDuration" + AttributeDividor))
             {
                 MessageBox.Show(
-                    "Error while parsing biodata entry: One or more required attribute (DateTime, SleepQuality, SleepDuration) was not found!",
+                    "Error while parsing biodata entry: One or more required attribute (Date, SleepQuality, SleepDuration) was not found!",
                     "Parsing error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
@@ -135,7 +142,7 @@ namespace TrainingLog
                 sb.Append(EntryName);
 
                 // mandatory
-                sb.Append(AttributeSeparator + "DateTime" + AttributeDividor + DateTime);
+                sb.Append(AttributeSeparator + "Date" + AttributeDividor + Date);
                 sb.Append(AttributeSeparator + "SleepDuration" + AttributeDividor + SleepDuration);
                 sb.Append(AttributeSeparator + "SleepQuality" + AttributeDividor + SleepQuality);
 

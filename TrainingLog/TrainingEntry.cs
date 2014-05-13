@@ -3,55 +3,63 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace TrainingLog
 {
-    [Serializable]
-    public class TrainingEntry : Entry, ISerializable
+    public class TrainingEntry : Entry
     {
         #region Public Fields
 
-        public TimeSpan Duration { get; set; }
+        [XmlElement("Duration")]
+        public TimeSpan? Duration { get; set; }
+        public bool DurationSpecified { get { return Duration != null; } }
 
+        [XmlIgnore]
         public double DistanceKm { get { return _distanceM / 1000.0; } set { _distanceM = (int)(1000*value); } }
 
+        [XmlElement("Distance")]
         public int DistanceM { get { return _distanceM; } set { _distanceM = value; } }
 
-        public TimeSpan Pace { get { return new TimeSpan(0, (int)(Duration.TotalMinutes / DistanceKm), 0); } }
+        [XmlIgnore]
+        public TimeSpan Pace { get { return new TimeSpan(0, (int)((Duration ?? TimeSpan.Zero).TotalMinutes / DistanceKm), 0); } }
 
-        public double Speed { get { return DistanceKm/Duration.TotalHours; } }
+        [XmlIgnore]
+        public double Speed { get { return DistanceKm/(Duration ?? TimeSpan.Zero).TotalHours; } }
 
+        [XmlIgnore]
         public SweatData SweatData { get { return _sweatData; } set { _sweatData = value; _sweatData.TrainingEntry = this; } }
 
-        public Common.Sport Sport { get; set; }
+        [XmlElement("Sport")]
+        public Common.Sport? Sport { get; set; }
+        public bool SportSpecified { get { return Sport != null; } } 
 
+        [XmlElement("TrainingType")]
         public Enum TrainingType { get; set; }
 
+        [XmlIgnore]
         public bool HasTrainingType { get { return TrainingType.ToString().Equals(Common.TrainingType.None.ToString()); } }
 
-        public int Calories { get; set; }
+        [XmlElement("Calories")]
+        public int? Calories { get; set; }
+        public bool CaloriesSpecified { get { return Calories != null; } }
 
-        public int AverageHr { get; set; }
+        [XmlElement("AverageHR")]
+        public int? AverageHr { get; set; }
+        public bool AverageHrSpecified { get { return AverageHr != null; } }
 
-        public ZoneData ZoneData { get; set; }
+        [XmlElement("HrZones")]
+        public ZoneData? HrZones { get; set; }
+        public bool ZoneDataSpecified { get { return HrZones != null; } } 
 
         #endregion
 
         #region Private Fields
 
-        private const string NoteKey = "note";
-        private const string DateKey = "date";
-        private const string FeelingKey = "feeling";
-        private const string DurationKey = "duration";
-        private const string DistanceKey = "distance";
-        private const string SportKey = "sport";
-        private const string TrainingTypeKey = "trainingtype";
-        private const string CaloriesKey = "calories";
-        private const string AverageHrKey = "averagehr";
-        private const string ZoneDataKey = "zonedata";
-
+        [XmlIgnore]
         private int _distanceM;
 
+        [XmlIgnore]
         private SweatData _sweatData;
 
         #endregion
@@ -75,40 +83,9 @@ namespace TrainingLog
             Sport = sport;
         }
 
-        public TrainingEntry(SerializationInfo info, StreamingContext ctxt) : base(Common.EntryType.Training)
-        {
-            Note = info.GetValue(NoteKey, typeof (string)).ToString();
-            DateTime = DateTime.Parse(info.GetValue(DateKey, typeof (DateTime)).ToString());
-            Feeling = (Common.Index) info.GetValue(FeelingKey, typeof (Common.Index));
-		    Duration = TimeSpan.Parse(info.GetValue(DurationKey, typeof(TimeSpan)).ToString());
-            DistanceM = info.GetInt32(DistanceKey);
-            Sport = (Common.Sport) info.GetValue(SportKey, typeof (Common.Sport));
-            TrainingType = (Common.TrainingType) info.GetValue(TrainingTypeKey, typeof (Common.TrainingType));
-            Calories = info.GetInt32(CaloriesKey);
-            AverageHr = info.GetInt32(AverageHrKey);
-
-            ZoneData zd;
-            ZoneData.TryParse(info.GetValue(ZoneDataKey, typeof (ZoneData)).ToString(), out zd);
-            ZoneData = zd;
-        }
-
         #endregion
 
         #region Main Methods
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue(NoteKey, Note);
-            info.AddValue(DateKey, DateTime);
-            info.AddValue(FeelingKey, Feeling);
-            info.AddValue(DurationKey, Duration);
-            info.AddValue(DistanceKey, DistanceM);
-            info.AddValue(SportKey, Sport);
-            info.AddValue(TrainingTypeKey, TrainingType);
-            info.AddValue(CaloriesKey, Calories);
-            info.AddValue(AverageHrKey, AverageHr);
-            info.AddValue(ZoneDataKey, ZoneData);
-        }
 
         private bool SetAttribute(string attribute, string value)
         {
@@ -154,17 +131,17 @@ namespace TrainingLog
                     case "AverageHr":
                         AverageHr = int.Parse(value);
                         return true;
-                    case "ZoneData":
+                    case "HrZones":
                         ZoneData zd;
                         var b = ZoneData.TryParse(value, out zd);
                         if (b)
-                            ZoneData = zd;
+                            HrZones = zd;
                         return b;
                     case "Note":
                         Note = value;
                         return true;
-                    case "DateTime":
-                        DateTime = DateTime.Parse(value);
+                    case "Date":
+                        Date = DateTime.Parse(value);
                         return true;
                     case "Feeling":
                         Common.Index bar;
@@ -184,11 +161,11 @@ namespace TrainingLog
 
         public static TrainingEntry ParseTrainingEntry (string data)
         {
-            if (!data.Contains("DateTime" + AttributeDividor) || !data.Contains("Sport" + AttributeDividor) ||
+            if (!data.Contains("Date" + AttributeDividor) || !data.Contains("Sport" + AttributeDividor) ||
                 !data.Contains("Duration" + AttributeDividor) || !data.Contains("TrainingType" + AttributeDividor))
             {
                 MessageBox.Show(
-                    "Error while parsing training entry: One or more required attribute (DateTime, Sport, TrainingType, Duration) was not found!",
+                    "Error while parsing training entry: One or more required attribute (Date, Sport, TrainingType, Duration) was not found!",
                     "Parsing error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
@@ -226,7 +203,7 @@ namespace TrainingLog
                 // mandatory fields
                 sb.Append(AttributeSeparator + "Duration" + AttributeDividor + Duration);
                 sb.Append(AttributeSeparator + "Sport" + AttributeDividor + Sport);
-                sb.Append(AttributeSeparator + "DateTime" + AttributeDividor + DateTime);
+                sb.Append(AttributeSeparator + "Date" + AttributeDividor + Date);
                 sb.Append(AttributeSeparator + "TrainingType" + AttributeDividor + TrainingType);
 
                 // optional fields
@@ -236,8 +213,8 @@ namespace TrainingLog
                     sb.Append(AttributeSeparator + "Calories" + AttributeDividor + Calories);
                 if (AverageHr != 0)
                     sb.Append(AttributeSeparator + "AverageHr" + AttributeDividor + AverageHr);
-                if (!ZoneData.IsEmpty)
-                    sb.Append(AttributeSeparator + "ZoneData" + AttributeDividor + ZoneData);
+                if (HrZones != null)
+                    sb.Append(AttributeSeparator + "HrZones" + AttributeDividor + HrZones);
                 if (Note != "")
                     sb.Append(AttributeSeparator + "Note" + AttributeDividor + Note);
                 if (Feeling != Common.Index.None)

@@ -1,4 +1,5 @@
 using System;
+using System.Xml.Serialization;
 
 namespace TrainingLog
 {
@@ -6,11 +7,16 @@ namespace TrainingLog
     {
         #region Public Fields
 
-        public String Note { get; set; }
+        [XmlElement("Note")]
+        public string Note { get; set; }
 
-        public DateTime DateTime { get; set; }
+        [XmlElement("EntryDate")]
+        public DateTime? Date { get; set; }
+        public bool DateSpecified { get { return Date != null; } }
 
-        public Common.Index Feeling { get; set; }
+        [XmlElement("Feeling")]
+        public Common.Index? Feeling { get; set; }
+        public bool FeelingSpecified { get { return Feeling != null; } }
 
         public abstract string LogString { get; }
 
@@ -24,6 +30,7 @@ namespace TrainingLog
         // used to separate name and value
         protected const char AttributeDividor = '\v';
 
+        [XmlIgnore]
         protected readonly string EntryName;
 
         #endregion

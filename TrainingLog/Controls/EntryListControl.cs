@@ -117,10 +117,10 @@ namespace TrainingLog.Controls
             _comparableStrings.Add(typeof(TextBox), GetComparableStringTextBox);            // string:      compare directly
             _comparableStrings.Add(typeof(TimeSpanTextBox), GetComparableStringTextBox);    // TimeSpan:    compare directly
             _comparableStrings.Add(typeof(ComboBox), GetComparableStringTextBox);           // ComboBox:    compare directly
-            _comparableStrings.Add(typeof(ColorDatePicker), GetComparableStringDateTime);   // DateTime:    compare YYYYMMDD
+            _comparableStrings.Add(typeof(ColorDatePicker), GetComparableStringDateTime);   // Date:    compare YYYYMMDD
             _comparableStrings.Add(typeof(IntegerTextBox), GetComparableStringInteger);     // Integer:     fill with 0s and compare
             _comparableStrings.Add(typeof(DecimalTextBox), GetComparableStringDecimal);     // Decimal:     compare like integer
-            _comparableStrings.Add(typeof(ZoneDataBox), GetComparableStringZoneData);       // ZoneData:    compare by weighted percentages
+            _comparableStrings.Add(typeof(ZoneDataBox), GetComparableStringZoneData);       // HrZones:    compare by weighted percentages
         }
 
         #endregion

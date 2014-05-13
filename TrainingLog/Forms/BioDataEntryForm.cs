@@ -53,7 +53,7 @@ namespace TrainingLog.Forms
         {
             var entry = new BioDataEntry
                             {
-                                DateTime = DateTime.Today,
+                                Date = DateTime.Today,
                                 SleepDuration = new TimeSpan(0, (int) (60*numSleepDuration.Value), 0),
                                 SleepQuality = (Common.Index) (int) Common.Index.Count - comSleepQuality.SelectedIndex - 1,
                                 RestingHeartRate = (int) numRestingHeartRate.Value,

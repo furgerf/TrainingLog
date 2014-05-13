@@ -419,13 +419,13 @@ namespace TrainingLog.Forms
 
             var entry = new TrainingEntry(duration)
             {
-                DateTime = datDate.Value.Date,
+                Date = datDate.Value.Date,
                 Sport = (Common.Sport)comSport.SelectedIndex,
                 TrainingType = GetTrainingType(),
                 Calories = txtCalories.Text == "" ? 0 : int.Parse(txtCalories.Text),
                 //TODO: save sweat data
                 AverageHr = txtAvgHR.Text == "" ? 0 : int.Parse(txtAvgHR.Text),
-                ZoneData = zoneData,
+                HrZones = zoneData,
                 DistanceKm = txtDistance.Text == "" ? 0 : double.Parse(txtDistance.Text),
                 Feeling =
                     comFeeling.Text != ""
