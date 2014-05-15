@@ -421,7 +421,7 @@ namespace TrainingLog.Forms
             {
                 Date = datDate.Value.Date,
                 Sport = (Common.Sport)comSport.SelectedIndex,
-                TrainingType = GetTrainingType(),
+                TrainingType = (Common.TrainingType)Enum.Parse(typeof(Common.TrainingType), comTrainingType.Text),
                 Calories = txtCalories.Text == "" ? 0 : int.Parse(txtCalories.Text),
                 //TODO: save sweat data
                 AverageHr = txtAvgHR.Text == "" ? 0 : int.Parse(txtAvgHR.Text),

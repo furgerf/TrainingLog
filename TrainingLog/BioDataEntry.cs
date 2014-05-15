@@ -1,12 +1,11 @@
 using System;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 
 namespace TrainingLog
 {
-    [XmlRoot("BioDataEntry")]
+    [XmlType("BioDataEntry")]
     public class BioDataEntry : Entry
     {
         #region Public Fields

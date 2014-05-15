@@ -3,8 +3,7 @@ using System.Runtime.Serialization;
 
 namespace TrainingLog
 {
-    [Serializable]
-    public struct ZoneData : ISerializable
+    public struct ZoneData
     {
         #region Public Fields
 
@@ -42,21 +41,6 @@ namespace TrainingLog
             _zones = new[] {zone1, zone2, zone3, zone4, zone5};
         }
 
-        public ZoneData(SerializationInfo info, StreamingContext ctxt)
-        {
-            if (info.MemberCount > 0)
-            _zones = new[]
-                         {
-                             TimeSpan.Parse(info.GetValue("zone1", typeof (TimeSpan)).ToString()),
-                             TimeSpan.Parse(info.GetValue("zone2", typeof (TimeSpan)).ToString()),
-                             TimeSpan.Parse(info.GetValue("zone3", typeof (TimeSpan)).ToString()),
-                             TimeSpan.Parse(info.GetValue("zone4", typeof (TimeSpan)).ToString()),
-                             TimeSpan.Parse(info.GetValue("zone5", typeof (TimeSpan)).ToString()),
-                         };
-            else 
-                _zones = new TimeSpan[5];
-        }
-
         #endregion
 
         #region Main Methods
@@ -64,17 +48,6 @@ namespace TrainingLog
         public static ZoneData Empty()
         {
             return new ZoneData(TimeSpan.Zero, TimeSpan.Zero, TimeSpan.Zero, TimeSpan.Zero, TimeSpan.Zero);
-        }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            if (IsEmpty)
-                return;
-            info.AddValue("zone1", Zone1, typeof(TimeSpan));
-            info.AddValue("zone2", Zone2, typeof(TimeSpan));
-            info.AddValue("zone3", Zone3, typeof(TimeSpan));
-            info.AddValue("zone4", Zone4, typeof(TimeSpan));
-            info.AddValue("zone5", Zone5, typeof(TimeSpan));
         }
 
         private TimeSpan GetZone(int index)

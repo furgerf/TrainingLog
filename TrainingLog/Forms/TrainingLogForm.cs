@@ -246,30 +246,23 @@ namespace TrainingLog.Forms
                 };
 
                 var comSport = new ComboBox { FlatStyle = FlatStyle.Flat, DropDownStyle = ComboBoxStyle.DropDownList };
-                Type type = null;
                 switch (entry.Sport)
                 {
                     case Common.Sport.Running:
                     case Common.Sport.Cycling:
-                        type = typeof(Common.EnduranceType);
+                        foreach (var t in Common.EnduranceTypes)
+                            comSport.Items.Add(entry.Sport + " (" + t + ")");
                         break;
                     case Common.Sport.Squash:
-                        type = typeof(Common.SquashType);
+                        foreach (var t in Common.SquashTypes)
+                            comSport.Items.Add(entry.Sport + " (" + t + ")");
                         break;
                     case Common.Sport.Other:
                         comSport.Items.Add(Enum.GetName(typeof(Common.Sport), Common.Sport.Other));
                         break;
                 }
 
-                if (type != null)
-                {
-                    foreach (var t in Enum.GetNames(type))
-                        if (t.Equals("Count"))
-                            break;
-                        else
-                            comSport.Items.Add(Enum.GetName(typeof(Common.Sport), entry.Sport) + " (" + t + ')');
-                }
-                comSport.Text = entry.Sport + (entry.HasTrainingType ? "" : " (" + entry.TrainingType + ")");
+                comSport.Text = entry.Sport + (entry.TrainingTypeSpecified ? " (" + entry.TrainingType + ")" : "");
                 comSport.SelectedIndexChanged += (s, e) => comSport.Text = comSport.SelectedText;
 
                 if (!_elcTraining.AddEntry(new Control[]{
@@ -364,7 +357,7 @@ namespace TrainingLog.Forms
 
                     if (!_elcUnified.AddEntry(new Control[]{
                     new ColorDatePicker{ Value = entry.Date ?? DateTime.MinValue, Format = DateTimePickerFormat.Short },
-                    new TextBox{ Text = training.Sport + (training.HasTrainingType ? "" : " (" + training.TrainingType + ") - " + training.Duration), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
+                    new TextBox{ Text = training.Sport + (training.TrainingTypeSpecified ? "" : " (" + training.TrainingType + ") - " + training.Duration), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                     new TextBox{ Text = entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof(Common.Index), entry.Feeling), BackColor = entry.Feeling < Common.Index.Count ? GetColor((double)entry.Feeling / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) : BackColor, TextAlign = HorizontalAlignment.Center, BorderStyle = BorderStyle.None },
                     new ZoneDataBox { ZoneData = training.HrZones ?? ZoneData.Empty(), OverlayText = training.AverageHr > 0 ? training.AverageHr.ToString() : "", Font = new Font(FontFamily.GenericSansSerif, 12, FontStyle.Bold)},
                     new TextBox{ Text = training.DistanceKm > 0 ? training.DistanceKm.ToString(CultureInfo.InvariantCulture) + " km" : "", BorderStyle =  BorderStyle.None, TextAlign = HorizontalAlignment.Center },
@@ -408,35 +401,35 @@ namespace TrainingLog.Forms
             ZoneData zd;
             if (!ZoneData.TryParse(data[5].Split('\t')[1], out zd))
                 return null;
-            Common.Sport sport;
-            object trainingType;
+            var sport = (Common.Sport)Enum.Parse(typeof(Common.Sport), data[1].IndexOf('(') > 0 ? data[1].Substring(0, data[1].IndexOf('(') - 1) : data[1]);
+            var trainingType = (Common.TrainingType)Enum.Parse(typeof(Common.TrainingType), data[1].Substring(data[1].IndexOf('(') + 1, data[1].IndexOf(')') - data[1].IndexOf('(') - 1));
 
-            if (data[1].IndexOf('(') > 0)
-            {
-                sport = (Common.Sport) Enum.Parse(typeof (Common.Sport), data[1].Substring(0, data[1].IndexOf('(') - 1));
-                var type = GetType();
-                switch (sport)
-                {
-                    case Common.Sport.Running:
-                    case Common.Sport.Cycling:
-                        type = typeof(Common.EnduranceType);
-                        break;
-                    case Common.Sport.Squash:
-                        type = typeof(Common.SquashType);
-                        break;
-                }
+            //if (data[1].IndexOf('(') > 0)
+            //{
+            //    sport = (Common.Sport) Enum.Parse(typeof (Common.Sport), data[1].Substring(0, data[1].IndexOf('(') - 1));
+            //    var type = GetType();
+            //    switch (sport)
+            //    {
+            //        case Common.Sport.Running:
+            //        case Common.Sport.Cycling:
+            //            type = typeof(Common.EnduranceType);
+            //            break;
+            //        case Common.Sport.Squash:
+            //            type = typeof(Common.SquashType);
+            //            break;
+            //    }
 
-                trainingType = (Common.TrainingType)Enum.Parse(type, data[1].Substring(data[1].IndexOf('(') + 1, data[1].IndexOf(')') - data[1].IndexOf('(') - 1));
+            //    trainingType = (Common.TrainingType)Enum.Parse(type, data[1].Substring(data[1].IndexOf('(') + 1, data[1].IndexOf(')') - data[1].IndexOf('(') - 1));
 
-                if (type == typeof (Common.EnduranceType))
-                    trainingType = (Common.EnduranceType) trainingType;
-                if (type == typeof (Common.SquashType))
-                    trainingType = (Common.SquashType) trainingType;
-            } else
-            {
-                sport = (Common.Sport) Enum.Parse(typeof (Common.Sport), data[1]);
-                trainingType = Common.TrainingType.None;
-            }
+            //    if (type == typeof (Common.EnduranceType))
+            //        trainingType = (Common.EnduranceType) trainingType;
+            //    if (type == typeof (Common.SquashType))
+            //        trainingType = (Common.SquashType) trainingType;
+            //} else
+            //{
+            //    sport = (Common.Sport) Enum.Parse(typeof (Common.Sport), data[1]);
+            //    trainingType = Common.TrainingType.None;
+            //}
 
             var entry = new TrainingEntry(TimeSpan.Parse(data[2].Replace('.', ':')))
                             {
@@ -448,7 +441,7 @@ namespace TrainingLog.Forms
                                 Note = data[8],
                                 HrZones = zd,
                                 Sport = sport,
-                                TrainingType = (Enum)trainingType
+                                TrainingType = trainingType
                             };
             return entry.LogString;
         }

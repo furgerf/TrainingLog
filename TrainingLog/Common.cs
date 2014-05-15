@@ -15,6 +15,7 @@ namespace TrainingLog
             Terrible, Bad, Okay, Good, Fantastic, Count, None
         }
 
+        public static readonly Sport[] EnduranceSports = new[] {Sport.Running, Sport.Cycling};
         public enum Sport
         {
             Running, Cycling, Squash, Other, Count
@@ -30,9 +31,24 @@ namespace TrainingLog
             Solo, Training, Club, Match, Count
         }
 
+        public static readonly TrainingType[] EnduranceTypes =
+            new[]
+                {
+                    TrainingType.Easy, TrainingType.Interval, TrainingType.Fartlek, TrainingType.Base, TrainingType.Long, 
+                    TrainingType.Tempo, TrainingType.Other
+                };
+
+        public static readonly TrainingType[] SquashTypes = new[]
+                                                                {
+                                                                    TrainingType.Solo, TrainingType.Training,
+                                                                    TrainingType.Club, TrainingType.Match
+                                                                };
+
         public enum TrainingType
         {
-            None
+            None = 0,
+            Easy = 10, Interval, Fartlek, Base, Long, Tempo, Other,
+            Solo = 20, Training, Club, Match, Count
         }
 
         public enum EntryType

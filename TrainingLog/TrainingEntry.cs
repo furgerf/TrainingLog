@@ -1,25 +1,28 @@
 using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 
 namespace TrainingLog
 {
+    [XmlType("TrainingEntry")]
     public class TrainingEntry : Entry
     {
         #region Public Fields
 
-        [XmlElement("Duration")]
+        [XmlIgnore]
         public TimeSpan? Duration { get; set; }
-        public bool DurationSpecified { get { return Duration != null; } }
+        
+        [XmlElement("Duration")]
+        public string DurationString { get { return (Duration ?? TimeSpan.Zero).ToString(); } set { Duration = TimeSpan.Parse(value); } }
+        public bool DurationStringSpecified { get { return Duration != null; } }
 
         [XmlIgnore]
-        public double DistanceKm { get { return _distanceM / 1000.0; } set { _distanceM = (int)(1000*value); } }
+        public double DistanceKm { get { return (DistanceM ?? 0) / 1000.0; } set { DistanceM = (int)(1000 * value); } }
 
         [XmlElement("Distance")]
-        public int DistanceM { get { return _distanceM; } set { _distanceM = value; } }
+        public int? DistanceM { get; set; }
+        public bool DistanceMSpecified { get { return DistanceM != null; } }
 
         [XmlIgnore]
         public TimeSpan Pace { get { return new TimeSpan(0, (int)((Duration ?? TimeSpan.Zero).TotalMinutes / DistanceKm), 0); } }
@@ -35,10 +38,21 @@ namespace TrainingLog
         public bool SportSpecified { get { return Sport != null; } } 
 
         [XmlElement("TrainingType")]
-        public Enum TrainingType { get; set; }
+        public Common.TrainingType TrainingType
+        {
+            get { return _trainingType; }
+            set
+            {
+                if (value == _trainingType) return;
+                if (Sport == Common.Sport.Squash && !Array.Exists(Common.SquashTypes, e => e == value))
+                    throw new Exception("Invalid training type");
+                if (Array.Exists(Common.EnduranceSports, e => e == Sport) && !Array.Exists(Common.EnduranceTypes, e => e == value))
+                    throw new Exception("Invalid training type");
 
-        [XmlIgnore]
-        public bool HasTrainingType { get { return TrainingType.ToString().Equals(Common.TrainingType.None.ToString()); } }
+                _trainingType = value;
+            }
+        }
+        public bool TrainingTypeSpecified { get { return !TrainingType.Equals(Common.TrainingType.None); } }
 
         [XmlElement("Calories")]
         public int? Calories { get; set; }
@@ -48,16 +62,30 @@ namespace TrainingLog
         public int? AverageHr { get; set; }
         public bool AverageHrSpecified { get { return AverageHr != null; } }
 
-        [XmlElement("HrZones")]
+        [XmlIgnore]
         public ZoneData? HrZones { get; set; }
-        public bool ZoneDataSpecified { get { return HrZones != null; } } 
 
+        [XmlElement("HrZones")]
+        public string HrZoneString
+        {
+            get { return HrZones.ToString(); }
+            set
+            {
+                ZoneData zd;
+                if (!ZoneData.TryParse(value, out zd))
+                    throw new Exception();
+                HrZones = zd;
+            }
+        }
+
+        public bool HrZoneStringSpecified { get { return HrZones != null; } }
+        
         #endregion
 
         #region Private Fields
 
         [XmlIgnore]
-        private int _distanceM;
+        private Common.TrainingType _trainingType;
 
         [XmlIgnore]
         private SweatData _sweatData;
@@ -66,7 +94,7 @@ namespace TrainingLog
 
         #region Constructor
 
-        private TrainingEntry() : base(Common.EntryType.Training)
+        public TrainingEntry() : base(Common.EntryType.Training)
         {
             // private constructor for parsing (when duration is not yet parsed)
         }
@@ -103,25 +131,11 @@ namespace TrainingLog
                         Sport = foo;
                         return true;
                     case "TrainingType":
-                        Common.EnduranceType end;
-                        if (Enum.TryParse(value, out end))
-                        {
-                            TrainingType = end;
-                            return true;
-                        }
-                        Common.SquashType squ;
-                        if (Enum.TryParse(value, out squ))
-                        {
-                            TrainingType = squ;
-                            return true;
-                        }
-                        Common.TrainingType tra;
-                        if (Enum.TryParse(value, out tra))
-                        {
-                            TrainingType = tra;
-                            return true;
-                        }
-                        return false;
+                        Common.TrainingType end;
+                        if (!Enum.TryParse(value, out end))
+                            throw new Exception();
+                        TrainingType = end;
+                        return true;
                     case "DistanceM":
                         DistanceM = int.Parse(value);
                         return true;
