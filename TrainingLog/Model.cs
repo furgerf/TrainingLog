@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace TrainingLog
 {
@@ -20,7 +21,7 @@ namespace TrainingLog
 
         #region Private Fields
 
-        private const string DataFilePath = "training.log";
+        private const string DataFilePath = "training.log"; //"log.xml";
 
         private static Model _instance;
 
@@ -66,6 +67,32 @@ namespace TrainingLog
         private void ReadEntries()
         {
             _entries.Clear();
+
+            //var data = new EntryList(TrainingEntries, BioDataEntries);
+
+            //using (var tw = new StreamWriter(DataFilePath)
+            //{
+            //    XmlSeri ser = new XmlSerializer(typeof(EntryList));
+            //    ser.Serialize(tw, data);
+            //}
+
+            //var xml = File.ReadAllText("foo.xml");
+
+            //var serializer = new XmlSerializer(typeof(EntryList));
+            //EntryList result;
+            //using (var stringReader = new StringReader(xml))
+            //using (var reader = XmlReader.Create(stringReader))
+            //{
+            //    result = (EntryList)serializer.Deserialize(reader);
+            //}
+
+
+            //using (var tw = new StreamWriter("bar.xml"))
+            //{
+            //    var ser = new XmlSerializer(typeof(EntryList));
+            //    ser.Serialize(tw, result);
+            //}
+
 
             var lines = File.ReadAllLines(DataFilePath);
 

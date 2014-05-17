@@ -14,7 +14,7 @@ namespace TrainingLog
         public TimeSpan? Duration { get; set; }
         
         [XmlElement("Duration")]
-        public string DurationString { get { return (Duration ?? TimeSpan.Zero).ToString(); } set { Duration = TimeSpan.Parse(value); } }
+        public string DurationString { get { return (Duration ?? TimeSpan.MinValue).ToString(); } set { Duration = TimeSpan.Parse(value); } }
         public bool DurationStringSpecified { get { return Duration != null; } }
 
         [XmlIgnore]
@@ -25,10 +25,10 @@ namespace TrainingLog
         public bool DistanceMSpecified { get { return DistanceM != null; } }
 
         [XmlIgnore]
-        public TimeSpan Pace { get { return new TimeSpan(0, (int)((Duration ?? TimeSpan.Zero).TotalMinutes / DistanceKm), 0); } }
+        public TimeSpan Pace { get { return new TimeSpan(0, (int)((Duration ?? TimeSpan.MinValue).TotalMinutes / DistanceKm), 0); } }
 
         [XmlIgnore]
-        public double Speed { get { return DistanceKm/(Duration ?? TimeSpan.Zero).TotalHours; } }
+        public double Speed { get { return DistanceKm / (Duration ?? TimeSpan.MinValue).TotalHours; } }
 
         [XmlIgnore]
         public SweatData SweatData { get { return _sweatData; } set { _sweatData = value; _sweatData.TrainingEntry = this; } }

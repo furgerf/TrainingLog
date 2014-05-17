@@ -8,7 +8,7 @@ namespace TrainingLog.Controls
     {
         #region Public Fields
 
-        public bool IsValueValid { get { return !TimeSpan.Equals(TimeSpan.Zero); } }
+        public bool IsValueValid { get { return !TimeSpan.Equals(TimeSpan.MinValue); } }
 
         public TimeSpan TimeSpan
         {
@@ -23,7 +23,7 @@ namespace TrainingLog.Controls
                 }
                 TimeSpan ts;
 
-                return TimeSpan.TryParse(txt.Replace('.', ':'), out ts) ? ts : TimeSpan.Zero;
+                return TimeSpan.TryParse(txt.Replace('.', ':'), out ts) ? ts : TimeSpan.MinValue;
             }
         }
 

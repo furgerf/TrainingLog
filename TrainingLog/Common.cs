@@ -21,16 +21,6 @@ namespace TrainingLog
             Running, Cycling, Squash, Other, Count
         }
 
-        public enum EnduranceType
-        {
-            Easy, Interval, Fartlek, Base, Long, Tempo, Other, Count
-        }
-
-        public enum SquashType
-        {
-            Solo, Training, Club, Match, Count
-        }
-
         public static readonly TrainingType[] EnduranceTypes =
             new[]
                 {

@@ -182,19 +182,19 @@ namespace TrainingLog.Forms
             return true;
         }
 
-        private Enum GetTrainingType()
-        {
-            switch ((Common.Sport)comSport.SelectedIndex)
-            {
-                case Common.Sport.Running:
-                case Common.Sport.Cycling:
-                    return (Common.EnduranceType) comTrainingType.SelectedIndex;
-                case Common.Sport.Squash:
-                    return (Common.SquashType) comTrainingType.SelectedIndex;
-                default:
-                    return Common.TrainingType.None;
-            }
-        }
+        //private Enum GetTrainingType()
+        //{
+        //    switch ((Common.Sport)comSport.SelectedIndex)
+        //    {
+        //        case Common.Sport.Running:
+        //        case Common.Sport.Cycling:
+        //            return (Common.EnduranceType) comTrainingType.SelectedIndex;
+        //        case Common.Sport.Squash:
+        //            return (Common.SquashType) comTrainingType.SelectedIndex;
+        //        default:
+        //            return Common.TrainingType.None;
+        //    }
+        //}
 
 #endregion
 
@@ -233,24 +233,22 @@ namespace TrainingLog.Forms
             // update training types
             comTrainingType.Items.Clear();
 
-            var count = -1;
-            var type = GetType();
-            switch ((Common.Sport) comSport.SelectedIndex)
+            if (Array.Exists(Common.EnduranceSports, ee => ee == (Common.Sport) comSport.SelectedIndex))
             {
-                case Common.Sport.Running:
-                case Common.Sport.Cycling:
-                    count = (int) Common.EnduranceType.Count;
-                    type = typeof (Common.EnduranceType);
-                    break;
-                case Common.Sport.Squash:
-                    count = (int) Common.SquashType.Count;
-                    type = typeof (Common.SquashType);
-                    break;
+                var foo = new object[Common.EnduranceTypes.Length];
+                for (var i = 0; i < Common.EnduranceTypes.Length; i++)
+                    foo[i] = Common.EnduranceTypes[i].ToString();
+                comTrainingType.Items.AddRange(foo);
+            }
+            else if (((Common.Sport) comSport.SelectedIndex) == Common.Sport.Squash)
+            {
+                var foo = new object[Common.SquashTypes.Length];
+                for (var i = 0; i < Common.SquashTypes.Length; i++)
+                    foo[i] = Common.SquashTypes[i].ToString();
+                comTrainingType.Items.AddRange(foo);   
             }
 
-            for (var i = 0; i < count; i++)
-                comTrainingType.Items.Add(Enum.GetName(type, i));
-            if (count > 0)
+            if (comTrainingType.Items.Count > 0)
                 comTrainingType.SelectedIndex = 0;
 
             // en-/disable distance

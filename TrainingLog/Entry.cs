@@ -7,9 +7,9 @@ namespace TrainingLog
     {
         #region Public Fields
 
-        [XmlElement("Note", IsNullable = false)]
+        [XmlElement("Note")]
         public string Note { get; set; }
-        public bool NoteSpecified { get { return Note != null; } }
+        public bool NoteSpecified { get { return !string.IsNullOrEmpty(Note); } }
 
         [XmlElement("EntryDate")]
         public DateTime? Date { get; set; }

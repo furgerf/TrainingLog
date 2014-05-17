@@ -17,33 +17,33 @@ namespace TrainingLog
         {
             Model.Initialize();
             
-            var data = new EntryList(Model.Instance.TrainingEntries, Model.Instance.BioDataEntries);
+            //var data = new EntryList(Model.Instance.TrainingEntries, Model.Instance.BioDataEntries);
 
-            var te = Model.Instance.TrainingEntries[0];
-            te = new TrainingEntry();
+            //var te = Model.Instance.TrainingEntries[0];
+            //te = new TrainingEntry();
 
-            using (var tw = new StreamWriter("foo.xml"))
-            {
-                var ser = new XmlSerializer(typeof(EntryList));
-                ser.Serialize(tw, data);
-            }
+            //using (var tw = new StreamWriter("foo.xml"))
+            //{
+            //    var ser = new XmlSerializer(typeof(EntryList));
+            //    ser.Serialize(tw, data);
+            //}
 
-            var xml = File.ReadAllText("foo.xml");
+            //var xml = File.ReadAllText("foo.xml");
 
-            var serializer = new XmlSerializer(typeof(EntryList));
-            EntryList result;
-            using (var stringReader = new StringReader(xml))
-            using (var reader = XmlReader.Create(stringReader))
-            {
-                result = (EntryList)serializer.Deserialize(reader);
-            }
+            //var serializer = new XmlSerializer(typeof(EntryList));
+            //EntryList result;
+            //using (var stringReader = new StringReader(xml))
+            //using (var reader = XmlReader.Create(stringReader))
+            //{
+            //    result = (EntryList)serializer.Deserialize(reader);
+            //}
 
 
-            using (var tw = new StreamWriter("bar.xml"))
-            {
-                var ser = new XmlSerializer(typeof(EntryList));
-                ser.Serialize(tw, result);
-            }
+            //using (var tw = new StreamWriter("bar.xml"))
+            //{
+            //    var ser = new XmlSerializer(typeof(EntryList));
+            //    ser.Serialize(tw, result);
+            //}
 
             //var des = new XmlSerializer(typeof(List<BioDataEntry>));
             //var tr = new StreamReader("foo.xml");

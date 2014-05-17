@@ -20,11 +20,14 @@ namespace TrainingLog
 
         [XmlElement("Weight")]
         public decimal? Weight { get; set; }
-        public bool WeightSpecified { get { return Weight != null; } } 
+        public bool WeightSpecified { get { return Weight != null; } }
 
-        [XmlElement("SleepDuration")]
+        [XmlIgnore]
         public TimeSpan? SleepDuration { get; set; }
-        public bool SleepDurationSpecified { get { return SleepDuration != null; } } 
+        
+        [XmlElement("SleepDuration")]
+        public string SleepDurationString { get { return (SleepDuration ?? TimeSpan.Zero).ToString(); } set { SleepDuration = TimeSpan.Parse(value); } }
+        public bool SleepDurationStringSpecified { get { return SleepDuration != null; } } 
 
         [XmlElement("SleepQuality")]
         public Common.Index? SleepQuality { get; set; }
@@ -32,6 +35,7 @@ namespace TrainingLog
 
         [XmlElement("Nibbles")]
         public string Nibbles { get; set; }
+        public bool NibblesSpecified { get { return !string.IsNullOrEmpty(Nibbles); } }
 
         #endregion
 
