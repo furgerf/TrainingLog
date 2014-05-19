@@ -184,6 +184,10 @@ namespace TrainingLog.Controls
         public void SortByDate()
         {
             gliEntries.SortColumn(2);
+
+            while (gliEntries.Columns[2].LastSortState != SortDirections.SortAscending)
+                gliEntries.SortColumn(2);
+
             SetBackColor();
         }
 
