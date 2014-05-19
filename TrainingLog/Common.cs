@@ -1,12 +1,17 @@
 using System.Drawing;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using GlacialComponents.Controls;
 using TrainingLog.Properties;
 
 namespace TrainingLog
 {
     public class Common
     {
+        public delegate void MarkItem(GLItem item, bool visible);
+
+        public delegate void ApplyItemVisibility();
+
         #region Enums
 
         public enum Index

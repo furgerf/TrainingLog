@@ -1,17 +1,27 @@
-﻿using System.Windows.Forms;
+﻿using System.Drawing;
+using System.Windows.Forms;
 
 namespace TrainingLog.Forms
 {
     public partial class StatisticsForm : Form
     {
-        #region Static Access
+        #region Public Fields
 
         public static StatisticsForm GetInstance
         {
             get { return _instance ?? (_instance = new StatisticsForm()); }
         }
 
+        #endregion
+
+        #region Private Fields
+
         private static StatisticsForm _instance;
+
+        private Size ScreenSize
+        {
+            get { return WindowState == FormWindowState.Maximized ? Screen.PrimaryScreen.WorkingArea.Size : ClientSize; }
+        }
 
         #endregion
 
@@ -38,7 +48,8 @@ namespace TrainingLog.Forms
 
         private void StatisticsFormKeyDown(object sender, KeyEventArgs e)
         {
-            Close();
+            if (e.KeyCode == Keys.Escape)
+                Close();
         }
 
         #endregion

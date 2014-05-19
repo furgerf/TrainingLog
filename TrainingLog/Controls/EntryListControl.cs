@@ -78,6 +78,16 @@ namespace TrainingLog.Controls
 
         #region Private Fields
 
+        private readonly Common.MarkItem _markItem;
+
+        private readonly Common.ApplyItemVisibility _applyItemVisibility;
+
+        private readonly List<GLItem> _hiddenItems = new List<GLItem>();
+
+        private readonly List<GLItem> _itemsToBeHidden = new List<GLItem>();
+
+        private readonly List<GLItem> _itemsToBeShown = new List<GLItem>(); 
+
         private readonly GLColumn _glcSave;
 
         private readonly GLColumn _glcDelete;
@@ -100,6 +110,8 @@ namespace TrainingLog.Controls
 
         private readonly Dictionary<int, Entry> _entryMap = new Dictionary<int, Entry>();
 
+        private readonly List<IFilter> _filters = new List<IFilter>(); 
+
         #endregion
 
         #region Constructor
@@ -107,6 +119,37 @@ namespace TrainingLog.Controls
         public EntryListControl()
         {
             InitializeComponent();
+
+            _markItem = (item, visible) =>
+                            {
+                                if ((!visible && _hiddenItems.Contains(item)) ||
+                                    (visible && !_hiddenItems.Contains(item)))
+                                    return;
+
+                                (visible ? _itemsToBeShown : _itemsToBeHidden).Add(item);
+                            };
+
+            _applyItemVisibility = () =>
+                            {
+                                foreach (var item in _itemsToBeShown)
+                                {
+                                    gliEntries.Items.Add(item);
+                                    _hiddenItems.Remove(item);
+                                }
+
+                                foreach (var item in _itemsToBeHidden)
+                                {
+                                    gliEntries.Items.Remove(item);
+                                    _hiddenItems.Add(item);
+                                }
+
+                                _itemsToBeHidden.Clear();
+                                _itemsToBeShown.Clear();
+
+                                // cleanup UI
+                                SetBackColor();
+                                gliEntries.Invalidate();
+                            };
 
             _glcSave = new GLColumn { Text = "", Width = 23 };
             _glcDelete = new GLColumn { Text = "", Width = 23 };
@@ -180,6 +223,20 @@ namespace TrainingLog.Controls
         #endregion
 
         #region Main Methods
+
+        public void ApplyFilters()
+        {
+            foreach (var f in _filters)
+                f.ApplyFilter();
+        }
+
+        public void AddFilter(IFilter filter, int columnIndex, object defaultValue = null)
+        {
+            filter.Initialize(gliEntries.Items, _markItem, _applyItemVisibility, columnIndex + 2, defaultValue);
+            _filters.Add(filter);
+            grpFilter.Controls.Add((Control)filter);
+            ApplyFilters();
+        }
 
         public void SortByDate()
         {
@@ -346,7 +403,35 @@ namespace TrainingLog.Controls
 
         private void SaveEntry(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            //if (_hiddenItems.Count == 0)
+            //{
+            //    _hiddenItems.Add(gliEntries.Items[0]);
+
+            //    foreach (
+            //        var c in
+            //            from object c in gliEntries.Items
+            //            where ((GLItem) c).SubItems[1].Control.Name.Equals(((Control) sender).Name)
+            //            select c)
+            //    {
+            //        // remove from list
+            //        gliEntries.Items.Remove((GLItem) c);
+
+            //        // cleanup list
+            //        SetBackColor();
+            //        gliEntries.Invalidate();
+            //        return;
+            //    }
+            //}
+            //else
+            //{
+            //    gliEntries.Items.Add(_hiddenItems[0]);
+            //    // cleanup list
+            //    SetBackColor();
+            //    gliEntries.Invalidate();
+            //    _hiddenItems.RemoveAt(0);
+            //}
+
+            //throw new NotImplementedException();
 
             //if (ParseableString == null)
             //{

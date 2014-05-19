@@ -1,11 +1,13 @@
+﻿using GlacialComponents.Controls;
+
 namespace TrainingLog.Controls
 {
-    public delegate void FilterChangedEventHandler(IFilter sender);
-
     public interface IFilter
     {
-        event FilterChangedEventHandler Changed;
+        void Initialize(GLItemCollection list, Common.MarkItem markItem, Common.ApplyItemVisibility applyItemVisibility, int controlColumnIndex, object defaultValue = null);
 
-        bool IsVisible(Entry entry);   
+        bool IsItemVisible(GLItem item);
+
+        void ApplyFilter();
     }
 }

@@ -52,18 +52,18 @@
     <Compile Include="Controls\ColorDatePicker.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\DateFilterControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\DateFilterControl.Designer.cs">
+      <DependentUpon>DateFilterControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\IFilter.cs" />
     <Compile Include="Controls\IntegerTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\DecimalTextBox.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\TrainingFilterControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\TrainingFilterControl.Designer.cs">
-      <DependentUpon>TrainingFilterControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\ZoneDataBox.cs">
       <SubType>UserControl</SubType>
@@ -133,6 +133,9 @@
     <Compile Include="TrainingEntry.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="ZoneData.cs" />
+    <EmbeddedResource Include="Controls\DateFilterControl.resx">
+      <DependentUpon>DateFilterControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\ZoneDataBox.resx">
       <DependentUpon>ZoneDataBox.cs</DependentUpon>
     </EmbeddedResource>

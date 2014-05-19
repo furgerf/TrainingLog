@@ -38,7 +38,8 @@ namespace TrainingLog.Forms
 
         private void SettingsFormKeyDown(object sender, KeyEventArgs e)
         {
-            Close();
+            if (e.KeyCode == Keys.Escape)
+                Close();
         }
 
         #endregion
