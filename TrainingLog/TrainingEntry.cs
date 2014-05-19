@@ -1,6 +1,4 @@
 using System;
-using System.Text;
-using System.Windows.Forms;
 using System.Xml.Serialization;
 
 namespace TrainingLog
@@ -12,7 +10,7 @@ namespace TrainingLog
 
         [XmlIgnore]
         public TimeSpan? Duration { get; set; }
-        
+
         [XmlElement("Duration")]
         public string DurationString { get { return (Duration ?? TimeSpan.MinValue).ToString(); } set { Duration = TimeSpan.Parse(value); } }
         public bool DurationStringSpecified { get { return Duration != null; } }
@@ -35,7 +33,7 @@ namespace TrainingLog
 
         [XmlElement("Sport")]
         public Common.Sport? Sport { get; set; }
-        public bool SportSpecified { get { return Sport != null; } } 
+        public bool SportSpecified { get { return Sport != null; } }
 
         [XmlElement("TrainingType")]
         public Common.TrainingType TrainingType
@@ -68,7 +66,7 @@ namespace TrainingLog
         [XmlElement("HrZones")]
         public string HrZoneString
         {
-            get { return HrZones.ToString(); }
+            get { return HrZoneStringSpecified ? HrZones.ToString() : ""; }
             set
             {
                 ZoneData zd;
@@ -78,8 +76,8 @@ namespace TrainingLog
             }
         }
 
-        public bool HrZoneStringSpecified { get { return HrZones != null; } }
-        
+        public bool HrZoneStringSpecified { get { return !(HrZones ?? ZoneData.Empty()).IsEmpty; } }
+
         #endregion
 
         #region Private Fields
@@ -94,17 +92,20 @@ namespace TrainingLog
 
         #region Constructor
 
-        public TrainingEntry() : base(Common.EntryType.Training)
+        public TrainingEntry()
+            : base(Common.EntryType.Training)
         {
             // private constructor for parsing (when duration is not yet parsed)
         }
 
-        public TrainingEntry(TimeSpan duration) : base(Common.EntryType.Training)
+        public TrainingEntry(TimeSpan duration)
+            : base(Common.EntryType.Training)
         {
             Duration = duration;
         }
 
-        protected TrainingEntry(TimeSpan duration, Common.Sport sport, Common.EntryType entryType) : base(entryType)
+        protected TrainingEntry(TimeSpan duration, Common.Sport sport, Common.EntryType entryType)
+            : base(entryType)
         {
             // constructor for RaceEntry
             Duration = duration;
@@ -114,130 +115,6 @@ namespace TrainingLog
         #endregion
 
         #region Main Methods
-
-        private bool SetAttribute(string attribute, string value)
-        {
-            try
-            {
-                switch (attribute)
-                {
-                    case "Duration":
-                        Duration = TimeSpan.Parse(value);
-                        return true;
-                    case "Sport":
-                        Common.Sport foo;
-                        if (!Enum.TryParse(value, out foo))
-                            throw new Exception();
-                        Sport = foo;
-                        return true;
-                    case "TrainingType":
-                        Common.TrainingType end;
-                        if (!Enum.TryParse(value, out end))
-                            throw new Exception();
-                        TrainingType = end;
-                        return true;
-                    case "DistanceM":
-                        DistanceM = int.Parse(value);
-                        return true;
-                    case "Calories":
-                        Calories = int.Parse(value);
-                        return true;
-                    case "AverageHr":
-                        AverageHr = int.Parse(value);
-                        return true;
-                    case "HrZones":
-                        ZoneData zd;
-                        var b = ZoneData.TryParse(value, out zd);
-                        if (b)
-                            HrZones = zd;
-                        return b;
-                    case "Note":
-                        Note = value;
-                        return true;
-                    case "Date":
-                        Date = DateTime.Parse(value);
-                        return true;
-                    case "Feeling":
-                        Common.Index bar;
-                        if (!Enum.TryParse(value, out bar))
-                            throw new Exception();
-                        Feeling = bar;
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
-        public static TrainingEntry ParseTrainingEntry (string data)
-        {
-            if (!data.Contains("Date" + AttributeDividor) || !data.Contains("Sport" + AttributeDividor) ||
-                !data.Contains("Duration" + AttributeDividor) || !data.Contains("TrainingType" + AttributeDividor))
-            {
-                MessageBox.Show(
-                    "Error while parsing training entry: One or more required attribute (Date, Sport, TrainingType, Duration) was not found!",
-                    "Parsing error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return null;
-            }
-
-            var attributes = data.Split(AttributeSeparator);
-
-            var entry = new TrainingEntry
-                            {
-                                Note = "",
-                                Feeling = Common.Index.None
-                            };
-
-            for (var i = 1; i < attributes.Length; i++)
-            {
-                var pair = attributes[i].Split(AttributeDividor);
-
-                if (entry.SetAttribute(pair[0], pair[1])) continue;
-
-                MessageBox.Show("Error while parsing \"" + attributes[i] + "\".", "Parsing error",
-                                MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return null;
-            }
-
-            return entry;
-        }
-
-        public override string LogString
-        {
-            get
-            {
-                var sb = new StringBuilder();
-                sb.Append(EntryName);
-
-                // mandatory fields
-                sb.Append(AttributeSeparator + "Duration" + AttributeDividor + Duration);
-                sb.Append(AttributeSeparator + "Sport" + AttributeDividor + Sport);
-                sb.Append(AttributeSeparator + "Date" + AttributeDividor + Date);
-                sb.Append(AttributeSeparator + "TrainingType" + AttributeDividor + TrainingType);
-
-                // optional fields
-                if (DistanceM != 0)
-                    sb.Append(AttributeSeparator + "DistanceM" + AttributeDividor + DistanceM);
-                if (Calories != 0)
-                    sb.Append(AttributeSeparator + "Calories" + AttributeDividor + Calories);
-                if (AverageHr != 0)
-                    sb.Append(AttributeSeparator + "AverageHr" + AttributeDividor + AverageHr);
-                if (HrZones != null)
-                    sb.Append(AttributeSeparator + "HrZones" + AttributeDividor + HrZones);
-                if (Note != "")
-                    sb.Append(AttributeSeparator + "Note" + AttributeDividor + Note);
-                if (Feeling != Common.Index.None)
-                    sb.Append(AttributeSeparator + "Feeling" + AttributeDividor + Feeling);
-                // TODO: Save SweatData
-                
-                return sb.ToString();
-            }
-        }
 
         #endregion
     }

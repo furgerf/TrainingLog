@@ -53,7 +53,7 @@ namespace TrainingLog.Controls
 
         private void ValidateText(object sender, EventArgs e)
         {
-            BackColor = IsValueValid || Text.Equals(string.Empty) ? Color.White : Color.LightSalmon;
+            BackColor = IsValueValid || Text.Equals(string.Empty) ? Color.White : Color.Firebrick;
         }
 
         #endregion

@@ -1,19 +1,24 @@
 ﻿using System;
-using System.IO;
 using System.Windows.Forms;
 
 namespace TrainingLog.Forms
 {
-    public partial class BioDataEntryForm : Form
+    public partial class BiodataEntryForm : Form
     {
-        public static BioDataEntryForm GetInstance
+        #region Static Access
+
+        public static BiodataEntryForm GetInstance
         {
-            get { return _instance ?? (_instance = new BioDataEntryForm()); }
+            get { return _instance ?? (_instance = new BiodataEntryForm()); }
         }
 
-        private static BioDataEntryForm _instance;
+        private static BiodataEntryForm _instance;
 
-        public BioDataEntryForm()
+        #endregion
+
+        #region Constructor
+
+        public BiodataEntryForm()
         {
             InitializeComponent();
 
@@ -27,6 +32,10 @@ namespace TrainingLog.Forms
                 comFeeling.Items.Add(Enum.GetName(typeof (Common.Index), i));
         }
 
+        #endregion
+
+        #region Main Methods
+
         private void ResetForm()
         {
             numSleepDuration.Value = 8;
@@ -38,6 +47,10 @@ namespace TrainingLog.Forms
             txtNibbles.Text = "";
             txtNotes.Text = "";
         }
+
+        #endregion
+
+        #region Event Handling
 
         private void BioDataEntryFormFormClosing(object sender, FormClosingEventArgs e)
         {
@@ -51,7 +64,7 @@ namespace TrainingLog.Forms
 
         private void ButOkClick(object sender, EventArgs e)
         {
-            var entry = new BioDataEntry
+            var entry = new BiodataEntry
                             {
                                 Date = DateTime.Today,
                                 SleepDuration = new TimeSpan(0, (int) (60*numSleepDuration.Value), 0),
@@ -91,5 +104,7 @@ namespace TrainingLog.Forms
                 Close();
             }
         }
+
+        #endregion
     }
 }

@@ -1,5 +1,5 @@
 using System;
-using System.Runtime.Serialization;
+using System.Windows.Forms;
 
 namespace TrainingLog
 {
@@ -92,6 +92,7 @@ namespace TrainingLog
 
         public void Normailze(TimeSpan duration)
         {
+            MessageBox.Show("Should fix normalizing (last zone is messed up)");
             var sum = Zone1.TotalSeconds + Zone2.TotalSeconds + Zone3.TotalSeconds + Zone4.TotalSeconds +
                       Zone5.TotalSeconds;
 

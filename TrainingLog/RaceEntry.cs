@@ -28,16 +28,6 @@ namespace TrainingLog
 
         #region Main Methods
 
-        public static RaceEntry ParseRaceEntry (string data)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override string LogString
-        {
-            get { throw new NotImplementedException(); }
-        }
-
         #endregion
     }
 }

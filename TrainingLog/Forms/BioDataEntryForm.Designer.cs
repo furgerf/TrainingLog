@@ -1,6 +1,6 @@
 ﻿namespace TrainingLog.Forms
 {
-    partial class BioDataEntryForm
+    partial class BiodataEntryForm
     {
         /// <summary>
         /// Required designer variable.
@@ -312,7 +312,7 @@
             this.butCancel.UseVisualStyleBackColor = true;
             this.butCancel.Click += new System.EventHandler(this.ButCancelClick);
             // 
-            // BioDataEntryForm
+            // BiodataEntryForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -325,7 +325,7 @@
             this.Controls.Add(this.grpHeartRate);
             this.Controls.Add(this.grpSleep);
             this.KeyPreview = true;
-            this.Name = "BioDataEntryForm";
+            this.Name = "BiodataEntryForm";
             this.Text = "Enter BioData";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BioDataEntryFormFormClosing);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.BioDataEntryFormKeyDown);

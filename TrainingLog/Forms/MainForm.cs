@@ -29,8 +29,8 @@ namespace TrainingLog.Forms
         private void ButAddBiodataClick(object sender, EventArgs e)
         {
             Hide();
-            BioDataEntryForm.GetInstance.Show();
-            BioDataEntryForm.GetInstance.BringToFront();
+            BiodataEntryForm.GetInstance.Show();
+            BiodataEntryForm.GetInstance.BringToFront();
         }
 
         private void ButShowLogClick(object sender, EventArgs e)
@@ -59,7 +59,7 @@ namespace TrainingLog.Forms
             CloseForms = true;
 
             TrainingEntryForm.GetInstance.Close();
-            BioDataEntryForm.GetInstance.Close();
+            BiodataEntryForm.GetInstance.Close();
             TrainingLogForm.GetInstance.Close();
             StatisticsForm.GetInstance.Close();
             SettingsForm.GetInstance.Close();

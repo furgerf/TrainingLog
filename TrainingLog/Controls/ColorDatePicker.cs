@@ -10,14 +10,12 @@ namespace TrainingLog.Controls
     /// </summary>
     class ColorDatePicker : DateTimePicker
     {
-        private Color _backDisabledColor;
-
         private Color _backColor;
 
         public ColorDatePicker()
         {
             SetStyle(ControlStyles.UserPaint, true);
-            _backDisabledColor = Color.FromKnownColor(KnownColor.Control);
+            BackDisabledColor = Color.FromKnownColor(KnownColor.Control);
             BackColorChanged += (s, e) =>
                                     {
                                         if (Enabled)
@@ -38,13 +36,8 @@ namespace TrainingLog.Controls
         /// <summary>
         ///     Gets or sets the background color of the control when disabled
         /// </summary>
-        [Category("Appearance"), Description("The background color of the component when disabled")]
-        [Browsable(true)]
-        public Color BackDisabledColor
-        {
-            get { return _backDisabledColor; }
-            set { _backDisabledColor = value; }
-        }
+        [Category("Appearance"), Description("The background color of the component when disabled"), Browsable(true)]
+        public Color BackDisabledColor { get; set; }
 
         protected override void OnPaint(PaintEventArgs e)
         {

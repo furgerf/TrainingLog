@@ -134,6 +134,7 @@
             this.Name = "TrainingLogForm";
             this.Text = "Training Log";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.Activated += new System.EventHandler(this.TrainingLogFormActivated);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TrainingLogFormFormClosing);
             this.SizeChanged += new System.EventHandler(this.TrainingLogFormSizeChanged);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TrainingLogFormKeyDown);

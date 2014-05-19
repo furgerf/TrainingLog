@@ -4,6 +4,8 @@ namespace TrainingLog.Forms
 {
     public partial class SettingsForm : Form
     {
+        #region Static Access
+
         public static SettingsForm GetInstance
         {
             get { return _instance ?? (_instance = new SettingsForm()); }
@@ -11,10 +13,18 @@ namespace TrainingLog.Forms
 
         private static SettingsForm _instance;
 
+        #endregion
+
+        #region Constructor
+
         public SettingsForm()
         {
             InitializeComponent();
         }
+
+        #endregion
+
+        #region Event Handling
 
         private void SettingsFormFormClosing(object sender, FormClosingEventArgs e)
         {
@@ -30,5 +40,7 @@ namespace TrainingLog.Forms
         {
             Close();
         }
+
+        #endregion
     }
 }

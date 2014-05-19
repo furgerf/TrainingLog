@@ -1,4 +1,5 @@
 using System.Xml.Serialization;
+using System.Linq;
 
 namespace TrainingLog
 {
@@ -13,13 +14,16 @@ namespace TrainingLog
 
         [XmlArray("BiodataEntryArray")]
         [XmlArrayItem("BiodataEntryObject")]
-        public BioDataEntry[] BiodataEntries { get; set; } 
+        public BiodataEntry[] BiodataEntries { get; set; } 
+
+        [XmlIgnore]
+        public Entry[] AllEntries { get { return TrainingEntries.Cast<Entry>().Concat(BiodataEntries).ToArray(); } }
 
         #endregion
 
         #region Constructor
 
-        public EntryList(TrainingEntry[] trainingEntries, BioDataEntry[] biodataEntries)
+        public EntryList(TrainingEntry[] trainingEntries, BiodataEntry[] biodataEntries)
         {
             TrainingEntries = trainingEntries;
             BiodataEntries = biodataEntries;

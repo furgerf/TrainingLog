@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -182,21 +181,7 @@ namespace TrainingLog.Forms
             return true;
         }
 
-        //private Enum GetTrainingType()
-        //{
-        //    switch ((Common.Sport)comSport.SelectedIndex)
-        //    {
-        //        case Common.Sport.Running:
-        //        case Common.Sport.Cycling:
-        //            return (Common.EnduranceType) comTrainingType.SelectedIndex;
-        //        case Common.Sport.Squash:
-        //            return (Common.SquashType) comTrainingType.SelectedIndex;
-        //        default:
-        //            return Common.TrainingType.None;
-        //    }
-        //}
-
-#endregion
+        #endregion
 
         #region Event Handling
 
@@ -206,26 +191,9 @@ namespace TrainingLog.Forms
             Close();
         }
 
-        //private void NumericTextChanged(object sender, KeyPressEventArgs e)
-        //{
-        //    if (!char.IsControl(e.KeyChar)
-        //        && !char.IsDigit(e.KeyChar)
-        //        && e.KeyChar != '.')
-        //    {
-        //        e.Handled = true;
-        //    }
-
-        //    // only allow one decimal point
-        //    if (e.KeyChar == '.'
-        //        && ((TextBox) sender).Text.IndexOf('.') > -1)
-        //    {
-        //        e.Handled = true;
-        //    }
-        //}
-
         private void ChkSweatDataCheckedChanged(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            MessageBox.Show("Not implemented!");
         }
 
         private void ComSportSelectedIndexChanged(object sender, EventArgs e)

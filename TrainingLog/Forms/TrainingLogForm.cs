@@ -9,23 +9,23 @@ namespace TrainingLog.Forms
 {
     public partial class TrainingLogForm : Form
     {
+        #region Public Fields
+
+        public static TrainingLogForm GetInstance
+        {
+            get { return _instance ?? (_instance = new TrainingLogForm()); }
+        }
+
+        #endregion
+
+        #region Private Fields
+
+        private static TrainingLogForm _instance;
+
         private readonly EntryListControl _elcTraining;
         private readonly EntryListControl _elcBiodata;
         private readonly EntryListControl _elcRace;
         private readonly EntryListControl _elcUnified;
-
-        private static EntryListColumn[] MergeColumnData(IList<string> headers, IList<int> widths)
-        {
-            if (headers.Count != widths.Count)
-                throw new ArgumentException();
-
-
-            var result = new EntryListColumn[headers.Count];
-            for (var i = 0; i < headers.Count; i++)
-                result[i] = new EntryListColumn(headers[i], widths[i]);
-
-            return result;
-        }
 
         private readonly static string[] TrainingHeaders = new[]
                            {
@@ -38,13 +38,13 @@ namespace TrainingLog.Forms
                                "Date", "Sleep", "Rest HR", "OwnIndex", "Weight", "Feeling", "Nibbles", "Notes"
                            };
         private static readonly int[] BiodataWidths = new[] { 75, 100, 60, 60, 45, 70, 110, 150 };
-        
+
         private readonly static string[] RaceHeader = new[]
                            {
                                "Date"
                            };
         private static readonly int[] RaceWidths = new[] { 1 };
-        
+
         private readonly static string[] UnifiedHeader = new[]
                            {
                                "Date", "Description", "Feeling", "Heart Rate", "Distance/Weight", "Calories", "Notes"
@@ -60,25 +60,38 @@ namespace TrainingLog.Forms
 
         private int LeftX { get { return grpMain.Location.X; } }
 
-        public static TrainingLogForm GetInstance
-        {
-            get { return _instance ?? (_instance = new TrainingLogForm()); }
-        }
+        #endregion
 
-        private static TrainingLogForm _instance;
+        #region Constructor
 
         public TrainingLogForm()
         {
             InitializeComponent();
 
-            _elcTraining = new EntryListControl { EntryName = "Training", Columns = MergeColumnData(TrainingHeaders, TrainingWidths), ControlsEnabled = chkEdit.Checked, ParseableString = GetParseableStringTraining};
+            _elcTraining = new EntryListControl { EntryName = "Training", Columns = MergeColumnData(TrainingHeaders, TrainingWidths), ControlsEnabled = chkEdit.Checked };
             _elcBiodata = new EntryListControl { EntryName = "Bio Data", Columns = MergeColumnData(BiodataHeader, BiodataWidths), FilterVisible = false, ControlsEnabled = chkEdit.Checked };
             _elcRace = new EntryListControl { EntryName = "Race", Columns = MergeColumnData(RaceHeader, RaceWidths), ControlsEnabled = chkEdit.Checked };
             _elcUnified = new EntryListControl { EntryName = "All", Columns = MergeColumnData(UnifiedHeader, UnifiedWidths), ControlsEnabled = chkEdit.Checked };
 
             //WindowState = FormWindowState.Normal;
 
-            Controls.AddRange(new Control[]{ _elcTraining, _elcBiodata, _elcRace, _elcUnified });
+            Controls.AddRange(new Control[] { _elcTraining, _elcBiodata, _elcRace, _elcUnified });
+        }
+
+        #endregion
+
+        #region Main Methods
+
+        private static EntryListColumn[] MergeColumnData(IList<string> headers, IList<int> widths)
+        {
+            if (headers.Count != widths.Count)
+                throw new ArgumentException();
+
+            var result = new EntryListColumn[headers.Count];
+            for (var i = 0; i < headers.Count; i++)
+                result[i] = new EntryListColumn(headers[i], widths[i]);
+
+            return result;
         }
 
         public static Color GetColor(double percentage, Color from, Color middle, Color to)
@@ -91,78 +104,6 @@ namespace TrainingLog.Forms
             return Color.FromArgb(from.R + (int)(percentage * (to.R - from.R)),
                                   from.G + (int)(percentage * (to.G - from.G)),
                                   from.B + (int)(percentage * (to.B - from.B)));
-        }
-
-        private void TrainingLogFormFormClosing(object sender, FormClosingEventArgs e)
-        {
-            Hide();
-
-            MainForm.GetInstance.Show();
-            MainForm.GetInstance.BringToFront();
-
-            e.Cancel = !MainForm.GetInstance.CloseForms;
-        }
-
-        private void TrainingLogFormKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Escape)
-                Close();
-        }
-
-        private void EntrySelectionChanged(object sender, EventArgs e)
-        {
-            if (chkUnified.Checked)
-            {
-                _elcUnified.Visible = true;
-                _elcTraining.Visible = false;
-                _elcBiodata.Visible = false;
-                _elcRace.Visible = false;
-
-                PlaceOneEntryList(_elcUnified);
-
-                AddUnifiedEntries();
-
-                return;
-            }
-
-            _elcUnified.Visible = false;
-
-            var visible = new List<EntryListControl>();
-            var invisible = new List<EntryListControl>();
-
-            (chkTraining.Checked ? visible : invisible).Add(_elcTraining);
-            (chkBiodata.Checked ? visible : invisible).Add(_elcBiodata);
-            (chkRace.Checked ? visible : invisible).Add(_elcRace);
-
-            foreach (var c in visible)
-                c.Visible = true;
-
-            foreach (var c in invisible)
-                c.Visible = false;
-
-            switch (visible.Count)
-            {
-                case 0:
-                    break;
-                case 1:
-                    PlaceOneEntryList(visible[0]);
-                    break;
-                case 2:
-                    PlaceTwoEntryLists(visible[0], visible[1]);
-                    break;
-                case 3:
-                    PlaceThreeEntryLists(visible[0], visible[1], visible[2]);
-                    break;
-                default:
-                    throw new Exception();
-            }
-
-            if (chkTraining.Checked)
-                AddTrainingEntries();
-            if (chkBiodata.Checked)
-                AddBiodataEntries();
-            if (chkRace.Checked)
-                AddRaceEntries();
         }
 
         private void PlaceThreeEntryLists(Control elc1, Control elc2, Control elc3)
@@ -184,7 +125,7 @@ namespace TrainingLog.Forms
         {
             elc1.Location = new Point(LeftX, TopY);
             var height = (ScreenSize.Height - elc1.Location.Y - (WindowState == FormWindowState.Maximized ? 28 : 14) - 6) / 2;
-            var width = ScreenSize.Width - 2*elc1.Location.X;
+            var width = ScreenSize.Width - 2 * elc1.Location.X;
 
             elc1.Size = new Size(width, height);
 
@@ -196,35 +137,6 @@ namespace TrainingLog.Forms
         {
             elc.Location = new Point(LeftX, TopY);
             elc.Size = new Size(ScreenSize.Width - 2 * elc.Location.X, ScreenSize.Height - elc.Location.Y - (WindowState == FormWindowState.Maximized ? 28 : 14));
-        }
-
-        private void ButCloseClick(object sender, EventArgs e)
-        {
-            Close();
-        }
-
-        private void TrainingLogFormSizeChanged(object sender, EventArgs e)
-        {
-            EntrySelectionChanged(null, null);
-        }
-
-        private void ChkEditCheckedChanged(object sender, EventArgs e)
-        {
-            //if (chkEdit.Checked)
-            //{
-            //    if (
-            //        MessageBox.Show("Are you sure you want to edit the data?", "Enable editing", MessageBoxButtons.YesNo,
-            //                        MessageBoxIcon.Question) == DialogResult.No)
-            //    {
-            //        chkEdit.Checked = false;
-            //        return;
-            //    }
-            //}
-
-            _elcTraining.ControlsEnabled = chkEdit.Checked;
-            _elcBiodata.ControlsEnabled = chkEdit.Checked;
-            _elcRace.ControlsEnabled = chkEdit.Checked;
-            _elcUnified.ControlsEnabled = chkEdit.Checked;
         }
 
         private void AddTrainingEntries()
@@ -285,7 +197,7 @@ namespace TrainingLog.Forms
         private void AddBiodataEntries()
         {
             _elcBiodata.ClearEntries();
-            foreach (var entry in Model.Instance.BioDataEntries)
+            foreach (var entry in Model.Instance.BiodataEntries)
             {
                 var comFeeling = new ComboBox { FlatStyle = FlatStyle.Flat, DropDownStyle = ComboBoxStyle.DropDownList };
                 foreach (var i in Enum.GetNames(typeof(Common.Index)))
@@ -293,7 +205,7 @@ namespace TrainingLog.Forms
                         break;
                     else
                         comFeeling.Items.Add(i);
-                comFeeling.Text = entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof(Common.Index), entry.Feeling);
+                comFeeling.Text = entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof(Common.Index), (entry.Feeling ?? Common.Index.Count));
                 comFeeling.SelectedIndexChanged += (s, e) =>
                 {
                     comFeeling.BackColor = GetColor((double)comFeeling.SelectedIndex / (comFeeling.Items.Count - 1), Color.Red, Color.Yellow, Color.Green);
@@ -341,7 +253,7 @@ namespace TrainingLog.Forms
                 new TextBox{ Text = entry.Note, BorderStyle = BorderStyle.None }}, entry))
                     MessageBox.Show("Problem adding entry " + entry, "Problem adding entry", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-                comFeeling.BackColor = entry.Feeling < Common.Index.Count ? GetColor((double)entry.Feeling / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) : comFeeling.BackColor;
+                comFeeling.BackColor = entry.Feeling < Common.Index.Count ? GetColor((double)(entry.Feeling ?? Common.Index.Count) / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) : comFeeling.BackColor;
             }
             _elcBiodata.SortByDate();
         }
@@ -358,16 +270,16 @@ namespace TrainingLog.Forms
                     if (!_elcUnified.AddEntry(new Control[]{
                     new ColorDatePicker{ Value = entry.Date ?? DateTime.MinValue, Format = DateTimePickerFormat.Short },
                     new TextBox{ Text = training.Sport + (training.TrainingTypeSpecified ? "" : " (" + training.TrainingType + ") - " + training.Duration), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
-                    new TextBox{ Text = entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof(Common.Index), entry.Feeling), BackColor = entry.Feeling < Common.Index.Count ? GetColor((double)entry.Feeling / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) : BackColor, TextAlign = HorizontalAlignment.Center, BorderStyle = BorderStyle.None },
+                    new TextBox{ Text = entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof(Common.Index), (entry.Feeling ?? Common.Index.Count)), BackColor = entry.Feeling < Common.Index.Count ? GetColor((double)(entry.Feeling ?? Common.Index.Count) / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) : BackColor, TextAlign = HorizontalAlignment.Center, BorderStyle = BorderStyle.None },
                     new ZoneDataBox { ZoneData = training.HrZones ?? ZoneData.Empty(), OverlayText = training.AverageHr > 0 ? training.AverageHr.ToString() : "", Font = new Font(FontFamily.GenericSansSerif, 12, FontStyle.Bold)},
                     new TextBox{ Text = training.DistanceKm > 0 ? training.DistanceKm.ToString(CultureInfo.InvariantCulture) + " km" : "", BorderStyle =  BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                     new TextBox{ Text = training.Calories > 0 ? training.Calories.ToString() + " kcal" : "", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                     new TextBox{ Text = entry.Note, BorderStyle = BorderStyle.None }}, entry))
                         MessageBox.Show("Problem adding entry " + entry, "Problem adding entry", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                else if (entry is BioDataEntry)
+                else if (entry is BiodataEntry)
                 {
-                    var biodata = entry as BioDataEntry;
+                    var biodata = entry as BiodataEntry;
                     var hr = biodata.RestingHeartRate != 0 ? "Rest: " + biodata.RestingHeartRate : "";
                     if (biodata.OwnIndex != 0)
                         if (hr.Length == 0)
@@ -377,8 +289,8 @@ namespace TrainingLog.Forms
 
                     if (!_elcUnified.AddEntry(new Control[]{
                     new ColorDatePicker{ Value = entry.Date ?? DateTime.MinValue, Format = DateTimePickerFormat.Short },
-                    new TextBox { Text = "Sleep: " + biodata.SleepDuration + " (" + biodata.SleepQuality + ")", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center, BackColor = biodata.SleepQuality < Common.Index.Count ? GetColor((double)biodata.SleepQuality / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) : BackColor },
-                    new TextBox{ Text = entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof(Common.Index), entry.Feeling), BackColor = entry.Feeling < Common.Index.Count ? GetColor((double)entry.Feeling / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) : BackColor, TextAlign = HorizontalAlignment.Center, BorderStyle = BorderStyle.None },
+                    new TextBox { Text = "Sleep: " + biodata.SleepDuration + " (" + biodata.SleepQuality + ")", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center, BackColor = biodata.SleepQuality < Common.Index.Count ? GetColor((double)(biodata.SleepQuality ?? Common.Index.Count) / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) : BackColor },
+                    new TextBox{ Text = entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof(Common.Index), (entry.Feeling ?? Common.Index.Count)), BackColor = entry.Feeling < Common.Index.Count ? GetColor((double)(entry.Feeling ?? Common.Index.Count) / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) : BackColor, TextAlign = HorizontalAlignment.Center, BorderStyle = BorderStyle.None },
                     new TextBox{ Text = hr, BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                     new TextBox{ Text = biodata.Weight > 0 ? biodata.Weight.ToString() + " kg" : "", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                     new TextBox{ BorderStyle = BorderStyle.None },
@@ -396,55 +308,169 @@ namespace TrainingLog.Forms
             throw new NotImplementedException();
         }
 
-        private string GetParseableStringTraining(string[] data)
+        //private string GetParseableStringTraining(string[] data)
+        //{
+        //    ZoneData zd;
+        //    if (!ZoneData.TryParse(data[5].Split('\t')[1], out zd))
+        //        return null;
+        //    var sport = (Common.Sport)Enum.Parse(typeof(Common.Sport), data[1].IndexOf('(') > 0 ? data[1].Substring(0, data[1].IndexOf('(') - 1) : data[1]);
+        //    var trainingType = (Common.TrainingType)Enum.Parse(typeof(Common.TrainingType), data[1].Substring(data[1].IndexOf('(') + 1, data[1].IndexOf(')') - data[1].IndexOf('(') - 1));
+
+        //    //if (data[1].IndexOf('(') > 0)
+        //    //{
+        //    //    sport = (Common.Sport) Enum.Parse(typeof (Common.Sport), data[1].Substring(0, data[1].IndexOf('(') - 1));
+        //    //    var type = GetType();
+        //    //    switch (sport)
+        //    //    {
+        //    //        case Common.Sport.Running:
+        //    //        case Common.Sport.Cycling:
+        //    //            type = typeof(Common.EnduranceType);
+        //    //            break;
+        //    //        case Common.Sport.Squash:
+        //    //            type = typeof(Common.SquashType);
+        //    //            break;
+        //    //    }
+
+        //    //    trainingType = (Common.TrainingType)Enum.Parse(type, data[1].Substring(data[1].IndexOf('(') + 1, data[1].IndexOf(')') - data[1].IndexOf('(') - 1));
+
+        //    //    if (type == typeof (Common.EnduranceType))
+        //    //        trainingType = (Common.EnduranceType) trainingType;
+        //    //    if (type == typeof (Common.SquashType))
+        //    //        trainingType = (Common.SquashType) trainingType;
+        //    //} else
+        //    //{
+        //    //    sport = (Common.Sport) Enum.Parse(typeof (Common.Sport), data[1]);
+        //    //    trainingType = Common.TrainingType.None;
+        //    //}
+
+        //    var entry = new TrainingEntry(TimeSpan.Parse(data[2].Replace('.', ':')))
+        //    {
+        //        AverageHr = int.Parse(data[4]),
+        //        Calories = int.Parse(data[3]),
+        //        Date = DateTime.ParseExact(data[0], "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None),
+        //        DistanceKm = double.Parse(data[6]),
+        //        Feeling = (Common.Index)Enum.Parse(typeof(Common.Index), data[7]),
+        //        Note = data[8],
+        //        HrZones = zd,
+        //        Sport = sport,
+        //        TrainingType = trainingType
+        //    };
+        //    return entry.LogString;
+        //}
+
+        #endregion
+
+        #region Event Handling
+
+        private void TrainingLogFormFormClosing(object sender, FormClosingEventArgs e)
         {
-            ZoneData zd;
-            if (!ZoneData.TryParse(data[5].Split('\t')[1], out zd))
-                return null;
-            var sport = (Common.Sport)Enum.Parse(typeof(Common.Sport), data[1].IndexOf('(') > 0 ? data[1].Substring(0, data[1].IndexOf('(') - 1) : data[1]);
-            var trainingType = (Common.TrainingType)Enum.Parse(typeof(Common.TrainingType), data[1].Substring(data[1].IndexOf('(') + 1, data[1].IndexOf(')') - data[1].IndexOf('(') - 1));
+            Hide();
 
-            //if (data[1].IndexOf('(') > 0)
-            //{
-            //    sport = (Common.Sport) Enum.Parse(typeof (Common.Sport), data[1].Substring(0, data[1].IndexOf('(') - 1));
-            //    var type = GetType();
-            //    switch (sport)
-            //    {
-            //        case Common.Sport.Running:
-            //        case Common.Sport.Cycling:
-            //            type = typeof(Common.EnduranceType);
-            //            break;
-            //        case Common.Sport.Squash:
-            //            type = typeof(Common.SquashType);
-            //            break;
-            //    }
+            MainForm.GetInstance.Show();
+            MainForm.GetInstance.BringToFront();
 
-            //    trainingType = (Common.TrainingType)Enum.Parse(type, data[1].Substring(data[1].IndexOf('(') + 1, data[1].IndexOf(')') - data[1].IndexOf('(') - 1));
-
-            //    if (type == typeof (Common.EnduranceType))
-            //        trainingType = (Common.EnduranceType) trainingType;
-            //    if (type == typeof (Common.SquashType))
-            //        trainingType = (Common.SquashType) trainingType;
-            //} else
-            //{
-            //    sport = (Common.Sport) Enum.Parse(typeof (Common.Sport), data[1]);
-            //    trainingType = Common.TrainingType.None;
-            //}
-
-            var entry = new TrainingEntry(TimeSpan.Parse(data[2].Replace('.', ':')))
-                            {
-                                AverageHr = int.Parse(data[4]),
-                                Calories = int.Parse(data[3]),
-                                Date = DateTime.ParseExact(data[0], "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None),
-                                DistanceKm = double.Parse(data[6]),
-                                Feeling = (Common.Index) Enum.Parse(typeof (Common.Index), data[7]),
-                                Note = data[8],
-                                HrZones = zd,
-                                Sport = sport,
-                                TrainingType = trainingType
-                            };
-            return entry.LogString;
+            e.Cancel = !MainForm.GetInstance.CloseForms;
         }
 
+        private void TrainingLogFormKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+                Close();
+        }
+
+        private void EntrySelectionChanged(object sender, EventArgs e)
+        {
+            if (chkUnified == null || _elcTraining == null)
+                return;
+
+            if (chkUnified.Checked)
+            {
+                _elcUnified.Visible = true;
+                _elcTraining.Visible = false;
+                _elcBiodata.Visible = false;
+                _elcRace.Visible = false;
+
+                PlaceOneEntryList(_elcUnified);
+
+                AddUnifiedEntries();
+
+                return;
+            }
+
+            _elcUnified.Visible = false;
+
+            var visible = new List<EntryListControl>();
+            var invisible = new List<EntryListControl>();
+
+            (chkTraining.Checked ? visible : invisible).Add(_elcTraining);
+            (chkBiodata.Checked ? visible : invisible).Add(_elcBiodata);
+            (chkRace.Checked ? visible : invisible).Add(_elcRace);
+
+            foreach (var c in visible)
+                c.Visible = true;
+
+            foreach (var c in invisible)
+                c.Visible = false;
+
+            switch (visible.Count)
+            {
+                case 0:
+                    break;
+                case 1:
+                    PlaceOneEntryList(visible[0]);
+                    break;
+                case 2:
+                    PlaceTwoEntryLists(visible[0], visible[1]);
+                    break;
+                case 3:
+                    PlaceThreeEntryLists(visible[0], visible[1], visible[2]);
+                    break;
+                default:
+                    throw new Exception();
+            }
+
+            if (chkTraining.Checked)
+                AddTrainingEntries();
+            if (chkBiodata.Checked)
+                AddBiodataEntries();
+            if (chkRace.Checked)
+                AddRaceEntries();
+        }
+
+        private void ButCloseClick(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void TrainingLogFormSizeChanged(object sender, EventArgs e)
+        {
+            EntrySelectionChanged(null, null);
+        }
+
+        private void ChkEditCheckedChanged(object sender, EventArgs e)
+        {
+            //if (chkEdit.Checked)
+            //{
+            //    if (
+            //        MessageBox.Show("Are you sure you want to edit the data?", "Enable editing", MessageBoxButtons.YesNo,
+            //                        MessageBoxIcon.Question) == DialogResult.No)
+            //    {
+            //        chkEdit.Checked = false;
+            //        return;
+            //    }
+            //}
+
+            _elcTraining.ControlsEnabled = chkEdit.Checked;
+            _elcBiodata.ControlsEnabled = chkEdit.Checked;
+            _elcRace.ControlsEnabled = chkEdit.Checked;
+            _elcUnified.ControlsEnabled = chkEdit.Checked;
+        }
+
+        private void TrainingLogFormActivated(object sender, EventArgs e)
+        {
+            EntrySelectionChanged(null, null);
+        }
+
+        #endregion
     }
 }

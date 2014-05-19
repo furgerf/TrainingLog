@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 using GlacialComponents.Controls;
 using TrainingLog.Forms;
@@ -71,9 +70,9 @@ namespace TrainingLog.Controls
             }
         }
 
-        public GetParseableString ParseableString { get; set; }
+        //public GetParseableString ParseableString { get; set; }
 
-        public delegate string GetParseableString(string[] data);
+        //public delegate string GetParseableString(string[] data);
 
         #endregion
 
@@ -137,7 +136,7 @@ namespace TrainingLog.Controls
             var zd = ((ZoneDataBox) c).ZoneData;
 
             var s = zd.IsEmpty ? "0" : (zd.GetZonePercentage(5)*5 + zd.GetZonePercentage(4)*4 + zd.GetZonePercentage(3)*3 +
-                       zd.GetZonePercentage(2)*2 + zd.GetZonePercentage(1)).ToString();
+                       zd.GetZonePercentage(2)*2 + zd.GetZonePercentage(1)).ToString(CultureInfo.InvariantCulture);
 
             if (s.IndexOf('.') == -1)
                 while (s.Length < IntMaxDigits)
@@ -190,6 +189,7 @@ namespace TrainingLog.Controls
 
         public void ClearEntries()
         {
+            _entryMap.Clear();
             gliEntries.Items.Clear();
         }
 
@@ -322,7 +322,7 @@ namespace TrainingLog.Controls
             // remove from model (and text)
             Model.Instance.RemoveEntry(entry);
 
-            foreach (var c in from object c in gliEntries.Items where ((GLItem) c).SubItems[1].Control.Equals(sender) select c)
+            foreach (var c in from object c in gliEntries.Items where ((GLItem) c).SubItems[1].Control.Name.Equals(((Control)sender).Name) select c)
             {
                 // remove from list
                 gliEntries.Items.Remove((GLItem) c);
@@ -336,43 +336,45 @@ namespace TrainingLog.Controls
                 return;
             }
 
-            MessageBox.Show("Error while removing entry from list: Item not found", "Error while removing",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //MessageBox.Show("Error while removing entry from list: Item not found", "Error while removing",
+            //                MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void SaveEntry(object sender, EventArgs e)
         {
-            if (ParseableString == null)
-            {
-                MessageBox.Show("Saving modified entry is not possible", "Saving not possible", MessageBoxButtons.OK,
-                                MessageBoxIcon.Exclamation);
-                return;
-            }
+            throw new NotImplementedException();
 
-            var id = int.Parse(((Control)sender).Name);
-            var itemIndex = -1;
-            foreach (var i in from object i in gliEntries.Items where ((GLItem) i).SubItems[0].Control.Name.Equals(id.ToString()) select i)
-            {
-                itemIndex = gliEntries.Items.FindItemIndex((GLItem)i);
-                break;
-            }
+            //if (ParseableString == null)
+            //{
+            //    MessageBox.Show("Saving modified entry is not possible", "Saving not possible", MessageBoxButtons.OK,
+            //                    MessageBoxIcon.Exclamation);
+            //    return;
+            //}
 
-            var data = new string[gliEntries.Columns.Count - 2];
-            for (var i = 0; i < data.Length; i++)
-                data[i] = gliEntries.Items[itemIndex].SubItems[i + 2].Text;
+            //var id = int.Parse(((Control)sender).Name);
+            //var itemIndex = -1;
+            //foreach (var i in from object i in gliEntries.Items where ((GLItem) i).SubItems[0].Control.Name.Equals(id.ToString()) select i)
+            //{
+            //    itemIndex = gliEntries.Items.FindItemIndex((GLItem)i);
+            //    break;
+            //}
 
-            // parse modified item
-            var entry = Entry.Parse(ParseableString(data));
+            //var data = new string[gliEntries.Columns.Count - 2];
+            //for (var i = 0; i < data.Length; i++)
+            //    data[i] = gliEntries.Items[itemIndex].SubItems[i + 2].Text;
 
-            return;
-            // udpate model
-            Model.Instance.RemoveEntry(_entryMap[id]);
-            Model.Instance.AddEntry(entry);
+            //// parse modified item
+            //var entry = Entry.Parse(ParseableString(data));
 
-            // update dictionary
-            _entryMap[id] = entry;
+            //// udpate model
+            //Model.Instance.RemoveEntry(_entryMap[id]);
+            //Model.Instance.AddEntry(entry);
+
+            //// update dictionary
+            //_entryMap[id] = entry;
 
             // update controls
+            // TODO
         }
 
         #endregion
