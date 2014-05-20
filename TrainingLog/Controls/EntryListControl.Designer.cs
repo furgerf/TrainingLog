@@ -39,7 +39,7 @@
             // 
             this.grpFilter.Location = new System.Drawing.Point(0, 0);
             this.grpFilter.Name = "grpFilter";
-            this.grpFilter.Size = new System.Drawing.Size(600, 100);
+            this.grpFilter.Size = new System.Drawing.Size(600, 10);
             this.grpFilter.TabIndex = 0;
             this.grpFilter.TabStop = false;
             this.grpFilter.Text = "Filter";

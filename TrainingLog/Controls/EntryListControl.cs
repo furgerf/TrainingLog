@@ -70,10 +70,6 @@ namespace TrainingLog.Controls
             }
         }
 
-        //public GetParseableString ParseableString { get; set; }
-
-        //public delegate string GetParseableString(string[] data);
-
         #endregion
 
         #region Private Fields
@@ -122,34 +118,40 @@ namespace TrainingLog.Controls
 
             _markItem = (item, visible) =>
                             {
-                                if ((!visible && _hiddenItems.Contains(item)) ||
-                                    (visible && !_hiddenItems.Contains(item)))
+                                if (visible || _hiddenItems.Contains(item))
                                     return;
 
-                                (visible ? _itemsToBeShown : _itemsToBeHidden).Add(item);
+                                _itemsToBeShown.Remove(item);
+                                _itemsToBeHidden.Add(item);
                             };
 
             _applyItemVisibility = () =>
-                            {
-                                foreach (var item in _itemsToBeShown)
-                                {
-                                    gliEntries.Items.Add(item);
-                                    _hiddenItems.Remove(item);
-                                }
+                                       {
+                                           if (_itemsToBeShown.Count + _itemsToBeHidden.Count == 0)
+                                               return;
 
-                                foreach (var item in _itemsToBeHidden)
-                                {
-                                    gliEntries.Items.Remove(item);
-                                    _hiddenItems.Add(item);
-                                }
+                                           foreach (var item in _itemsToBeShown)
+                                           {
+                                               gliEntries.Items.Add(item);
+                                               _hiddenItems.Remove(item);
 
-                                _itemsToBeHidden.Clear();
-                                _itemsToBeShown.Clear();
+                                               foreach (var c in gliEntries.Items[gliEntries.Items.Count - 1].SubItems)
+                                                   ((GLSubItem) c).Control.Invalidate();
+                                           }
 
-                                // cleanup UI
-                                SetBackColor();
-                                gliEntries.Invalidate();
-                            };
+                                           foreach (var item in _itemsToBeHidden)
+                                           {
+                                               gliEntries.Items.Remove(item);
+                                               _hiddenItems.Add(item);
+                                           }
+
+                                           _itemsToBeHidden.Clear();
+                                           _itemsToBeShown.Clear();
+
+                                           // cleanup UI
+                                           //SetBackColor();
+                                           gliEntries.Invalidate();
+                                       };
 
             _glcSave = new GLColumn { Text = "", Width = 23 };
             _glcDelete = new GLColumn { Text = "", Width = 23 };
@@ -226,16 +228,39 @@ namespace TrainingLog.Controls
 
         public void ApplyFilters()
         {
+            if (_itemsToBeShown.Count + _itemsToBeHidden.Count != 0)
+                throw new Exception();
+            
+            foreach (GLItem item in gliEntries.Items)
+                _itemsToBeShown.Add(item);
+
             foreach (var f in _filters)
                 f.ApplyFilter();
         }
+
+        private bool _activationHook;
 
         public void AddFilter(IFilter filter, int columnIndex, object defaultValue = null)
         {
             filter.Initialize(gliEntries.Items, _markItem, _applyItemVisibility, columnIndex + 2, defaultValue);
             _filters.Add(filter);
             grpFilter.Controls.Add((Control)filter);
-            ApplyFilters();
+
+            if (grpFilter.Height < ((Control) filter).Location.Y + ((Control) filter).Height + 6)
+                grpFilter.Height = ((Control) filter).Location.Y + ((Control) filter).Height + 6;
+
+            if (_activationHook)
+                return;
+
+            var foo = Parent;
+
+            while (!(foo is Form))
+                foo = foo.Parent;
+
+            ((Form)foo).Activated += (s, e) => ApplyFilters();
+
+            _activationHook = true;
+            //ApplyFilters();
         }
 
         public void SortByDate()
@@ -322,8 +347,7 @@ namespace TrainingLog.Controls
                     var index = txt.Contains('(') && txt.Contains(')') ? txt.Substring(txt.IndexOf('(') + 1,
                         txt.IndexOf(')') - txt.IndexOf('(') - 1) : "";
 
-                    if (//(gliEntries.Items[i].SubItems[j].Control is ComboBox) &&
-                        Enum.GetNames(typeof (Common.Index)).Contains(gliEntries.Items[i].SubItems[j].Text))
+                    if (Enum.GetNames(typeof (Common.Index)).Contains(gliEntries.Items[i].SubItems[j].Text))
                     {
                         //comfeeling
                     }
@@ -338,6 +362,8 @@ namespace TrainingLog.Controls
                     }
                 }
             }
+
+            //ApplyFilters();
         }
 
         #endregion
@@ -396,74 +422,11 @@ namespace TrainingLog.Controls
                 gliEntries.Invalidate();
                 return;
             }
-
-            //MessageBox.Show("Error while removing entry from list: Item not found", "Error while removing",
-            //                MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void SaveEntry(object sender, EventArgs e)
         {
-            //if (_hiddenItems.Count == 0)
-            //{
-            //    _hiddenItems.Add(gliEntries.Items[0]);
-
-            //    foreach (
-            //        var c in
-            //            from object c in gliEntries.Items
-            //            where ((GLItem) c).SubItems[1].Control.Name.Equals(((Control) sender).Name)
-            //            select c)
-            //    {
-            //        // remove from list
-            //        gliEntries.Items.Remove((GLItem) c);
-
-            //        // cleanup list
-            //        SetBackColor();
-            //        gliEntries.Invalidate();
-            //        return;
-            //    }
-            //}
-            //else
-            //{
-            //    gliEntries.Items.Add(_hiddenItems[0]);
-            //    // cleanup list
-            //    SetBackColor();
-            //    gliEntries.Invalidate();
-            //    _hiddenItems.RemoveAt(0);
-            //}
-
-            //throw new NotImplementedException();
-
-            //if (ParseableString == null)
-            //{
-            //    MessageBox.Show("Saving modified entry is not possible", "Saving not possible", MessageBoxButtons.OK,
-            //                    MessageBoxIcon.Exclamation);
-            //    return;
-            //}
-
-            //var id = int.Parse(((Control)sender).Name);
-            //var itemIndex = -1;
-            //foreach (var i in from object i in gliEntries.Items where ((GLItem) i).SubItems[0].Control.Name.Equals(id.ToString()) select i)
-            //{
-            //    itemIndex = gliEntries.Items.FindItemIndex((GLItem)i);
-            //    break;
-            //}
-
-            //var data = new string[gliEntries.Columns.Count - 2];
-            //for (var i = 0; i < data.Length; i++)
-            //    data[i] = gliEntries.Items[itemIndex].SubItems[i + 2].Text;
-
-            //// parse modified item
-            //var entry = Entry.Parse(ParseableString(data));
-
-            //// udpate model
-            //Model.Instance.RemoveEntry(_entryMap[id]);
-            //Model.Instance.AddEntry(entry);
-
-            //// update dictionary
-            //_entryMap[id] = entry;
-
-            // update controls
-            // TODO
+            MessageBox.Show("Not implemented");
         }
 
         #endregion

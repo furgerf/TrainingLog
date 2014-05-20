@@ -28,19 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.cdpDate = new TrainingLog.Controls.ColorDatePicker();
             this.label1 = new System.Windows.Forms.Label();
+            this.dtpDate = new System.Windows.Forms.DateTimePicker();
             this.SuspendLayout();
-            // 
-            // cdpDate
-            // 
-            this.cdpDate.BackDisabledColor = System.Drawing.SystemColors.Control;
-            this.cdpDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.cdpDate.Location = new System.Drawing.Point(70, 0);
-            this.cdpDate.Name = "cdpDate";
-            this.cdpDate.Size = new System.Drawing.Size(90, 20);
-            this.cdpDate.TabIndex = 0;
-            this.cdpDate.ValueChanged += new System.EventHandler(this.CdpDateValueChanged);
             // 
             // label1
             // 
@@ -51,14 +41,22 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "From:";
             // 
+            // dtpDate
+            // 
+            this.dtpDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpDate.Location = new System.Drawing.Point(48, 0);
+            this.dtpDate.Name = "dtpDate";
+            this.dtpDate.Size = new System.Drawing.Size(80, 20);
+            this.dtpDate.TabIndex = 2;
+            // 
             // DateFilterControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.dtpDate);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.cdpDate);
             this.Name = "DateFilterControl";
-            this.Size = new System.Drawing.Size(160, 20);
+            this.Size = new System.Drawing.Size(128, 20);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -66,7 +64,7 @@
 
         #endregion
 
-        private ColorDatePicker cdpDate;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.DateTimePicker dtpDate;
     }
 }

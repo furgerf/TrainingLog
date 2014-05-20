@@ -10,15 +10,15 @@ namespace TrainingLog
 
         [XmlElement("RestingHR")]
         public int? RestingHeartRate { get; set; }
-        public bool RestingHeartRateSpecified { get { return RestingHeartRate != null; } }
+        public bool RestingHeartRateSpecified { get { return RestingHeartRate != null && RestingHeartRate != 0; } }
 
         [XmlElement("OwnIndex")]
         public int? OwnIndex { get; set; }
-        public bool OwnIndexSpecified { get { return OwnIndex != null; } }  
+        public bool OwnIndexSpecified { get { return OwnIndex != null && OwnIndex != 0; } }  
 
         [XmlElement("Weight")]
         public decimal? Weight { get; set; }
-        public bool WeightSpecified { get { return Weight != null; } }
+        public bool WeightSpecified { get { return Weight != null && Weight != 0; } }
 
         [XmlIgnore]
         public TimeSpan? SleepDuration { get; set; }

@@ -73,11 +73,10 @@ namespace TrainingLog.Forms
             _elcRace = new EntryListControl { EntryName = "Race", Columns = MergeColumnData(RaceHeader, RaceWidths), ControlsEnabled = chkEdit.Checked };
             _elcUnified = new EntryListControl { EntryName = "All", Columns = MergeColumnData(UnifiedHeader, UnifiedWidths), ControlsEnabled = chkEdit.Checked };
 
-            _elcTraining.AddFilter(new DateFilterControl {Location = new Point(3, 12), IsMinDate = true}, 0, DateTime.Today.Subtract(new TimeSpan(10, 0, 0, 0)));
+            Controls.AddRange(new Control[] { _elcTraining, _elcBiodata, _elcRace, _elcUnified });
 
-            //WindowState = FormWindowState.Normal;
-
-            Controls.AddRange(new Control[] {_elcTraining, _elcBiodata, _elcRace, _elcUnified});
+            _elcTraining.AddFilter(new DateFilterControl { Location = new Point(3, 16), IsMinDate = true }, 0, DateTime.Today.Subtract(new TimeSpan(10, 0, 0, 0)));
+            _elcTraining.AddFilter(new DateFilterControl { Location = new Point(140, 16), IsMinDate = false }, 0);
         }
 
         #endregion

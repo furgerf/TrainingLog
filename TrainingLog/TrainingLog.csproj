@@ -48,7 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BioDataEntry.cs" />
+    <Compile Include="BiodataEntry.cs" />
     <Compile Include="Controls\ColorDatePicker.cs">
       <SubType>Component</SubType>
     </Compile>

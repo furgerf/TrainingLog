@@ -56,7 +56,7 @@ namespace TrainingLog.Controls
         public void Initialize(GLItemCollection list, Common.MarkItem markItem, Common.ApplyItemVisibility applyItemVisibility, int dateColumnIndex, object date = null)
         {
             if (date != null)
-                cdpDate.Value = (DateTime)date;
+                dtpDate.Value = (DateTime)date;
 
             _onFilterChanged = () =>
             {
@@ -86,7 +86,7 @@ namespace TrainingLog.Controls
             if (date == null)
                 throw new Exception("Don\'t know where the date control is!");
 
-            return cdpDate.Value.CompareTo(date) == 1 || (cdpDate.Value.CompareTo(date) < 0 && !IsMinDate);
+            return (dtpDate.Value.CompareTo(date) == 0) || (dtpDate.Value.CompareTo(date) < 0 ^ !IsMinDate);
         }
 
         public void ApplyFilter()

@@ -20,7 +20,7 @@ namespace TrainingLog
 
         [XmlElement("Distance")]
         public int? DistanceM { get; set; }
-        public bool DistanceMSpecified { get { return DistanceM != null; } }
+        public bool DistanceMSpecified { get { return DistanceM != null && DistanceM != 0; } }
 
         [XmlIgnore]
         public TimeSpan Pace { get { return new TimeSpan(0, (int)((Duration ?? TimeSpan.MinValue).TotalMinutes / DistanceKm), 0); } }
@@ -54,11 +54,11 @@ namespace TrainingLog
 
         [XmlElement("Calories")]
         public int? Calories { get; set; }
-        public bool CaloriesSpecified { get { return Calories != null; } }
+        public bool CaloriesSpecified { get { return Calories != null && Calories != 0; } }
 
         [XmlElement("AverageHR")]
         public int? AverageHr { get; set; }
-        public bool AverageHrSpecified { get { return AverageHr != null; } }
+        public bool AverageHrSpecified { get { return AverageHr != null && AverageHr != 0; } }
 
         [XmlIgnore]
         public ZoneData? HrZones { get; set; }
