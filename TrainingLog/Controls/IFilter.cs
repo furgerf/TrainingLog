@@ -1,4 +1,5 @@
-﻿using GlacialComponents.Controls;
+﻿using System.Windows.Forms;
+using GlacialComponents.Controls;
 
 namespace TrainingLog.Controls
 {
@@ -11,5 +12,7 @@ namespace TrainingLog.Controls
         bool IsEntryVisible(Entry entry);
 
         void ApplyFilter();
+
+        Control GetControl();
     }
 }

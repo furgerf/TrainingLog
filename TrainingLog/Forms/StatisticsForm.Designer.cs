@@ -28,63 +28,76 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.tabControl1.SuspendLayout();
+            this.tabTabs = new System.Windows.Forms.TabControl();
+            this.grpFilter = new System.Windows.Forms.GroupBox();
+            this.dfcTo = new TrainingLog.Controls.DateFilterControl();
+            this.dfcFrom = new TrainingLog.Controls.DateFilterControl();
+            this.grpFilter.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tabControl1
+            // tabTabs
             // 
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(12, 162);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(838, 271);
-            this.tabControl1.TabIndex = 0;
+            this.tabTabs.Location = new System.Drawing.Point(12, 63);
+            this.tabTabs.Name = "tabTabs";
+            this.tabTabs.SelectedIndex = 0;
+            this.tabTabs.Size = new System.Drawing.Size(513, 271);
+            this.tabTabs.TabIndex = 0;
             // 
-            // tabPage1
+            // grpFilter
             // 
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(830, 245);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "tabPage1";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.grpFilter.Controls.Add(this.dfcTo);
+            this.grpFilter.Controls.Add(this.dfcFrom);
+            this.grpFilter.Location = new System.Drawing.Point(12, 12);
+            this.grpFilter.Name = "grpFilter";
+            this.grpFilter.Size = new System.Drawing.Size(513, 45);
+            this.grpFilter.TabIndex = 1;
+            this.grpFilter.TabStop = false;
+            this.grpFilter.Text = "Filer";
             // 
-            // tabPage2
+            // dfcTo
             // 
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(192, 74);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "tabPage2";
-            this.tabPage2.UseVisualStyleBackColor = true;
+            this.dfcTo.DateColumnIndex = 0;
+            this.dfcTo.IsMaxDate = true;
+            this.dfcTo.IsMinDate = false;
+            this.dfcTo.Location = new System.Drawing.Point(140, 19);
+            this.dfcTo.Name = "dfcTo";
+            this.dfcTo.Size = new System.Drawing.Size(128, 20);
+            this.dfcTo.TabIndex = 1;
+            // 
+            // dfcFrom
+            // 
+            this.dfcFrom.DateColumnIndex = 0;
+            this.dfcFrom.IsMaxDate = false;
+            this.dfcFrom.IsMinDate = true;
+            this.dfcFrom.Location = new System.Drawing.Point(6, 19);
+            this.dfcFrom.Name = "dfcFrom";
+            this.dfcFrom.Size = new System.Drawing.Size(128, 20);
+            this.dfcFrom.TabIndex = 0;
             // 
             // StatisticsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(862, 445);
-            this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.grpFilter);
+            this.Controls.Add(this.tabTabs);
             this.KeyPreview = true;
             this.Name = "StatisticsForm";
             this.Text = "Training Statistics";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.StatisticsFormFormClosing);
+            this.SizeChanged += new System.EventHandler(this.StatisticsFormSizeChanged);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.StatisticsFormKeyDown);
-            this.tabControl1.ResumeLayout(false);
+            this.grpFilter.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.TabControl tabTabs;
+        private System.Windows.Forms.GroupBox grpFilter;
+        private Controls.DateFilterControl dfcTo;
+        private Controls.DateFilterControl dfcFrom;
     }
 }

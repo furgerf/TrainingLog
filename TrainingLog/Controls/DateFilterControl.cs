@@ -100,6 +100,11 @@ namespace TrainingLog.Controls
                 _onFilterChanged();
         }
 
+        public Control GetControl()
+        {
+            return dtpDate;
+        }
+
         #endregion
 
         #region Event Handling

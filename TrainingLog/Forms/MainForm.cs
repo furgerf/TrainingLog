@@ -17,6 +17,8 @@ namespace TrainingLog.Forms
             InitializeComponent();
 
             GetInstance = this;
+
+            ButShowStatisticsClick(null, null);
         }
 
         private void ButAddTrainingClick(object sender, EventArgs e)

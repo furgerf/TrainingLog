@@ -7,6 +7,12 @@ namespace TrainingLog.Controls
     {
         #region Public Fields
 
+        public static readonly Color Zone1Color = Color.DarkGray;
+        public static readonly Color Zone2Color = Color.LightSkyBlue;
+        public static readonly Color Zone3Color = Color.YellowGreen;
+        public static readonly Color Zone4Color = Color.Orange;
+        public static readonly Color Zone5Color = Color.OrangeRed;
+
         public Brush Brush1 { get; set; }
         public Brush Brush2 { get; set; }
         public Brush Brush3 { get; set; }
@@ -32,11 +38,11 @@ namespace TrainingLog.Controls
 
         public ZoneDataBox()
         {
-            Brush1 = new SolidBrush(Color.DarkGray);
-            Brush2 = new SolidBrush(Color.LightSkyBlue);
-            Brush3 = new SolidBrush(Color.YellowGreen);
-            Brush4 = new SolidBrush(Color.Orange);
-            Brush5 = new SolidBrush(Color.OrangeRed);
+            Brush1 = new SolidBrush(Zone1Color);
+            Brush2 = new SolidBrush(Zone2Color);
+            Brush3 = new SolidBrush(Zone3Color);
+            Brush4 = new SolidBrush(Zone4Color);
+            Brush5 = new SolidBrush(Zone5Color);
 
             InitializeComponent();
         }
