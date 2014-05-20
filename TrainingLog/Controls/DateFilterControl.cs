@@ -89,6 +89,11 @@ namespace TrainingLog.Controls
             return (dtpDate.Value.CompareTo(date) == 0) || (dtpDate.Value.CompareTo(date) < 0 ^ !IsMinDate);
         }
 
+        public bool IsEntryVisible(Entry entry)
+        {
+            return (dtpDate.Value.CompareTo(entry.Date) == 0) || (dtpDate.Value.CompareTo(entry.Date) < 0 ^ !IsMinDate);
+        }
+
         public void ApplyFilter()
         {
             if (_onFilterChanged != null)

@@ -8,6 +8,8 @@ namespace TrainingLog.Controls
 
         bool IsItemVisible(GLItem item);
 
+        bool IsEntryVisible(Entry entry);
+
         void ApplyFilter();
     }
 }
