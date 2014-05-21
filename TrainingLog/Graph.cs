@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms.DataVisualization.Charting;
-using TrainingLog.Controls;
 
 namespace TrainingLog
 {
@@ -35,7 +32,7 @@ namespace TrainingLog
         private readonly Legend _legend = new Legend();
         private string _title;
 
-        private readonly List<Series> _series = new List<Series>();
+        private AbstractSeriesCollection _series;
 
         private readonly GraphType _type;
 
@@ -52,7 +49,7 @@ namespace TrainingLog
 
             InitializeGraph(entries, dpfe);
 
-            foreach (var s in _series)
+            foreach (var s in _series.Series)
                 Chart.Series.Add(s);
         }
 
@@ -75,11 +72,11 @@ namespace TrainingLog
                     x.Interval = 1;
 
                     // y
-                    y.IntervalType = DateTimeIntervalType.Hours;
+                    y.IntervalType = DateTimeIntervalType.Minutes;
                     y.IntervalAutoMode = IntervalAutoMode.VariableCount;
                     y.LabelStyle.Format = "HH:mm";
                     y.Title = "Duration";
-                    y.Interval = 0.5;
+                    y.Interval = 5;
 
                     //var maxDur = entries.Length == 0 ? TimeSpan.MaxValue : ((TrainingEntry)entries.Aggregate((curmax, foo) => (curmax == null) || (((TrainingEntry)foo).Duration ?? TimeSpan.MaxValue) > ((TrainingEntry)curmax).Duration ? foo : curmax)).Duration ?? TimeSpan.MinValue;
                     //// "round up" to next half hour
@@ -113,53 +110,7 @@ namespace TrainingLog
 
         private void InitializeSeries()
         {
-            switch (_type)
-            {
-                case GraphType.TrainingDurationZoneData:
-                    _series.Add(new Series("Zone 1")
-                    {
-                        XValueType = ChartValueType.Date,
-                        YValueType = ChartValueType.Time,
-                        ChartType = SeriesChartType.StackedColumn,
-                        Color = ZoneDataBox.Zone1Color,
-                        IsVisibleInLegend = false
-                    });
-                    _series.Add(new Series("Zone 2")
-                    {
-                        XValueType = ChartValueType.Date,
-                        YValueType = ChartValueType.Time,
-                        ChartType = SeriesChartType.StackedColumn,
-                        Color = ZoneDataBox.Zone2Color,
-                        IsVisibleInLegend = false
-                    });
-                    _series.Add(new Series("Zone 3")
-                    {
-                        XValueType = ChartValueType.Date,
-                        YValueType = ChartValueType.Time,
-                        ChartType = SeriesChartType.StackedColumn,
-                        Color = ZoneDataBox.Zone3Color,
-                        IsVisibleInLegend = false
-                    });
-                    _series.Add(new Series("Zone 4")
-                    {
-                        XValueType = ChartValueType.Date,
-                        YValueType = ChartValueType.Time,
-                        ChartType = SeriesChartType.StackedColumn,
-                        Color = ZoneDataBox.Zone4Color,
-                        IsVisibleInLegend = false
-                    });
-                    _series.Add(new Series("Zone 5")
-                    {
-                        XValueType = ChartValueType.Date,
-                        YValueType = ChartValueType.Time,
-                        ChartType = SeriesChartType.StackedColumn,
-                        Color = ZoneDataBox.Zone5Color,
-                        IsVisibleInLegend = false
-                    });
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            _series = AbstractSeriesCollection.GetCollection(_type);
         }
 
         private void InitializeGraph(Entry[] entries, DataPointFromEntry dpfe)
@@ -173,13 +124,41 @@ namespace TrainingLog
 
         private void InitializeData(Entry[] entries, DataPointFromEntry dpfe)
         {
-            for (var i = 0; i < entries.Length; i++)
+            foreach (var e in entries)
             {
-                var dp = dpfe(entries[i]);
-                for (var j = 0; j < dp.Length; j++)
-                    _series[j].Points.Add(dp[j]);
-                // TODO: after adding point, check whether x already exists. if yes, increment all y's
+                //if (e.Date.Equals(new DateTime(2014, 4, 21)))
+                //{
+                //    var dp = dpfe(e);
+                //}
+                _series.AddPoints(dpfe(e));
             }
+
+            //for (var i = 0; i < entries.Length; i++)
+            //{
+            //    var dp = dpfe(entries[i]);
+
+            //    for (var j = 0; j < dp.Length; j++)
+            //    {
+            //        var add = true;
+            //        foreach (var p in _series[j].Points)
+            //            if (p.XValue == dp[j].XValue)
+            //            {
+            //                // TODO: Add new series if neccessary and add points there instead of to current series
+
+            //                //var prevY = p.YValues;
+            //                //var newY = new double[prevY.Length + dp[j].YValues.Length];
+            //                //Array.Copy(prevY, newY, prevY.Length);
+            //                //Array.Copy(dp[j].YValues, 0, newY, prevY.Length, dp[j].YValues.Length);
+
+            //                //p.YValues = newY;
+            //                //add = false;
+            //                //break;
+            //            }
+
+            //        if (add)
+            //            _series[j].Points.Add(dp[j]);
+            //    }
+            //}
         }
 
         #endregion

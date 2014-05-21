@@ -56,14 +56,18 @@ namespace TrainingLog.Forms
 
             _filters = new IFilter[] {dfcFrom, dfcTo};
 
-            var graph = new Graph(Graph.GraphType.TrainingDurationZoneData, FilteredTrainingEntries.Cast<Entry>().ToArray(), (e) =>
+            var ent = FilteredTrainingEntries.Cast<Entry>().OrderByDescending(entry => entry.Date).ToArray();
+
+            var graph = new Graph(Graph.GraphType.TrainingDurationZoneData, ent, e =>
                                                 {
                                                     var zd = ((TrainingEntry)e).HrZones ?? ZoneData.Empty();
                                                     var res = new[] { new DataPoint(), new DataPoint(), new DataPoint(), new DataPoint(), new DataPoint() };
 
                                                     for (var i = 0; i < 5; i++)
                                                     {
-                                                        var dur = zd.Zones[i];
+                                                        //var dur = zd.Zones[i];
+                                                        var dur = TimeSpan.FromSeconds(zd.Duration.TotalSeconds / 5);
+
                                                         res[i].SetValueXY(e.Date ?? DateTime.MaxValue,
                                                                           new DateTime(1, 1, 1, dur.Hours, dur.Minutes, dur.Seconds));
                                                     }

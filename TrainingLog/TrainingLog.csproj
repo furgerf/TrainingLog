@@ -103,6 +103,7 @@
       <DependentUpon>SleepForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Graph.cs" />
+    <Compile Include="AbstractSeriesCollection.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -135,6 +136,8 @@
     <Compile Include="TrainingEntry.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="ZoneData.cs" />
+    <Compile Include="ZoneDataAbstractSeriesCollection.cs" />
+    <Compile Include="ZoneDataSeries.cs" />
     <EmbeddedResource Include="Controls\DateFilterControl.resx">
       <DependentUpon>DateFilterControl.cs</DependentUpon>
     </EmbeddedResource>
