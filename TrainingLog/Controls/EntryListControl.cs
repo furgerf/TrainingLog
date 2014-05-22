@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using GlacialComponents.Controls;
+using TrainingLog.Entries;
 using TrainingLog.Forms;
 
 namespace TrainingLog.Controls

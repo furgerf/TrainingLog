@@ -49,7 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BiodataEntry.cs" />
+    <Compile Include="Entries\BiodataEntry.cs" />
     <Compile Include="Controls\ColorDatePicker.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -72,8 +72,8 @@
     <Compile Include="Controls\ZoneDataBox.Designer.cs">
       <DependentUpon>ZoneDataBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Entry.cs" />
-    <Compile Include="EntryList.cs" />
+    <Compile Include="Entries\Entry.cs" />
+    <Compile Include="Entries\EntryList.cs" />
     <Compile Include="Forms\BioDataEntryForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -131,9 +131,9 @@
     <Compile Include="Forms\StatisticsForm.Designer.cs">
       <DependentUpon>StatisticsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="RaceEntry.cs" />
+    <Compile Include="Entries\RaceEntry.cs" />
     <Compile Include="SweatData.cs" />
-    <Compile Include="TrainingEntry.cs" />
+    <Compile Include="Entries\TrainingEntry.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="ZoneData.cs" />
     <Compile Include="ZoneDataAbstractSeriesCollection.cs" />

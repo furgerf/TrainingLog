@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms.DataVisualization.Charting;
+using TrainingLog.Entries;
 
 namespace TrainingLog
 {
@@ -9,7 +10,7 @@ namespace TrainingLog
 
         public enum GraphType { TrainingDurationZoneData }
 
-        public delegate DataPoint[] DataPointFromEntry(Entry entry);
+        public delegate DataPoint[] DataPointFromEntry(Entry[] entries);
 
         #endregion
 
@@ -124,14 +125,15 @@ namespace TrainingLog
 
         private void InitializeData(Entry[] entries, DataPointFromEntry dpfe)
         {
-            foreach (var e in entries)
-            {
-                //if (e.Date.Equals(new DateTime(2014, 4, 21)))
-                //{
-                //    var dp = dpfe(e);
-                //}
-                _series.AddPoints(dpfe(e));
-            }
+            _series.AddPoints(dpfe(entries));
+            //foreach (var e in entries)
+            //{
+            //    //if (e.Date.Equals(new DateTime(2014, 4, 21)))
+            //    //{
+            //    //    var dp = dpfe(e);
+            //    //}
+            //    _series.AddPoints(dpfe(e));
+            //}
 
             //for (var i = 0; i < entries.Length; i++)
             //{

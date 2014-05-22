@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using TrainingLog.Controls;
+using TrainingLog.Entries;
 
 namespace TrainingLog.Forms
 {
@@ -56,23 +57,43 @@ namespace TrainingLog.Forms
 
             _filters = new IFilter[] {dfcFrom, dfcTo};
 
-            var ent = FilteredTrainingEntries.Cast<Entry>().OrderByDescending(entry => entry.Date).ToArray();
+            var ent = FilteredTrainingEntries.Cast<Entry>().ToArray();
 
             var graph = new Graph(Graph.GraphType.TrainingDurationZoneData, ent, e =>
                                                 {
-                                                    var zd = ((TrainingEntry)e).HrZones ?? ZoneData.Empty();
-                                                    var res = new[] { new DataPoint(), new DataPoint(), new DataPoint(), new DataPoint(), new DataPoint() };
+                                                    var entries = e.OrderBy(ee => ee.Date).Cast<TrainingEntry>().ToArray();
+                                                    var res = new List<DataPoint>();
 
-                                                    for (var i = 0; i < 5; i++)
+                                                    for (var i = 0; i < entries.Length; i++)
                                                     {
-                                                        //var dur = zd.Zones[i];
-                                                        var dur = TimeSpan.FromSeconds(zd.Duration.TotalSeconds / 5);
+                                                        if (!entries[i].HrZoneStringSpecified)
+                                                        {
+                                                            var dur = entries[i].Duration ?? TimeSpan.MaxValue;
+                                                            var dp = new DataPoint();
+                                                            dp.SetValueXY((entries[i].Date ?? DateTime.MaxValue),
+                                                                          new DateTime(1, 1, 1, dur.Hours, dur.Minutes,
+                                                                                       dur.Seconds));
+                                                            res.Add(dp);
+                                                        }
+                                                        else
+                                                        {
+                                                            var zd = entries[i].HrZones ?? ZoneData.Empty();
 
-                                                        res[i].SetValueXY(e.Date ?? DateTime.MaxValue,
-                                                                          new DateTime(1, 1, 1, dur.Hours, dur.Minutes, dur.Seconds));
+                                                            for (var j = 0; j < 5; j++)
+                                                            {
+                                                                var dp = new DataPoint();
+
+                                                                var dur = TimeSpan.FromSeconds(zd.Zones[j].TotalSeconds);
+
+                                                                dp.SetValueXY(entries[i].Date ?? DateTime.MaxValue,
+                                                                              new DateTime(1, 1, 1, dur.Hours,
+                                                                                           dur.Minutes, dur.Seconds));
+
+                                                                res.Add(dp);
+                                                            }
+                                                        }
                                                     }
-
-                                                    return res;
+                                                    return res.ToArray();
                                                 }) { Title = "Duration with Zone Data per day" };
             AddGraph(graph);
         }

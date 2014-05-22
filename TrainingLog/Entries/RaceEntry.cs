@@ -1,6 +1,6 @@
 using System;
 
-namespace TrainingLog
+namespace TrainingLog.Entries
 {
     public class RaceEntry : TrainingEntry
     {

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Windows.Forms.DataVisualization.Charting;
 using TrainingLog.Controls;
@@ -124,31 +123,49 @@ namespace TrainingLog
 
         public override void AddPoints(DataPoint[] points)
         {
-            foreach (var s in _series)
+            var oldX = -1.0;
+            var index = 0;
+            foreach (var p in points)
             {
-                var add = true;
-                foreach (var p in s.Series[0].Points)
-                {
-                    if (p.XValue.Equals(points[0].XValue))
-                    {
-                        add = false;
-                        break;
-                    }
-                }
+                if (!p.XValue.Equals(oldX))
+                    index = 0;
 
-                if (add)
-                {
-                    if (s.Equals(_series[3]))
-                    {
-                        
-                    }
+                _series[index/5].Series[index%5].Points.Add(p);
 
-                    for (var i = 0; i < points.Length; i++)
-                        s.Series[i].Points.Add(points[i]);
-
-                    return;
-                }
+                index++;
+                oldX = p.XValue;
             }
+
+            //for (var i = 0; i < points.Length; i++)
+            //    Series[i].Points.Add(points[i]);
+
+
+            //for (var j = 0; j < _series.Count; j++)
+            //    {
+            //        var add = true;
+            //        foreach (var p in _series[j].Series[0].Points)
+            //        {
+            //            if (p.XValue.Equals(points[0].XValue))
+            //            {
+            //                add = false;
+            //                break;
+            //            }
+            //        }
+
+            //        if (add)
+            //        {
+            //            if (j > 0)
+            //            {
+            //                points[0].YValues[0] += 0.1;
+            //                //foreach (var p in points)
+            //                //    p.YValues[0] += 0.01;
+            //            }
+            //            for (var i = 0; i < points.Length; i++)
+            //                Series[5*j+i].Points.Add(points[4-i]);
+
+            //            return;
+            //        }
+            //    }
 
             //var zds = GetZoneDataSeries;
 

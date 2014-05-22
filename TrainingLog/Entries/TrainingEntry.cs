@@ -1,7 +1,7 @@
 using System;
 using System.Xml.Serialization;
 
-namespace TrainingLog
+namespace TrainingLog.Entries
 {
     [XmlType("TrainingEntry")]
     public class TrainingEntry : Entry

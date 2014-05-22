@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
+using TrainingLog.Entries;
 
 namespace TrainingLog
 {

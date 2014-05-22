@@ -1,4 +1,5 @@
 using System;
+using TrainingLog.Entries;
 
 namespace TrainingLog
 {

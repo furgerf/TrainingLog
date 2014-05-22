@@ -1,5 +1,6 @@
 ﻿using System.Windows.Forms;
 using GlacialComponents.Controls;
+using TrainingLog.Entries;
 
 namespace TrainingLog.Controls
 {

@@ -1,7 +1,7 @@
 using System.Xml.Serialization;
 using System.Linq;
 
-namespace TrainingLog
+namespace TrainingLog.Entries
 {
     [XmlRoot("EntryList")]
     public class EntryList
