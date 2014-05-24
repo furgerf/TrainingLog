@@ -1,12 +1,24 @@
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms.DataVisualization.Charting;
 using TrainingLog.Controls;
+using TrainingLog.Entries;
 
 namespace TrainingLog
 {
     public class ZoneDataAbstractSeriesCollection : AbstractSeriesCollection
     {   
         #region Public Fields
+
+        public override double MinimumY
+        {
+            get { throw new Exception(); }
+        }
+
+        public override double MaximumY
+        {
+            get { throw new Exception(); }
+        }
 
         public override Series[] Series
         {
@@ -84,95 +96,66 @@ namespace TrainingLog
             _series.Add(GetZoneDataSeries);
             _series.Add(GetZoneDataSeries);
             _series.Add(GetZoneDataSeries);
-            _series.Add(GetZoneDataSeries);
+            //_series.Add(GetZoneDataSeries);
         }
 
         #endregion
 
         #region Main Methods
 
-        //public override void AddPoint(DataPoint point, int index = 0)
-        //{
-        //    if (point.XValue.Equals(41750))
-        //    {
-                
-        //    }
-
-        //    var seriesIndex = 0;
-        //    // find out which series to add the point to
-        //    for (; seriesIndex < _series.Count; seriesIndex++)
-        //    {
-        //        var xPresent = false;
-        //        foreach (var p in _series[seriesIndex].Series[0].Points)
-        //            if (p.XValue.Equals(point.XValue))
-        //            {
-        //                xPresent = true;
-                        
-        //                if (seriesIndex == _series.Count - 1)
-        //                    _series.Add(GetZoneDataSeries);
-        //            }
-
-        //        if (!xPresent)
-        //            break;
-        //    }
-
-        //    _series[seriesIndex].Series[index].Points.Add(point);
-        //    //foreach (var s in _series[seriesIndex].Series)
-        //    //    s.Points.Add(point);
-        //}
-
-        public override void AddPoints(DataPoint[] points)
+        public override void AddPoints(Entry[] entries)
         {
-            var oldX = -1.0;
+            var data = new List<TrainingEntry[]>();
             var index = 0;
-            foreach (var p in points)
+
+            foreach (var e in entries)
             {
-                if (!p.XValue.Equals(oldX))
-                    index = 0;
+                if (data.Count != index)
+                {
+                    // we are currently still in an array
+                    if (e.Date.Equals(data[index][0].Date))
+                    {
+                        // add date to first free item in array
+                        var added = false;
 
-                _series[index/5].Series[index%5].Points.Add(p);
+                        for (var i = 0; i < data[index].Length; i++)
+                            if (data[index][i] == null)
+                            {
+                                data[index][i] = (TrainingEntry) e;
+                                added = true;
+                                break;
+                            }
 
-                index++;
-                oldX = p.XValue;
+                        if (added)
+                            continue;
+
+                        throw new Exception("PROBABLY need more zonedataseries (too many trainings in one day)");
+                    }
+                    
+                    // get to next index
+                    index++;
+                }
+
+                // add new array
+                data.Add(new TrainingEntry[_series.Count]);
+                data[index][0] = (TrainingEntry) e;
             }
 
-            //for (var i = 0; i < points.Length; i++)
-            //    Series[i].Points.Add(points[i]);
+            foreach (var tes in data)
+            {
+                for (var i = 0; i < tes.Length; i++)
+                {
+                    for (var j = 0; j < 5; j++)
+                    {
+                        var zd = tes[i] == null ? TimeSpan.MaxValue : (tes[i].HrZones ?? ZoneData.Empty()).Zones[j];
+                        var dp = new DataPoint();
+                        dp.SetValueXY(tes[0].Date ?? DateTime.MinValue,
+                            zd);
+                        _series[i].Series[j].Points.Add(dp);
 
-
-            //for (var j = 0; j < _series.Count; j++)
-            //    {
-            //        var add = true;
-            //        foreach (var p in _series[j].Series[0].Points)
-            //        {
-            //            if (p.XValue.Equals(points[0].XValue))
-            //            {
-            //                add = false;
-            //                break;
-            //            }
-            //        }
-
-            //        if (add)
-            //        {
-            //            if (j > 0)
-            //            {
-            //                points[0].YValues[0] += 0.1;
-            //                //foreach (var p in points)
-            //                //    p.YValues[0] += 0.01;
-            //            }
-            //            for (var i = 0; i < points.Length; i++)
-            //                Series[5*j+i].Points.Add(points[4-i]);
-
-            //            return;
-            //        }
-            //    }
-
-            //var zds = GetZoneDataSeries;
-
-            //for (var i = 0; i < points.Length; i++)
-            //    zds.Series[i].Points.Add(points[i]);
-
-            //_series.Add(zds);
+                    }
+                }
+            }
         }
 
         #endregion

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Windows.Forms.DataVisualization.Charting;
 using TrainingLog.Entries;
 
@@ -8,9 +9,7 @@ namespace TrainingLog
     {
         #region Enums, Delegates
 
-        public enum GraphType { TrainingDurationZoneData }
-
-        public delegate DataPoint[] DataPointFromEntry(Entry[] entries);
+        public enum GraphType { TrainingDurationZoneData, BiodataRestingHr }
 
         #endregion
 
@@ -41,17 +40,14 @@ namespace TrainingLog
 
         #region Constructor
 
-        public Graph(GraphType type, Entry[] entries, DataPointFromEntry dpfe)
+        public Graph(GraphType type, Entry[] entries)
         {
             _type = type;
 
             Chart.ChartAreas.Add(_area);
             Chart.Legends.Add(_legend);
 
-            InitializeGraph(entries, dpfe);
-
-            foreach (var s in _series.Series)
-                Chart.Series.Add(s);
+            InitializeGraph(entries);
         }
 
         #endregion
@@ -78,25 +74,23 @@ namespace TrainingLog
                     y.LabelStyle.Format = "HH:mm";
                     y.Title = "Duration";
                     y.Interval = 5;
+                    break;
+                case GraphType.BiodataRestingHr:
+                    // x
+                    x.IntervalType = DateTimeIntervalType.Days;
+                    x.IntervalAutoMode = IntervalAutoMode.FixedCount;
+                    x.Title = "Date";
+                    x.Interval = 1;
 
-                    //var maxDur = entries.Length == 0 ? TimeSpan.MaxValue : ((TrainingEntry)entries.Aggregate((curmax, foo) => (curmax == null) || (((TrainingEntry)foo).Duration ?? TimeSpan.MaxValue) > ((TrainingEntry)curmax).Duration ? foo : curmax)).Duration ?? TimeSpan.MinValue;
-                    //// "round up" to next half hour
-                    //maxDur = maxDur.Minutes >= 30
-                    //             ? maxDur.Add(new TimeSpan(0, 60 - maxDur.Minutes, 0))
-                    //             : maxDur.Add(new TimeSpan(0, 30 - maxDur.Minutes, 0));
+                    // y
+                    //y.IntervalType = ;
+                    y.IntervalAutoMode = IntervalAutoMode.VariableCount;
+                    //y.LabelStyle.Format = "HH:mm";
+                    y.Title = "Resting HR";
+                    y.Interval = 1;
 
-                    //var maxDur = double.MinValue;
-
-                    //foreach (var s in _series)
-                    //    foreach (var p in s.Points)
-                    //        foreach (var yy in p.YValues)
-                    //            if (yy > maxDur)
-                    //                maxDur = yy;
-
-                    //var date = DateTime.FromOADate(maxDur);
-
-                    y.Minimum = 0;
-                    //y.Maximum = maxDur;
+                    y.Minimum = _series.MinimumY;
+                    y.Maximum = _series.MaximumY;
 
                     //y.Maximum = new DateTime(1, 1, 1, maxDur.Hours, maxDur.Minutes, 0).ToOADate();
 
@@ -114,53 +108,21 @@ namespace TrainingLog
             _series = AbstractSeriesCollection.GetCollection(_type);
         }
 
-        private void InitializeGraph(Entry[] entries, DataPointFromEntry dpfe)
+        private void InitializeGraph(Entry[] entries)
         {
             InitializeSeries();
 
-            InitializeData(entries, dpfe);
+            InitializeData(entries);
 
             InitializeAxes();
         }
 
-        private void InitializeData(Entry[] entries, DataPointFromEntry dpfe)
+        private void InitializeData(Entry[] entries)
         {
-            _series.AddPoints(dpfe(entries));
-            //foreach (var e in entries)
-            //{
-            //    //if (e.Date.Equals(new DateTime(2014, 4, 21)))
-            //    //{
-            //    //    var dp = dpfe(e);
-            //    //}
-            //    _series.AddPoints(dpfe(e));
-            //}
-
-            //for (var i = 0; i < entries.Length; i++)
-            //{
-            //    var dp = dpfe(entries[i]);
-
-            //    for (var j = 0; j < dp.Length; j++)
-            //    {
-            //        var add = true;
-            //        foreach (var p in _series[j].Points)
-            //            if (p.XValue == dp[j].XValue)
-            //            {
-            //                // TODO: Add new series if neccessary and add points there instead of to current series
-
-            //                //var prevY = p.YValues;
-            //                //var newY = new double[prevY.Length + dp[j].YValues.Length];
-            //                //Array.Copy(prevY, newY, prevY.Length);
-            //                //Array.Copy(dp[j].YValues, 0, newY, prevY.Length, dp[j].YValues.Length);
-
-            //                //p.YValues = newY;
-            //                //add = false;
-            //                //break;
-            //            }
-
-            //        if (add)
-            //            _series[j].Points.Add(dp[j]);
-            //    }
-            //}
+            _series.AddPoints(entries);
+            //foreach (var s in _series.Series)
+            //    Chart.Series.Add(s);
+            Chart.Series.Add(_series.Series[0]);
         }
 
         #endregion

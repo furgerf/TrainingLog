@@ -40,6 +40,17 @@ namespace TrainingLog.Forms
             }
         }
 
+        private BiodataEntry[] FilteredBiodataEntries
+        {
+            get
+            {
+                var invisible =
+                    (from te in Model.Instance.BiodataEntries from f in _filters where !f.IsEntryVisible(te) select te)
+                        .ToList();
+                return Model.Instance.BiodataEntries.Except(invisible).ToArray();
+            }
+        }
+
         private readonly IFilter[] _filters;
 
         private readonly List<TabPage> _pages = new List<TabPage>(); 
@@ -57,50 +68,28 @@ namespace TrainingLog.Forms
 
             _filters = new IFilter[] {dfcFrom, dfcTo};
 
-            var ent = FilteredTrainingEntries.Cast<Entry>().ToArray();
-
-            var graph = new Graph(Graph.GraphType.TrainingDurationZoneData, ent, e =>
-                                                {
-                                                    var entries = e.OrderBy(ee => ee.Date).Cast<TrainingEntry>().ToArray();
-                                                    var res = new List<DataPoint>();
-
-                                                    for (var i = 0; i < entries.Length; i++)
-                                                    {
-                                                        if (!entries[i].HrZoneStringSpecified)
-                                                        {
-                                                            var dur = entries[i].Duration ?? TimeSpan.MaxValue;
-                                                            var dp = new DataPoint();
-                                                            dp.SetValueXY((entries[i].Date ?? DateTime.MaxValue),
-                                                                          new DateTime(1, 1, 1, dur.Hours, dur.Minutes,
-                                                                                       dur.Seconds));
-                                                            res.Add(dp);
-                                                        }
-                                                        else
-                                                        {
-                                                            var zd = entries[i].HrZones ?? ZoneData.Empty();
-
-                                                            for (var j = 0; j < 5; j++)
-                                                            {
-                                                                var dp = new DataPoint();
-
-                                                                var dur = TimeSpan.FromSeconds(zd.Zones[j].TotalSeconds);
-
-                                                                dp.SetValueXY(entries[i].Date ?? DateTime.MaxValue,
-                                                                              new DateTime(1, 1, 1, dur.Hours,
-                                                                                           dur.Minutes, dur.Seconds));
-
-                                                                res.Add(dp);
-                                                            }
-                                                        }
-                                                    }
-                                                    return res.ToArray();
-                                                }) { Title = "Duration with Zone Data per day" };
-            AddGraph(graph);
+            AddTrainingDurationZoneDataGraph();
+            AddBiodataRestingHrGraph();
         }
-
         #endregion
 
         #region Main Methods
+
+        private void AddBiodataRestingHrGraph()
+        {
+            var entries = FilteredBiodataEntries.Where(e => e.RestingHeartRateSpecified).Cast<Entry>().ToArray();
+
+            var graph = new Graph(Graph.GraphType.BiodataRestingHr, entries) { Title = "Resting Heart Rate per day" };
+            AddGraph(graph);
+        }
+
+        private void AddTrainingDurationZoneDataGraph()
+        {
+            var entries = FilteredTrainingEntries.Cast<Entry>().ToArray(); //.OrderBy(ee => ee.Date).Cast<TrainingEntry>().ToArray();
+           
+            var graph = new Graph(Graph.GraphType.TrainingDurationZoneData, entries) { Title = "Duration with Zone Data per day" };
+            AddGraph(graph);
+        }
 
         private void AddGraph(Graph graph)
         {
