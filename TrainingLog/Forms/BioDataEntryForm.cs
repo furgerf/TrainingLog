@@ -45,7 +45,7 @@ namespace TrainingLog.Forms
             numOwnIndex.Value = 0;
             numWeight.Value = 0;
             comFeeling.SelectedIndex = 0;
-            txtNibbles.Text = "";
+            txtNiggles.Text = "";
             txtNotes.Text = "";
         }
 
@@ -73,7 +73,7 @@ namespace TrainingLog.Forms
                                 RestingHeartRate = (int) numRestingHeartRate.Value,
                                 OwnIndex = (int) numOwnIndex.Value,
                                 Weight = numWeight.Value,
-                                Nibbles = txtNibbles.Text,
+                                Niggles = txtNiggles.Text,
                                 Feeling =
                                     comFeeling.Text != ""
                                         ? (Common.Index) (int) Common.Index.Count - comFeeling.SelectedIndex

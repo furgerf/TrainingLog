@@ -31,9 +31,9 @@ namespace TrainingLog.Entries
         public Common.Index? SleepQuality { get; set; }
         public bool SleepQualitySpecified { get { return SleepQuality != null; } } 
 
-        [XmlElement("Nibbles")]
-        public string Nibbles { get; set; }
-        public bool NibblesSpecified { get { return !string.IsNullOrEmpty(Nibbles); } }
+        [XmlElement("Niggles")]
+        public string Niggles { get; set; }
+        public bool NigglesSpecified { get { return !string.IsNullOrEmpty(Niggles); } }
 
         #endregion
 

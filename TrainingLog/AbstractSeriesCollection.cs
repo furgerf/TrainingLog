@@ -20,8 +20,8 @@ namespace TrainingLog
             {
                 case Graph.GraphType.TrainingDurationZoneData:
                     return new ZoneDataAbstractSeriesCollection();
-                case Graph.GraphType.BiodataRestingHr:
-                    return new BiodataRestingHrAbstractSeriesCollection();
+                case Graph.GraphType.BiodataFigures:
+                    return new BiodataFiguresAbstractSeriesCollection();
                 default:
                     throw new ArgumentOutOfRangeException("type");
             }

@@ -77,15 +77,15 @@ namespace TrainingLog.Forms
 
         private void AddBiodataRestingHrGraph()
         {
-            var entries = FilteredBiodataEntries.Where(e => e.RestingHeartRateSpecified).Cast<Entry>().ToArray();
+            var entries = FilteredBiodataEntries.Where(e => e.RestingHeartRateSpecified || e.WeightSpecified || e.OwnIndexSpecified).Cast<Entry>().OrderBy(e => e.Date).ToArray();
 
-            var graph = new Graph(Graph.GraphType.BiodataRestingHr, entries) { Title = "Resting Heart Rate per day" };
+            var graph = new Graph(Graph.GraphType.BiodataFigures, entries) { Title = "Resting Heart Rate per day" };
             AddGraph(graph);
         }
 
         private void AddTrainingDurationZoneDataGraph()
         {
-            var entries = FilteredTrainingEntries.Cast<Entry>().ToArray(); //.OrderBy(ee => ee.Date).Cast<TrainingEntry>().ToArray();
+            var entries = FilteredTrainingEntries.Cast<Entry>().OrderBy(ee => ee.Date).ToArray();
            
             var graph = new Graph(Graph.GraphType.TrainingDurationZoneData, entries) { Title = "Duration with Zone Data per day" };
             AddGraph(graph);

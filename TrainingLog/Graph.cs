@@ -9,7 +9,7 @@ namespace TrainingLog
     {
         #region Enums, Delegates
 
-        public enum GraphType { TrainingDurationZoneData, BiodataRestingHr }
+        public enum GraphType { TrainingDurationZoneData, BiodataFigures }
 
         #endregion
 
@@ -69,31 +69,24 @@ namespace TrainingLog
                     x.Interval = 1;
 
                     // y
-                    y.IntervalType = DateTimeIntervalType.Minutes;
+                    y.IntervalType = DateTimeIntervalType.Seconds;
                     y.IntervalAutoMode = IntervalAutoMode.VariableCount;
                     y.LabelStyle.Format = "HH:mm";
                     y.Title = "Duration";
-                    y.Interval = 5;
+                    //y.Interval = 5;
+                    y.Maximum = _series.MaximumY;
                     break;
-                case GraphType.BiodataRestingHr:
+                case GraphType.BiodataFigures:
                     // x
                     x.IntervalType = DateTimeIntervalType.Days;
-                    x.IntervalAutoMode = IntervalAutoMode.FixedCount;
+                    x.IntervalAutoMode = IntervalAutoMode.VariableCount;
                     x.Title = "Date";
-                    x.Interval = 1;
+                    //x.Interval = 1;
 
                     // y
-                    //y.IntervalType = ;
-                    y.IntervalAutoMode = IntervalAutoMode.VariableCount;
-                    //y.LabelStyle.Format = "HH:mm";
-                    y.Title = "Resting HR";
-                    y.Interval = 1;
-
+                    y.Interval = 5;
                     y.Minimum = _series.MinimumY;
                     y.Maximum = _series.MaximumY;
-
-                    //y.Maximum = new DateTime(1, 1, 1, maxDur.Hours, maxDur.Minutes, 0).ToOADate();
-
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("type");
@@ -120,9 +113,8 @@ namespace TrainingLog
         private void InitializeData(Entry[] entries)
         {
             _series.AddPoints(entries);
-            //foreach (var s in _series.Series)
-            //    Chart.Series.Add(s);
-            Chart.Series.Add(_series.Series[0]);
+            foreach (var s in _series.Series.Where(s => s.Points.Count > 0))
+                Chart.Series.Add(s);
         }
 
         #endregion

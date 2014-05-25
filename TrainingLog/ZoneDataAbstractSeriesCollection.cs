@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms.DataVisualization.Charting;
 using TrainingLog.Controls;
 using TrainingLog.Entries;
@@ -17,7 +18,14 @@ namespace TrainingLog
 
         public override double MaximumY
         {
-            get { throw new Exception(); }
+            get
+            {
+                var max = Series[0].Points.Select((t1, i) => Series.Sum(t => t.Points[i].YValues[0])).Concat(new[] {double.MinValue}).Max();
+
+                var dt = DateTime.FromOADate(max).Add(new TimeSpan(0, 30, 0));
+
+                return new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute / 30 * 30, 0).ToOADate();
+            }
         }
 
         public override Series[] Series
@@ -34,7 +42,7 @@ namespace TrainingLog
         #endregion
 
         #region Private Fields
-
+        
         private readonly List<ZoneDataSeries> _series = new List<ZoneDataSeries>();
 
         private ZoneDataSeries GetZoneDataSeries
@@ -49,7 +57,7 @@ namespace TrainingLog
                                                           YValueType = ChartValueType.Time,
                                                           ChartType = SeriesChartType.StackedColumn,
                                                           Color = ZoneDataBox.Zone1Color,
-                                                          //IsVisibleInLegend = false
+                                                          IsVisibleInLegend = false
                                                       },
                                                   new Series("Zone 2 (" + _series.Count + ")")
                                                       {
@@ -57,7 +65,7 @@ namespace TrainingLog
                                                           YValueType = ChartValueType.Time,
                                                           ChartType = SeriesChartType.StackedColumn,
                                                           Color = ZoneDataBox.Zone2Color,
-                                                          //IsVisibleInLegend = false
+                                                          IsVisibleInLegend = false
                                                       },
                                                   new Series("Zone 3 (" + _series.Count + ")")
                                                       {
@@ -65,7 +73,7 @@ namespace TrainingLog
                                                           YValueType = ChartValueType.Time,
                                                           ChartType = SeriesChartType.StackedColumn,
                                                           Color = ZoneDataBox.Zone3Color,
-                                                          //IsVisibleInLegend = false
+                                                          IsVisibleInLegend = false
                                                       },
                                                   new Series("Zone 4 (" + _series.Count + ")")
                                                       {
@@ -73,7 +81,7 @@ namespace TrainingLog
                                                           YValueType = ChartValueType.Time,
                                                           ChartType = SeriesChartType.StackedColumn,
                                                           Color = ZoneDataBox.Zone4Color,
-                                                          //IsVisibleInLegend = false
+                                                          IsVisibleInLegend = false
                                                       },
                                                   new Series("Zone 5 (" + _series.Count + ")")
                                                       {
@@ -81,7 +89,7 @@ namespace TrainingLog
                                                           YValueType = ChartValueType.Time,
                                                           ChartType = SeriesChartType.StackedColumn,
                                                           Color = ZoneDataBox.Zone5Color,
-                                                          //IsVisibleInLegend = false
+                                                          IsVisibleInLegend = false
                                                       }
                                               });
             }
@@ -147,12 +155,12 @@ namespace TrainingLog
                 {
                     for (var j = 0; j < 5; j++)
                     {
-                        var zd = tes[i] == null ? TimeSpan.MaxValue : (tes[i].HrZones ?? ZoneData.Empty()).Zones[j];
+                        var zd = tes[i] == null ? TimeSpan.Zero : (tes[i].HrZones ?? ZoneData.Empty()).Zones[j];
+
                         var dp = new DataPoint();
                         dp.SetValueXY(tes[0].Date ?? DateTime.MinValue,
-                            zd);
+                                      new DateTime(1, 1, 1, zd.Hours, zd.Minutes, zd.Seconds));
                         _series[i].Series[j].Points.Add(dp);
-
                     }
                 }
             }

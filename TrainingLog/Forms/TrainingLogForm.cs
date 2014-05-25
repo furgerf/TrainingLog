@@ -36,7 +36,7 @@ namespace TrainingLog.Forms
 
         private readonly static string[] BiodataHeader = new[]
                            {
-                               "Date", "Sleep", "Rest HR", "OwnIndex", "Weight", "Feeling", "Nibbles", "Notes"
+                               "Date", "Sleep", "Rest HR", "OwnIndex", "Weight", "Feeling", "Niggles", "Notes"
                            };
         private static readonly int[] BiodataWidths = new[] { 75, 100, 60, 60, 45, 70, 110, 150 };
 
@@ -251,7 +251,7 @@ namespace TrainingLog.Forms
                 new IntegerTextBox{ Text = entry.OwnIndex == 0 ? "" : entry.OwnIndex.ToString(), BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                 new DecimalTextBox { Text = entry.Weight > 0 ? entry.Weight.ToString() : "", BorderStyle = BorderStyle.None, TextAlign = HorizontalAlignment.Center },
                 comFeeling,
-                new TextBox{ Text = entry.Nibbles, BorderStyle = BorderStyle.None  },
+                new TextBox{ Text = entry.Niggles, BorderStyle = BorderStyle.None  },
                 new TextBox{ Text = entry.Note, BorderStyle = BorderStyle.None }}, entry))
                     MessageBox.Show("Problem adding entry " + entry, "Problem adding entry", MessageBoxButtons.OK, MessageBoxIcon.Error);
 

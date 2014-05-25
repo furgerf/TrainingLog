@@ -49,7 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BiodataRestingHrAbstractSeriesCollection.cs" />
+    <Compile Include="BiodataFiguresAbstractSeriesCollection.cs" />
     <Compile Include="Entries\BiodataEntry.cs" />
     <Compile Include="Controls\ColorDatePicker.cs">
       <SubType>Component</SubType>

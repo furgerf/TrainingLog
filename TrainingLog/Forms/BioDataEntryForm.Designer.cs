@@ -45,8 +45,8 @@
             this.label4 = new System.Windows.Forms.Label();
             this.comFeeling = new System.Windows.Forms.ComboBox();
             this.numWeight = new System.Windows.Forms.NumericUpDown();
-            this.grpNibbles = new System.Windows.Forms.GroupBox();
-            this.txtNibbles = new System.Windows.Forms.TextBox();
+            this.grpNiggles = new System.Windows.Forms.GroupBox();
+            this.txtNiggles = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.txtNotes = new System.Windows.Forms.TextBox();
             this.butOk = new System.Windows.Forms.Button();
@@ -58,7 +58,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numRestingHeartRate)).BeginInit();
             this.grpMisc.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numWeight)).BeginInit();
-            this.grpNibbles.SuspendLayout();
+            this.grpNiggles.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -257,22 +257,22 @@
             this.numWeight.TabIndex = 2;
             this.numWeight.Enter += new System.EventHandler(this.NumericEnter);
             // 
-            // grpNibbles
+            // grpNiggles
             // 
-            this.grpNibbles.Controls.Add(this.txtNibbles);
-            this.grpNibbles.Location = new System.Drawing.Point(12, 86);
-            this.grpNibbles.Name = "grpNibbles";
-            this.grpNibbles.Size = new System.Drawing.Size(504, 48);
-            this.grpNibbles.TabIndex = 3;
-            this.grpNibbles.TabStop = false;
-            this.grpNibbles.Text = "Nibbles";
+            this.grpNiggles.Controls.Add(this.txtNiggles);
+            this.grpNiggles.Location = new System.Drawing.Point(12, 86);
+            this.grpNiggles.Name = "grpNiggles";
+            this.grpNiggles.Size = new System.Drawing.Size(504, 48);
+            this.grpNiggles.TabIndex = 3;
+            this.grpNiggles.TabStop = false;
+            this.grpNiggles.Text = "Niggles";
             // 
-            // txtNibbles
+            // txtNiggles
             // 
-            this.txtNibbles.Location = new System.Drawing.Point(9, 19);
-            this.txtNibbles.Name = "txtNibbles";
-            this.txtNibbles.Size = new System.Drawing.Size(489, 20);
-            this.txtNibbles.TabIndex = 0;
+            this.txtNiggles.Location = new System.Drawing.Point(9, 19);
+            this.txtNiggles.Name = "txtNiggles";
+            this.txtNiggles.Size = new System.Drawing.Size(489, 20);
+            this.txtNiggles.TabIndex = 0;
             // 
             // groupBox1
             // 
@@ -320,7 +320,7 @@
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOk);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.grpNibbles);
+            this.Controls.Add(this.grpNiggles);
             this.Controls.Add(this.grpMisc);
             this.Controls.Add(this.grpHeartRate);
             this.Controls.Add(this.grpSleep);
@@ -339,8 +339,8 @@
             this.grpMisc.ResumeLayout(false);
             this.grpMisc.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numWeight)).EndInit();
-            this.grpNibbles.ResumeLayout(false);
-            this.grpNibbles.PerformLayout();
+            this.grpNiggles.ResumeLayout(false);
+            this.grpNiggles.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
@@ -360,8 +360,8 @@
         private System.Windows.Forms.GroupBox grpMisc;
         private System.Windows.Forms.NumericUpDown numWeight;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.GroupBox grpNibbles;
-        private System.Windows.Forms.TextBox txtNibbles;
+        private System.Windows.Forms.GroupBox grpNiggles;
+        private System.Windows.Forms.TextBox txtNiggles;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TextBox txtNotes;
         private System.Windows.Forms.Button butOk;
