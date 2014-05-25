@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization.Charting;
 using TrainingLog.Controls;
 using TrainingLog.Entries;
+using TrainingLog.Statistics;
 
 namespace TrainingLog.Forms
 {
@@ -29,7 +29,7 @@ namespace TrainingLog.Forms
             get { return WindowState == FormWindowState.Maximized ? Screen.PrimaryScreen.WorkingArea.Size : ClientSize; }
         }
 
-        private TrainingEntry[] FilteredTrainingEntries
+        private IEnumerable<TrainingEntry> FilteredTrainingEntries
         {
             get
             {
@@ -40,7 +40,7 @@ namespace TrainingLog.Forms
             }
         }
 
-        private BiodataEntry[] FilteredBiodataEntries
+        private IEnumerable<BiodataEntry> FilteredBiodataEntries
         {
             get
             {
@@ -68,7 +68,8 @@ namespace TrainingLog.Forms
 
             _filters = new IFilter[] {dfcFrom, dfcTo};
 
-            AddTrainingDurationZoneDataGraph();
+            AddZoneDataGraph();
+            AddZoneDataAreaGraph();
             AddBiodataRestingHrGraph();
         }
         #endregion
@@ -83,11 +84,19 @@ namespace TrainingLog.Forms
             AddGraph(graph);
         }
 
-        private void AddTrainingDurationZoneDataGraph()
+        private void AddZoneDataGraph()
         {
             var entries = FilteredTrainingEntries.Cast<Entry>().OrderBy(ee => ee.Date).ToArray();
-           
-            var graph = new Graph(Graph.GraphType.TrainingDurationZoneData, entries) { Title = "Duration with Zone Data per day" };
+
+            var graph = new Graph(Graph.GraphType.ZoneData, entries) { Title = "Zone Data per training" };
+            AddGraph(graph);
+        }
+
+        private void AddZoneDataAreaGraph()
+        {
+            var entries = FilteredTrainingEntries.Cast<Entry>().OrderBy(ee => ee.Date).ToArray();
+
+            var graph = new Graph(Graph.GraphType.ZoneDataArea, entries) { Title = "Zone Data area per day" };
             AddGraph(graph);
         }
 

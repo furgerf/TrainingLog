@@ -2,7 +2,7 @@
 using System.Windows.Forms.DataVisualization.Charting;
 using TrainingLog.Entries;
 
-namespace TrainingLog
+namespace TrainingLog.Statistics
 {
     public abstract class AbstractSeriesCollection
     {
@@ -18,8 +18,10 @@ namespace TrainingLog
         {
             switch (type)
             {
-                case Graph.GraphType.TrainingDurationZoneData:
+                case Graph.GraphType.ZoneData:
                     return new ZoneDataAbstractSeriesCollection();
+                case Graph.GraphType.ZoneDataArea:
+                    return new ZoneDataAreaAbstractSeriesCollection();
                 case Graph.GraphType.BiodataFigures:
                     return new BiodataFiguresAbstractSeriesCollection();
                 default:

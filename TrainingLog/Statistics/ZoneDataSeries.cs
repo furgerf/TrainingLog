@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms.DataVisualization.Charting;
 
-namespace TrainingLog
+namespace TrainingLog.Statistics
 {
     public struct ZoneDataSeries
     {

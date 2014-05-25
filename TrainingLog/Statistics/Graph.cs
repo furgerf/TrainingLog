@@ -3,13 +3,13 @@ using System.Linq;
 using System.Windows.Forms.DataVisualization.Charting;
 using TrainingLog.Entries;
 
-namespace TrainingLog
+namespace TrainingLog.Statistics
 {
     public class Graph
     {
         #region Enums, Delegates
 
-        public enum GraphType { TrainingDurationZoneData, BiodataFigures }
+        public enum GraphType { ZoneData, ZoneDataArea, BiodataFigures }
 
         #endregion
 
@@ -61,7 +61,22 @@ namespace TrainingLog
 
             switch (_type)
             {
-                case GraphType.TrainingDurationZoneData:
+                case GraphType.ZoneData:
+                    // x
+                    x.IntervalType = DateTimeIntervalType.Days;
+                    x.IntervalAutoMode = IntervalAutoMode.FixedCount;
+                    x.Title = "Date";
+                    x.Interval = 1;
+
+                    // y
+                    y.IntervalType = DateTimeIntervalType.Seconds;
+                    y.IntervalAutoMode = IntervalAutoMode.VariableCount;
+                    y.LabelStyle.Format = "HH:mm";
+                    y.Title = "Duration";
+                    //y.Interval = 5;
+                    y.Maximum = _series.MaximumY;
+                    break;
+                case GraphType.ZoneDataArea:
                     // x
                     x.IntervalType = DateTimeIntervalType.Days;
                     x.IntervalAutoMode = IntervalAutoMode.FixedCount;

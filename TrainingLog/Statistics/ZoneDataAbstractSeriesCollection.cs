@@ -5,7 +5,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 using TrainingLog.Controls;
 using TrainingLog.Entries;
 
-namespace TrainingLog
+namespace TrainingLog.Statistics
 {
     public class ZoneDataAbstractSeriesCollection : AbstractSeriesCollection
     {   

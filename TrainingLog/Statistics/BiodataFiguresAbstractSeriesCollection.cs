@@ -5,7 +5,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 using System.Linq;
 using TrainingLog.Entries;
 
-namespace TrainingLog
+namespace TrainingLog.Statistics
 {
     public class BiodataFiguresAbstractSeriesCollection : AbstractSeriesCollection
     {   
