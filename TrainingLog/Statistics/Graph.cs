@@ -9,7 +9,7 @@ namespace TrainingLog.Statistics
     {
         #region Enums, Delegates
 
-        public enum GraphType { ZoneData, ZoneDataArea, BiodataFigures }
+        public enum GraphType { ZoneData, ZoneDataArea, BiodataFigures, Distance }
 
         #endregion
 
@@ -67,13 +67,11 @@ namespace TrainingLog.Statistics
                     x.IntervalAutoMode = IntervalAutoMode.FixedCount;
                     x.Title = "Date";
                     x.Interval = 1;
-
                     // y
                     y.IntervalType = DateTimeIntervalType.Seconds;
                     y.IntervalAutoMode = IntervalAutoMode.VariableCount;
                     y.LabelStyle.Format = "HH:mm";
                     y.Title = "Duration";
-                    //y.Interval = 5;
                     y.Maximum = _series.MaximumY;
                     break;
                 case GraphType.ZoneDataArea:
@@ -82,13 +80,11 @@ namespace TrainingLog.Statistics
                     x.IntervalAutoMode = IntervalAutoMode.FixedCount;
                     x.Title = "Date";
                     x.Interval = 1;
-
                     // y
                     y.IntervalType = DateTimeIntervalType.Seconds;
                     y.IntervalAutoMode = IntervalAutoMode.VariableCount;
                     y.LabelStyle.Format = "HH:mm";
                     y.Title = "Duration";
-                    //y.Interval = 5;
                     y.Maximum = _series.MaximumY;
                     break;
                 case GraphType.BiodataFigures:
@@ -96,11 +92,20 @@ namespace TrainingLog.Statistics
                     x.IntervalType = DateTimeIntervalType.Days;
                     x.IntervalAutoMode = IntervalAutoMode.VariableCount;
                     x.Title = "Date";
-                    //x.Interval = 1;
-
                     // y
                     y.Interval = 5;
                     y.Minimum = _series.MinimumY;
+                    y.Maximum = _series.MaximumY;
+                    break;
+                case GraphType.Distance:
+                    // x
+                    x.IntervalType = DateTimeIntervalType.Days;
+                    x.IntervalAutoMode = IntervalAutoMode.FixedCount;
+                    x.Title = "Date";
+                    x.Interval = 1;
+                    // y
+                    y.IntervalAutoMode = IntervalAutoMode.VariableCount;
+                    y.Title = "Distance [km]";
                     y.Maximum = _series.MaximumY;
                     break;
                 default:

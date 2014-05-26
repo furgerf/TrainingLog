@@ -68,13 +68,21 @@ namespace TrainingLog.Forms
 
             _filters = new IFilter[] {dfcFrom, dfcTo};
 
+            AddDistanceGraph();
             AddZoneDataGraph();
             AddZoneDataAreaGraph();
             AddBiodataRestingHrGraph();
         }
+
         #endregion
 
         #region Main Methods
+
+        private void AddDistanceGraph()
+        {
+            var graph = new Graph(Graph.GraphType.Distance, FilteredTrainingEntries.Where(te => te.DistanceMSpecified).OrderBy(te => te.Date).Cast<Entry>().ToArray()) { Title = "Distance per day" };
+            AddGraph(graph);
+        }
 
         private void AddBiodataRestingHrGraph()
         {

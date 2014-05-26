@@ -24,6 +24,8 @@ namespace TrainingLog.Statistics
                     return new ZoneDataAreaAbstractSeriesCollection();
                 case Graph.GraphType.BiodataFigures:
                     return new BiodataFiguresAbstractSeriesCollection();
+                case Graph.GraphType.Distance:
+                    return new DistanceAbstractSeriesCollection();
                 default:
                     throw new ArgumentOutOfRangeException("type");
             }

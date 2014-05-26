@@ -103,6 +103,7 @@
     <Compile Include="Forms\SleepForm.Designer.cs">
       <DependentUpon>SleepForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Statistics\DistanceAbstractSeriesCollection.cs" />
     <Compile Include="Statistics\ZoneDataAreaAbstractSeriesCollection.cs" />
     <Compile Include="Statistics\Graph.cs" />
     <Compile Include="Statistics\AbstractSeriesCollection.cs" />
