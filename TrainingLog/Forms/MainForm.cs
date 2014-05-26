@@ -5,9 +5,15 @@ namespace TrainingLog.Forms
 {
     public partial class MainForm : Form
     {
+        #region Public Fields
+
         public static MainForm GetInstance { get; private set; }
 
         public bool CloseForms { get; private set; }
+
+        #endregion
+
+        #region Constructor
 
         public MainForm()
         {
@@ -17,9 +23,11 @@ namespace TrainingLog.Forms
             InitializeComponent();
 
             GetInstance = this;
-
-            ButShowStatisticsClick(null, null);
         }
+
+        #endregion
+
+        #region Event Handling
 
         private void ButAddTrainingClick(object sender, EventArgs e)
         {
@@ -72,5 +80,7 @@ namespace TrainingLog.Forms
         {
             Close();
         }
+
+        #endregion
     }
 }

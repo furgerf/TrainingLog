@@ -63,8 +63,11 @@ namespace TrainingLog.Forms
         {
             InitializeComponent();
 
-            ((DateTimePicker)dfcFrom.GetControl()).Value = DateTime.Today.Subtract(new TimeSpan(31 * 6, 0, 0, 0));
+            ((DateTimePicker)dfcFrom.GetControl()).Value = DateTime.Today.Subtract(new TimeSpan(31, 0, 0, 0));
             ((DateTimePicker)dfcTo.GetControl()).Value = DateTime.Today;
+
+            ((DateTimePicker)dfcFrom.GetControl()).ValueChanged += UpdateData;
+            ((DateTimePicker)dfcTo.GetControl()).ValueChanged += UpdateData;
 
             _filters = new IFilter[] {dfcFrom, dfcTo};
 
@@ -81,7 +84,7 @@ namespace TrainingLog.Forms
 
         #region Main Methods
 
-        public void UpdateData()
+        public void UpdateData(object sender = null, EventArgs e = null)
         {
             ClearGraphs();
             _loadData();

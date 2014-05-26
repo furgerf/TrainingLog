@@ -22,6 +22,9 @@ namespace TrainingLog.Statistics
             {
                 var max = Series[0].Points.Select((t1, i) => Series.Sum(t => t.Points[i].YValues[0])).Concat(new[] {double.MinValue}).Max();
 
+                if (max.Equals(double.MinValue))
+                    return 0;
+
                 var dt = DateTime.FromOADate(max).Add(new TimeSpan(0, 30, 0));
 
                 return new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute / 30 * 30, 0).ToOADate();

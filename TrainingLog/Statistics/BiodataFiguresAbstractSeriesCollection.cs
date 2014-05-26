@@ -149,6 +149,9 @@ namespace TrainingLog.Statistics
                 s.Points.Add(s.Points[0]);
 
             // calculate and add hr average
+            if (hrAvg.Equals(0))
+                return;
+
             hrAvg = Math.Round(hrAvg/entries.Count(e => ((BiodataEntry) e).RestingHeartRateSpecified), 2);
             _series[AverageRestingHrSeries].Points.Clear();
             var minAvg = new DataPoint();
