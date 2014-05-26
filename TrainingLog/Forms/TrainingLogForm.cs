@@ -310,56 +310,6 @@ namespace TrainingLog.Forms
             throw new NotImplementedException();
         }
 
-        //private string GetParseableStringTraining(string[] data)
-        //{
-        //    ZoneData zd;
-        //    if (!ZoneData.TryParse(data[5].Split('\t')[1], out zd))
-        //        return null;
-        //    var sport = (Common.Sport)Enum.Parse(typeof(Common.Sport), data[1].IndexOf('(') > 0 ? data[1].Substring(0, data[1].IndexOf('(') - 1) : data[1]);
-        //    var trainingType = (Common.TrainingType)Enum.Parse(typeof(Common.TrainingType), data[1].Substring(data[1].IndexOf('(') + 1, data[1].IndexOf(')') - data[1].IndexOf('(') - 1));
-
-        //    //if (data[1].IndexOf('(') > 0)
-        //    //{
-        //    //    sport = (Common.Sport) Enum.Parse(typeof (Common.Sport), data[1].Substring(0, data[1].IndexOf('(') - 1));
-        //    //    var type = GetType();
-        //    //    switch (sport)
-        //    //    {
-        //    //        case Common.Sport.Running:
-        //    //        case Common.Sport.Cycling:
-        //    //            type = typeof(Common.EnduranceType);
-        //    //            break;
-        //    //        case Common.Sport.Squash:
-        //    //            type = typeof(Common.SquashType);
-        //    //            break;
-        //    //    }
-
-        //    //    trainingType = (Common.TrainingType)Enum.Parse(type, data[1].Substring(data[1].IndexOf('(') + 1, data[1].IndexOf(')') - data[1].IndexOf('(') - 1));
-
-        //    //    if (type == typeof (Common.EnduranceType))
-        //    //        trainingType = (Common.EnduranceType) trainingType;
-        //    //    if (type == typeof (Common.SquashType))
-        //    //        trainingType = (Common.SquashType) trainingType;
-        //    //} else
-        //    //{
-        //    //    sport = (Common.Sport) Enum.Parse(typeof (Common.Sport), data[1]);
-        //    //    trainingType = Common.TrainingType.None;
-        //    //}
-
-        //    var entry = new TrainingEntry(TimeSpan.Parse(data[2].Replace('.', ':')))
-        //    {
-        //        AverageHr = int.Parse(data[4]),
-        //        Calories = int.Parse(data[3]),
-        //        Date = DateTime.ParseExact(data[0], "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None),
-        //        DistanceKm = double.Parse(data[6]),
-        //        Feeling = (Common.Index)Enum.Parse(typeof(Common.Index), data[7]),
-        //        Note = data[8],
-        //        HrZones = zd,
-        //        Sport = sport,
-        //        TrainingType = trainingType
-        //    };
-        //    return entry.LogString;
-        //}
-
         #endregion
 
         #region Event Handling
@@ -451,26 +401,10 @@ namespace TrainingLog.Forms
 
         private void ChkEditCheckedChanged(object sender, EventArgs e)
         {
-            //if (chkEdit.Checked)
-            //{
-            //    if (
-            //        MessageBox.Show("Are you sure you want to edit the data?", "Enable editing", MessageBoxButtons.YesNo,
-            //                        MessageBoxIcon.Question) == DialogResult.No)
-            //    {
-            //        chkEdit.Checked = false;
-            //        return;
-            //    }
-            //}
-
             _elcTraining.ControlsEnabled = chkEdit.Checked;
             _elcBiodata.ControlsEnabled = chkEdit.Checked;
             _elcRace.ControlsEnabled = chkEdit.Checked;
             _elcUnified.ControlsEnabled = chkEdit.Checked;
-        }
-
-        private void TrainingLogFormActivated(object sender, EventArgs e)
-        {
-            EntrySelectionChanged(null, null);
         }
 
         #endregion

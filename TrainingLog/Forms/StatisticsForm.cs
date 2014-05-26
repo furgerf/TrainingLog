@@ -53,7 +53,7 @@ namespace TrainingLog.Forms
 
         private readonly IFilter[] _filters;
 
-        private readonly List<TabPage> _pages = new List<TabPage>(); 
+        private readonly Action _loadData;
 
         #endregion
 
@@ -68,15 +68,24 @@ namespace TrainingLog.Forms
 
             _filters = new IFilter[] {dfcFrom, dfcTo};
 
-            AddDistanceGraph();
-            AddZoneDataGraph();
-            AddZoneDataAreaGraph();
-            AddBiodataRestingHrGraph();
+            _loadData = () =>
+                            {
+                                AddDistanceGraph();
+                                AddZoneDataGraph();
+                                AddZoneDataAreaGraph();
+                                AddBiodataRestingHrGraph();
+                            };
         }
 
         #endregion
 
         #region Main Methods
+
+        public void UpdateData()
+        {
+            ClearGraphs();
+            _loadData();
+        }
 
         private void AddDistanceGraph()
         {
@@ -111,7 +120,6 @@ namespace TrainingLog.Forms
         private void AddGraph(Graph graph)
         {
             var page = new TabPage {Text = graph.Title};
-            _pages.Add(page);
 
             // location/size
             graph.Chart.Location = new Point(0,0);
@@ -121,6 +129,11 @@ namespace TrainingLog.Forms
             // add controls
             page.Controls.Add(graph.Chart);
             tabTabs.Controls.Add(page);
+        }
+
+        private void ClearGraphs()
+        {
+            tabTabs.Controls.Clear();
         }
 
         #endregion

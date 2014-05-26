@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Linq;
 using TrainingLog.Entries;
@@ -51,14 +50,14 @@ namespace TrainingLog.Statistics
                                          {
                                              XValueType = ChartValueType.Date,
                                              YValueType = ChartValueType.Double,
-                                             ChartType = SeriesChartType.Area,
+                                             ChartType = SeriesChartType.SplineArea,
                                              //Color = Color.Purple,
                                          },
                                      new Series("Running Distance")
                                          {
                                              XValueType = ChartValueType.Date,
                                              YValueType = ChartValueType.Double,
-                                             ChartType = SeriesChartType.Area,
+                                             ChartType = SeriesChartType.SplineArea,
                                              //Color = Color.RoyalBlue
                                          }
                                  });
@@ -123,9 +122,6 @@ namespace TrainingLog.Statistics
                 if (max > _maxY)
                     _maxY = max;
             }
-            
-            //foreach (var p in from s in _series from p in s.Points where p.YValues[0] > _maxY select p)
-            //    _maxY = p.YValues[0];
         }
 
         #endregion

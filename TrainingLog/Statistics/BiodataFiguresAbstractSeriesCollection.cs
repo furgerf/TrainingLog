@@ -60,6 +60,7 @@ namespace TrainingLog.Statistics
                                              YValueType = ChartValueType.Int32,
                                              ChartType = SeriesChartType.Spline,
                                              BorderWidth = 10,
+                                             //IsValueShownAsLabel = true,
                                              Color = Color.RoyalBlue
                                          },
                                      new Series("Average Resting Heart Rate")
@@ -75,8 +76,10 @@ namespace TrainingLog.Statistics
                                          {
                                              XValueType = ChartValueType.Date,
                                              YValueType = ChartValueType.Int32,
-                                             ChartType = SeriesChartType.Spline,
-                                             BorderWidth = 3,
+                                             ChartType = SeriesChartType.Point,
+                                             IsValueShownAsLabel = true,
+                                             MarkerSize = 10,
+                                             MarkerStyle = MarkerStyle.Circle,
                                              Color = Color.Green
                                          },
                                      new Series("Weight")

@@ -45,6 +45,7 @@ namespace TrainingLog.Forms
         private void ButShowStatisticsClick(object sender, EventArgs e)
         {
             Hide();
+            StatisticsForm.GetInstance.UpdateData();
             StatisticsForm.GetInstance.Show();
             StatisticsForm.GetInstance.BringToFront();
         }

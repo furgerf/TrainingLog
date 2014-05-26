@@ -7,7 +7,7 @@ namespace TrainingLog.Statistics
 {
     public class Graph
     {
-        #region Enums, Delegates
+        #region Enums
 
         public enum GraphType { ZoneData, ZoneDataArea, BiodataFigures, Distance }
 
@@ -30,6 +30,7 @@ namespace TrainingLog.Statistics
         public readonly Chart Chart = new Chart();
 
         private readonly Legend _legend = new Legend();
+
         private string _title;
 
         private AbstractSeriesCollection _series;
@@ -105,8 +106,9 @@ namespace TrainingLog.Statistics
                     x.Interval = 1;
                     // y
                     y.IntervalAutoMode = IntervalAutoMode.VariableCount;
-                    y.Title = "Distance [km]";
+                    y.Title = "Distance";
                     y.Maximum = _series.MaximumY;
+                    y.LabelStyle.Format = "{0} km";
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("type");
