@@ -63,13 +63,32 @@ namespace TrainingLog.Forms
         {
             InitializeComponent();
 
-            ((DateTimePicker)dfcFrom.GetControl()).Value = DateTime.Today.Subtract(new TimeSpan(31, 0, 0, 0));
+            ((DateTimePicker)dfcFrom.GetControl()).Value = DateTime.Today.Subtract(new TimeSpan(31 * 6, 0, 0, 0));
             ((DateTimePicker)dfcTo.GetControl()).Value = DateTime.Today;
-
             ((DateTimePicker)dfcFrom.GetControl()).ValueChanged += UpdateData;
             ((DateTimePicker)dfcTo.GetControl()).ValueChanged += UpdateData;
 
-            _filters = new IFilter[] {dfcFrom, dfcTo};
+            efcTrainingType.LabelText = "Training";
+            efcTrainingType.DataFromEntry = e => ((TrainingEntry)e).TrainingType.ToString();
+            ((ComboBox)efcTrainingType.GetControl()).SelectedValueChanged += UpdateData;
+            ((ComboBox)efcSport.GetControl()).SelectedValueChanged += (s, e) =>
+                                                        {
+                                                            var types = efcSport.GetControl()
+                                                                .Text.Equals(EnumFilterControl.All) ? Common.AllTypes : Common.GetTrainingTypes((Common.Sport)Enum.Parse(typeof (Common.Sport), (efcSport.GetControl()).Text));
+                                                            var strings = new string[types.Length];
+                                                            for (var i = 0; i < types.Length; i++)
+                                                                strings[i] = types[i].ToString();
+                                                            efcTrainingType.Items =
+                                                                new [] {EnumFilterControl.All}.Concat(strings)
+                                                                                    .ToArray();
+                                                        };
+
+            efcSport.LabelText = "Sport";
+            efcSport.DataFromEntry = e => ((TrainingEntry)e).Sport.ToString();
+            efcSport.Items = new[] { EnumFilterControl.All }.Concat(Enum.GetNames(typeof(Common.Sport)).Where(e => !e.Equals("Count"))).ToArray();
+            ((ComboBox)efcSport.GetControl()).SelectedValueChanged += UpdateData;
+            
+            _filters = new IFilter[] {dfcFrom, dfcTo, efcSport, efcTrainingType};
 
             _loadData = () =>
                             {
@@ -86,8 +105,13 @@ namespace TrainingLog.Forms
 
         public void UpdateData(object sender = null, EventArgs e = null)
         {
+            if (_loadData == null)
+                return;
+
+            var index = tabTabs.SelectedIndex;
             ClearGraphs();
             _loadData();
+            tabTabs.SelectedIndex = index;
         }
 
         private void AddDistanceGraph()

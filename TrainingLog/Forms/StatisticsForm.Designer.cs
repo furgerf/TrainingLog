@@ -30,8 +30,10 @@
         {
             this.tabTabs = new System.Windows.Forms.TabControl();
             this.grpFilter = new System.Windows.Forms.GroupBox();
+            this.efcSport = new TrainingLog.Controls.EnumFilterControl();
             this.dfcTo = new TrainingLog.Controls.DateFilterControl();
             this.dfcFrom = new TrainingLog.Controls.DateFilterControl();
+            this.efcTrainingType = new TrainingLog.Controls.EnumFilterControl();
             this.grpFilter.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -45,6 +47,8 @@
             // 
             // grpFilter
             // 
+            this.grpFilter.Controls.Add(this.efcTrainingType);
+            this.grpFilter.Controls.Add(this.efcSport);
             this.grpFilter.Controls.Add(this.dfcTo);
             this.grpFilter.Controls.Add(this.dfcFrom);
             this.grpFilter.Location = new System.Drawing.Point(12, 12);
@@ -53,6 +57,17 @@
             this.grpFilter.TabIndex = 1;
             this.grpFilter.TabStop = false;
             this.grpFilter.Text = "Filer";
+            // 
+            // efcSport
+            // 
+            this.efcSport.DataFromEntry = null;
+            this.efcSport.EnumColumnIndex = 0;
+            this.efcSport.Items = null;
+            this.efcSport.LabelText = null;
+            this.efcSport.Location = new System.Drawing.Point(274, 18);
+            this.efcSport.Name = "efcSport";
+            this.efcSport.Size = new System.Drawing.Size(150, 21);
+            this.efcSport.TabIndex = 2;
             // 
             // dfcTo
             // 
@@ -73,6 +88,17 @@
             this.dfcFrom.Name = "dfcFrom";
             this.dfcFrom.Size = new System.Drawing.Size(128, 20);
             this.dfcFrom.TabIndex = 0;
+            // 
+            // efcTrainingType
+            // 
+            this.efcTrainingType.DataFromEntry = null;
+            this.efcTrainingType.EnumColumnIndex = 0;
+            this.efcTrainingType.Items = null;
+            this.efcTrainingType.LabelText = null;
+            this.efcTrainingType.Location = new System.Drawing.Point(430, 18);
+            this.efcTrainingType.Name = "efcTrainingType";
+            this.efcTrainingType.Size = new System.Drawing.Size(150, 21);
+            this.efcTrainingType.TabIndex = 3;
             // 
             // StatisticsForm
             // 
@@ -99,5 +125,7 @@
         private System.Windows.Forms.GroupBox grpFilter;
         private Controls.DateFilterControl dfcTo;
         private Controls.DateFilterControl dfcFrom;
+        private Controls.EnumFilterControl efcSport;
+        private Controls.EnumFilterControl efcTrainingType;
     }
 }

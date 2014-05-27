@@ -49,6 +49,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\EnumFilterControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\EnumFilterControl.Designer.cs">
+      <DependentUpon>EnumFilterControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Statistics\BiodataFiguresAbstractSeriesCollection.cs" />
     <Compile Include="Entries\BiodataEntry.cs" />
     <Compile Include="Controls\ColorDatePicker.cs">
@@ -143,6 +149,9 @@
     <Compile Include="Statistics\ZoneDataSeries.cs" />
     <EmbeddedResource Include="Controls\DateFilterControl.resx">
       <DependentUpon>DateFilterControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\EnumFilterControl.resx">
+      <DependentUpon>EnumFilterControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ZoneDataBox.resx">
       <DependentUpon>ZoneDataBox.cs</DependentUpon>

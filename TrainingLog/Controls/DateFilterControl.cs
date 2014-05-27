@@ -54,7 +54,7 @@ namespace TrainingLog.Controls
 
         #region Main Methods
 
-        public void Initialize(GLItemCollection list, Common.MarkItem markItem, Common.ApplyItemVisibility applyItemVisibility, int dateColumnIndex, object date = null)
+        public void Initialize(GLItemCollection list, Common.MarkItem markItem, Common.ApplyItemVisibility applyItemVisibility, int enumColumnIndex, object date = null)
         {
             if (date != null)
                 dtpDate.Value = (DateTime)date;
@@ -70,7 +70,7 @@ namespace TrainingLog.Controls
                 applyItemVisibility();
             };
 
-            DateColumnIndex = dateColumnIndex;
+            DateColumnIndex = enumColumnIndex;
             _initialized = true;
         }
 
@@ -109,12 +109,6 @@ namespace TrainingLog.Controls
         #endregion
 
         #region Event Handling
-
-        private void CdpDateValueChanged(object sender, EventArgs e)
-        {
-            if (_onFilterChanged != null)
-                _onFilterChanged();
-        }
 
         #endregion
     }

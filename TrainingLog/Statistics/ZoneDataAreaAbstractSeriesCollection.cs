@@ -20,6 +20,9 @@ namespace TrainingLog.Statistics
         {
             get
             {
+                if (Series[0].Points.Count == 0)
+                    return 100;
+
                 var max = Series[0].Points.Select(p => p.YValues[0]).Max();
 
                 var dt = DateTime.FromOADate(max).Add(new TimeSpan(0, 30, 0));

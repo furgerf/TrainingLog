@@ -1,5 +1,7 @@
+using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using GlacialComponents.Controls;
 using TrainingLog.Properties;
@@ -38,6 +40,8 @@ namespace TrainingLog
                                                                     TrainingType.Club, TrainingType.Match
                                                                 };
 
+        public static readonly TrainingType[] AllTypes = EnduranceTypes.Concat(SquashTypes).ToArray();
+
         public enum TrainingType
         {
             None = 0,
@@ -73,6 +77,22 @@ namespace TrainingLog
         #endregion
 
         #region Methods
+
+        public static TrainingType[] GetTrainingTypes(Sport sport)
+        {
+            switch (sport)
+            {
+                case Sport.Running:
+                case Sport.Cycling:
+                    return EnduranceTypes;
+                case Sport.Squash:
+                    return SquashTypes;
+                case Sport.Other:
+                    return new TrainingType[0];
+                default:
+                    throw new ArgumentOutOfRangeException("sport");
+            }
+        }
 
         public static T DeepClone<T>(T obj)
         {

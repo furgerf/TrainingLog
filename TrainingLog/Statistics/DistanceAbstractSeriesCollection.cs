@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Linq;
 using TrainingLog.Entries;
@@ -34,9 +35,11 @@ namespace TrainingLog.Statistics
 
         private double _maxY = double.MinValue;
 
-        private const int CyclingSeries = 0;
+        private const int RunningSeries = 0;
 
-        private const int RunningSeries = 1;
+        private const int CyclingSeries = 1;
+
+        private const int TotalSeries = 2;
 
         #endregion
 
@@ -46,19 +49,27 @@ namespace TrainingLog.Statistics
         {
             _series.AddRange(new[]
                                  {
-                                     new Series("Cycling Distance")
-                                         {
-                                             XValueType = ChartValueType.Date,
-                                             YValueType = ChartValueType.Double,
-                                             ChartType = SeriesChartType.SplineArea,
-                                             //Color = Color.Purple,
-                                         },
                                      new Series("Running Distance")
                                          {
                                              XValueType = ChartValueType.Date,
                                              YValueType = ChartValueType.Double,
-                                             ChartType = SeriesChartType.SplineArea,
-                                             //Color = Color.RoyalBlue
+                                             ChartType = SeriesChartType.StackedColumn,
+                                             Color = Color.RoyalBlue
+                                         },
+                                     new Series("Cycling Distance")
+                                         {
+                                             XValueType = ChartValueType.Date,
+                                             YValueType = ChartValueType.Double,
+                                             ChartType = SeriesChartType.StackedColumn,
+                                             Color = Color.Green,
+                                         },
+                                     new Series("Total Distance")
+                                         {
+                                             XValueType = ChartValueType.Date,
+                                             YValueType = ChartValueType.Double,
+                                             ChartType = SeriesChartType.Spline,
+                                             BorderWidth = 10,
+                                             Color = Color.Red
                                          }
                                  });
         }
@@ -108,19 +119,25 @@ namespace TrainingLog.Statistics
                 }
             }
 
-            // find max
+            _series[TotalSeries].Points.Clear();
+
+            // find max, feed total distance
             for (var i = 0; i < _series[0].Points.Count; i++)
             {
-                var allSet = _series.All(s => !s.Points[i].YValues[0].Equals(0));
+                //var allSet = _series.All(s => !s.Points[i].YValues[0].Equals(0));
 
-                if (allSet)
-                    for (var j = _series.Count - 1; j >= 1; j--)
-                        _series[j - 1].Points[i].YValues[0] += _series[j].Points[i].YValues[0];
+                //if (allSet)
+                //    for (var j = _series.Count - 1; j >= 1; j--)
+                //        _series[j - 1].Points[i].YValues[0] += _series[j].Points[i].YValues[0];
 
-                var max = _series[0].Points[i].YValues[0];
+                var max = _series[RunningSeries].Points[i].YValues[0] + _series[CyclingSeries].Points[i].YValues[0];
 
                 if (max > _maxY)
                     _maxY = max;
+
+                var dp = new DataPoint();
+                dp.SetValueXY(_series[0].Points[i].XValue, max);
+                _series[TotalSeries].Points.Add(dp);
             }
         }
 
