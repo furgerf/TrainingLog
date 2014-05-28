@@ -10,7 +10,13 @@ namespace TrainingLog.Statistics
     {
         #region Enums
 
-        public enum GraphType { ZoneData, ZoneDataArea, BiodataFigures, Distance }
+        public enum GraphType
+        {
+            ZoneData,
+            ZoneDataArea,
+            BiodataFigures,
+            Distance
+        }
 
         #endregion
 
@@ -19,7 +25,12 @@ namespace TrainingLog.Statistics
         public string Title
         {
             get { return _title; }
-            set { _title = value; if (Chart.Titles.Count > 0) Chart.Titles.RemoveAt(0); Chart.Titles.Add(_title); }
+            set
+            {
+                _title = value;
+                if (Chart.Titles.Count > 0) Chart.Titles.RemoveAt(0);
+                Chart.Titles.Add(_title);
+            }
         }
 
         #endregion
@@ -38,18 +49,23 @@ namespace TrainingLog.Statistics
 
         private readonly GraphType _type;
 
+        private readonly Func<Tuple<DateInterval, int>> _getGrouping;
+        private readonly Func<Entry[]> _getEntries;
+
         #endregion
 
         #region Constructor
 
-        public Graph(GraphType type, Entry[] entries, Tuple<DateInterval, int> grouping = null)
+        public Graph(GraphType type, Func<Entry[]> entries, Func<Tuple<DateInterval, int>> grouping)
         {
+            _getGrouping = grouping;
             _type = type;
+            _getEntries = entries;
 
             Chart.ChartAreas.Add(_area);
             Chart.Legends.Add(_legend);
 
-            InitializeGraph(entries, grouping);
+            Initialize();
         }
 
         #endregion
@@ -92,7 +108,7 @@ namespace TrainingLog.Statistics
             }
             else
                 x.IntervalAutoMode = IntervalAutoMode.VariableCount;
-            
+
             // y
             switch (_type)
             {
@@ -136,20 +152,36 @@ namespace TrainingLog.Statistics
             _series = AbstractSeriesCollection.GetCollection(_type);
         }
 
-        private void InitializeGraph(Entry[] entries, Tuple<DateInterval, int> grouping)
+        private void Initialize()
         {
+            var entries = _getEntries();
+            var grouping = _getGrouping();
+
             InitializeSeries();
 
             InitializeData(entries, grouping);
 
             InitializeAxes(grouping);
+
+            foreach (var s in _series.Series)
+                Chart.Series.Add(s);
         }
 
         private void InitializeData(Entry[] entries, Tuple<DateInterval, int> grouping)
         {
+            foreach (var s in _series.Series)
+                s.Points.Clear();
+
             _series.AddPoints(entries, grouping);
-            foreach (var s in _series.Series.Where(s => s.Points.Count > 0))
-                Chart.Series.Add(s);
+        }
+
+        public void UpdateGraph()
+        {
+            var entries = _getEntries();
+            var grouping = _getGrouping();
+
+            InitializeData(entries, grouping);
+            InitializeAxes(grouping);
         }
 
         #endregion

@@ -192,6 +192,7 @@ namespace TrainingLog.Statistics
                 s.Points.Add(zeroPoint.Clone());
 
             // find max
+            _maxY = double.MinValue;
             for (var i = 0; i < _series.Series[0].Points.Count; i++)
             {
                 foreach (var s in _series.Series.Where(s => s.Points[i].YValues[0] > _maxY))

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -46,43 +45,78 @@ namespace TrainingLog.Forms
             get { return WindowState == FormWindowState.Maximized ? Screen.PrimaryScreen.WorkingArea.Size : ClientSize; }
         }
 
-        private IEnumerable<TrainingEntry> FilteredTrainingEntries
-        {
-            get
-            {
-                var invisible =
-                    (from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te)
-                        .ToList();
-                return Model.Instance.TrainingEntries.Except(invisible).ToArray();
-            }
-        }
-
-        private IEnumerable<BiodataEntry> FilteredBiodataEntries
-        {
-            get
-            {
-                var invisible =
-                    (from te in Model.Instance.BiodataEntries from f in _filters where !f.IsEntryVisible(te) select te)
-                        .ToList();
-                return Model.Instance.BiodataEntries.Except(invisible).ToArray();
-            }
-        }
-
         private readonly IFilter[] _filters;
 
-        private readonly Action _loadData;
+        private readonly Graph[] _graphs;
+
+        private readonly bool[] _dirtyGraphs;
 
         #endregion
 
         #region Constructor
-
+       
         public StatisticsForm()
         {
+            // forms
             InitializeComponent();
 
+            // filters
+            InitializeFilters();
+            _filters = new IFilter[] { dfcFrom, dfcTo, efcSport, efcTrainingType };
+
+            // graphs
+            _graphs = GetGraphs();
+            _dirtyGraphs = new bool[_graphs.Length];
+
+            foreach (var g in _graphs)
+                AddGraph(g);
+
+
+            tabTabs.SelectedIndexChanged += (s, e) =>
+                                                {
+                                                    if (!_dirtyGraphs[tabTabs.SelectedIndex]) return;
+                                                    _graphs[tabTabs.SelectedIndex].UpdateGraph();
+                                                    _dirtyGraphs[tabTabs.SelectedIndex] = false;
+                                                };
+        }
+
+        #endregion
+
+        #region Main Methods
+
+        public void UpdateData(object sender = null, EventArgs e = null)
+        {
+            if (tabTabs.Controls.Count == 0)
+                return;
+
+            // visible page: update graph
+            _graphs[tabTabs.SelectedIndex].UpdateGraph();
+
+            // all other pages: mark as dirty
+            foreach (var p in from Control p in tabTabs.Controls where tabTabs.Controls.IndexOf(p) != tabTabs.SelectedIndex select p)
+                _dirtyGraphs[tabTabs.Controls.IndexOf(p)] = true;
+        }
+
+        private void AddGraph(Graph graph)
+        {
+            var page = new TabPage { Text = graph.Title };
+
+            // location/size
+            graph.Chart.Location = new Point(0, 0);
+            graph.Chart.Size = page.Size;
+            page.SizeChanged += (s, e) => graph.Chart.Size = page.Size;
+            // add controls
+            page.Controls.Add(graph.Chart);
+            tabTabs.Controls.Add(page);
+        }
+
+        private void InitializeFilters()
+        {
+            // update graphs when grouping changes
             comGrouping.SelectedIndex = 0;
             comGrouping.SelectedIndexChanged += (s, e) => { UpdateData(); comGrouping.Focus(); };
 
+            // prepare filters and update graphs when values change
             ((DateTimePicker)dfcFrom.GetControl()).Value = DateTime.Today.Subtract(new TimeSpan(31 * 6, 0, 0, 0));
             ((DateTimePicker)dfcTo.GetControl()).Value = DateTime.Today;
             ((DateTimePicker)dfcFrom.GetControl()).ValueChanged += (s, e) => { UpdateData(); dfcFrom.Focus(); };
@@ -92,94 +126,46 @@ namespace TrainingLog.Forms
             efcTrainingType.DataFromEntry = e => ((TrainingEntry)e).TrainingType.ToString();
             ((ComboBox)efcTrainingType.GetControl()).SelectedValueChanged += (s, e) => { UpdateData(); efcTrainingType.Focus(); };
             ((ComboBox)efcSport.GetControl()).SelectedValueChanged += (s, e) =>
-                                                        {
-                                                            var types = efcSport.GetControl()
-                                                                .Text.Equals(EnumFilterControl.All) ? Common.AllTypes : Common.GetTrainingTypes((Common.Sport)Enum.Parse(typeof (Common.Sport), (efcSport.GetControl()).Text));
-                                                            var strings = new string[types.Length];
-                                                            for (var i = 0; i < types.Length; i++)
-                                                                strings[i] = types[i].ToString();
-                                                            efcTrainingType.Items =
-                                                                new [] {EnumFilterControl.All}.Concat(strings)
-                                                                                    .ToArray();
-                                                        };
+            {
+                var types = efcSport.GetControl()
+                    .Text.Equals(EnumFilterControl.All) ? Common.AllTypes : Common.GetTrainingTypes((Common.Sport)Enum.Parse(typeof(Common.Sport), (efcSport.GetControl()).Text));
+                var strings = new string[types.Length];
+                for (var i = 0; i < types.Length; i++)
+                    strings[i] = types[i].ToString();
+                efcTrainingType.Items =
+                    new[] { EnumFilterControl.All }.Concat(strings)
+                                        .ToArray();
+            };
 
             efcSport.LabelText = "Sport";
             efcSport.DataFromEntry = e => ((TrainingEntry)e).Sport.ToString();
             efcSport.Items = new[] { EnumFilterControl.All }.Concat(Enum.GetNames(typeof(Common.Sport)).Where(e => !e.Equals("Count"))).ToArray();
             ((ComboBox)efcSport.GetControl()).SelectedValueChanged += (s, e) => { UpdateData(); efcSport.Focus(); };
+        }
+
+        private Graph[] GetGraphs()
+        {
+            return new[]{
+                new Graph(Graph.GraphType.BiodataFigures, 
+                    () => Model.Instance.BiodataEntries.Except((from te in Model.Instance.BiodataEntries from f in _filters where !f.IsEntryVisible(te) select te)).OrderBy(te => te.Date).Cast<Entry>().ToArray(),
+                    () => new Tuple<DateInterval, int>(DateInterval.Day, 1))
+                    { Title = "Resting Heart Rate per day" }, 
+
+                new Graph(Graph.GraphType.Distance,
+                    () => Model.Instance.TrainingEntries.Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te)).Where(te => te.DistanceMSpecified).OrderBy(te => te.Date).Cast<Entry>().ToArray(),
+                    () => GroupingInterval)
+                    { Title = "Distance" },
             
-            _filters = new IFilter[] {dfcFrom, dfcTo, efcSport, efcTrainingType};
+                new Graph(Graph.GraphType.ZoneData, 
+                    () => Model.Instance.TrainingEntries.Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te)).Where(te => te.HrZoneStringSpecified).OrderBy(te => te.Date).Cast<Entry>().ToArray(),   
+                    () => new Tuple<DateInterval, int>(DateInterval.Day, 1))
+                    { Title = "Zone Data per training" },
 
-            _loadData = () =>
-                            {
-                                AddZoneDataAreaGraph();
-                                AddZoneDataGraph();
-                                AddDistanceGraph();
-                                AddBiodataRestingHrGraph();
-                            };
-        }
-
-        #endregion
-
-        #region Main Methods
-
-        public void UpdateData(object sender = null, EventArgs e = null)
-        {
-            if (_loadData == null)
-                return;
-
-            var index = tabTabs.SelectedIndex;
-            ClearGraphs();
-            _loadData();
-            tabTabs.SelectedIndex = index;
-        }
-
-        private void AddDistanceGraph()
-        {
-            var graph = new Graph(Graph.GraphType.Distance, FilteredTrainingEntries.Where(te => te.DistanceMSpecified).OrderBy(te => te.Date).Cast<Entry>().ToArray(), GroupingInterval) { Title = "Distance" };
-            AddGraph(graph);
-        }
-
-        private void AddBiodataRestingHrGraph()
-        {
-            var entries = FilteredBiodataEntries.Where(e => e.RestingHeartRateSpecified || e.WeightSpecified || e.OwnIndexSpecified).Cast<Entry>().OrderBy(e => e.Date).ToArray();
-
-            var graph = new Graph(Graph.GraphType.BiodataFigures, entries, new Tuple<DateInterval, int>(DateInterval.Day, 1)) { Title = "Resting Heart Rate per day" };
-            AddGraph(graph);
-        }
-
-        private void AddZoneDataGraph()
-        {
-            var entries = FilteredTrainingEntries.Cast<Entry>().OrderBy(ee => ee.Date).ToArray();
-
-            var graph = new Graph(Graph.GraphType.ZoneData, entries, new Tuple<DateInterval, int>(DateInterval.Day, 1)) { Title = "Zone Data per training" };
-            AddGraph(graph);
-        }
-
-        private void AddZoneDataAreaGraph()
-        {
-            var entries = FilteredTrainingEntries.Cast<Entry>().OrderBy(ee => ee.Date).ToArray();
-
-            var graph = new Graph(Graph.GraphType.ZoneDataArea, entries, GroupingInterval) { Title = "Zone Data area" };
-            AddGraph(graph);
-        }
-
-        private void AddGraph(Graph graph)
-        {
-            var page = new TabPage {Text = graph.Title};
-
-            // location/size
-            graph.Chart.Location = new Point(0,0);
-            graph.Chart.Size = page.Size;
-            page.SizeChanged += (s, e) => graph.Chart.Size = page.Size;
-            // add controls
-            page.Controls.Add(graph.Chart);
-            tabTabs.Controls.Add(page);
-        }
-
-        private void ClearGraphs()
-        {
-            tabTabs.Controls.Clear();
+                new Graph(Graph.GraphType.ZoneDataArea, 
+                    () => Model.Instance.TrainingEntries.Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te)).Where(te => te.HrZoneStringSpecified).OrderBy(te => te.Date).Cast<Entry>().ToArray(),   
+                    () => GroupingInterval)
+                    { Title = "Zone Data area" }
+            };
         }
 
         #endregion

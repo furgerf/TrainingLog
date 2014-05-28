@@ -25,6 +25,7 @@ namespace TrainingLog.Forms
             GetInstance = this;
 
             ButShowStatisticsClick(null, null);
+            //ButShowLogClick(null, null);
         }
 
         #endregion

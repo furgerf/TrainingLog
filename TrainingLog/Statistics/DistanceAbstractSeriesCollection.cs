@@ -131,6 +131,7 @@ namespace TrainingLog.Statistics
                 _series[1].Points.Add(_series[1].Points[0]);
 
             // find max
+            _maxY = double.MinValue;
             for (var i = 0; i < _series[1].Points.Count; i++)
             {
                 var max = _series[RunningSeries].Points[i].YValues[0] + _series[CyclingSeries].Points[i].YValues[0];
