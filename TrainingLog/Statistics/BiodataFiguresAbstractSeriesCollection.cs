@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Linq;
+using Microsoft.VisualBasic;
 using TrainingLog.Entries;
 
 namespace TrainingLog.Statistics
@@ -98,7 +99,7 @@ namespace TrainingLog.Statistics
 
         #region Main Methods
 
-        public override void AddPoints(Entry[] entries)
+        public override void AddPoints(Entry[] entries, Tuple<DateInterval, int> grouping)
         {
             var hrAvg = 0.0;
             

@@ -30,11 +30,14 @@
         {
             this.tabTabs = new System.Windows.Forms.TabControl();
             this.grpFilter = new System.Windows.Forms.GroupBox();
+            this.efcTrainingType = new TrainingLog.Controls.EnumFilterControl();
             this.efcSport = new TrainingLog.Controls.EnumFilterControl();
             this.dfcTo = new TrainingLog.Controls.DateFilterControl();
             this.dfcFrom = new TrainingLog.Controls.DateFilterControl();
-            this.efcTrainingType = new TrainingLog.Controls.EnumFilterControl();
+            this.grpGrouping = new System.Windows.Forms.GroupBox();
+            this.comGrouping = new System.Windows.Forms.ComboBox();
             this.grpFilter.SuspendLayout();
+            this.grpGrouping.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabTabs
@@ -51,12 +54,23 @@
             this.grpFilter.Controls.Add(this.efcSport);
             this.grpFilter.Controls.Add(this.dfcTo);
             this.grpFilter.Controls.Add(this.dfcFrom);
-            this.grpFilter.Location = new System.Drawing.Point(12, 12);
+            this.grpFilter.Location = new System.Drawing.Point(116, 12);
             this.grpFilter.Name = "grpFilter";
-            this.grpFilter.Size = new System.Drawing.Size(513, 45);
+            this.grpFilter.Size = new System.Drawing.Size(634, 45);
             this.grpFilter.TabIndex = 1;
             this.grpFilter.TabStop = false;
             this.grpFilter.Text = "Filer";
+            // 
+            // efcTrainingType
+            // 
+            this.efcTrainingType.DataFromEntry = null;
+            this.efcTrainingType.EnumColumnIndex = 0;
+            this.efcTrainingType.Items = null;
+            this.efcTrainingType.LabelText = null;
+            this.efcTrainingType.Location = new System.Drawing.Point(430, 18);
+            this.efcTrainingType.Name = "efcTrainingType";
+            this.efcTrainingType.Size = new System.Drawing.Size(150, 21);
+            this.efcTrainingType.TabIndex = 3;
             // 
             // efcSport
             // 
@@ -89,22 +103,47 @@
             this.dfcFrom.Size = new System.Drawing.Size(128, 20);
             this.dfcFrom.TabIndex = 0;
             // 
-            // efcTrainingType
+            // grpGrouping
             // 
-            this.efcTrainingType.DataFromEntry = null;
-            this.efcTrainingType.EnumColumnIndex = 0;
-            this.efcTrainingType.Items = null;
-            this.efcTrainingType.LabelText = null;
-            this.efcTrainingType.Location = new System.Drawing.Point(430, 18);
-            this.efcTrainingType.Name = "efcTrainingType";
-            this.efcTrainingType.Size = new System.Drawing.Size(150, 21);
-            this.efcTrainingType.TabIndex = 3;
+            this.grpGrouping.Controls.Add(this.comGrouping);
+            this.grpGrouping.Location = new System.Drawing.Point(12, 12);
+            this.grpGrouping.Name = "grpGrouping";
+            this.grpGrouping.Size = new System.Drawing.Size(98, 45);
+            this.grpGrouping.TabIndex = 2;
+            this.grpGrouping.TabStop = false;
+            this.grpGrouping.Text = "Group";
+            // 
+            // comGrouping
+            // 
+            this.comGrouping.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comGrouping.FormattingEnabled = true;
+            this.comGrouping.Items.AddRange(new object[] {
+            "1 day",
+            "2 days",
+            "3 days",
+            "4 days",
+            "5 days",
+            "1 week",
+            "2 weeks",
+            "3 weeks",
+            "1 month",
+            "2 months",
+            "3 months",
+            "4 months",
+            "5 months",
+            "6 months",
+            "1 year"});
+            this.comGrouping.Location = new System.Drawing.Point(6, 18);
+            this.comGrouping.Name = "comGrouping";
+            this.comGrouping.Size = new System.Drawing.Size(85, 21);
+            this.comGrouping.TabIndex = 0;
             // 
             // StatisticsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(862, 445);
+            this.Controls.Add(this.grpGrouping);
             this.Controls.Add(this.grpFilter);
             this.Controls.Add(this.tabTabs);
             this.KeyPreview = true;
@@ -115,6 +154,7 @@
             this.SizeChanged += new System.EventHandler(this.StatisticsFormSizeChanged);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.StatisticsFormKeyDown);
             this.grpFilter.ResumeLayout(false);
+            this.grpGrouping.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -127,5 +167,7 @@
         private Controls.DateFilterControl dfcFrom;
         private Controls.EnumFilterControl efcSport;
         private Controls.EnumFilterControl efcTrainingType;
+        private System.Windows.Forms.GroupBox grpGrouping;
+        private System.Windows.Forms.ComboBox comGrouping;
     }
 }

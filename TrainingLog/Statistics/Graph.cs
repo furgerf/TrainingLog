@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Windows.Forms.DataVisualization.Charting;
+using Microsoft.VisualBasic;
 using TrainingLog.Entries;
 
 namespace TrainingLog.Statistics
@@ -41,70 +42,82 @@ namespace TrainingLog.Statistics
 
         #region Constructor
 
-        public Graph(GraphType type, Entry[] entries)
+        public Graph(GraphType type, Entry[] entries, Tuple<DateInterval, int> grouping = null)
         {
             _type = type;
 
             Chart.ChartAreas.Add(_area);
             Chart.Legends.Add(_legend);
 
-            InitializeGraph(entries);
+            InitializeGraph(entries, grouping);
         }
 
         #endregion
 
         #region Main Methods
 
-        private void InitializeAxes()
+        private void InitializeAxes(Tuple<DateInterval, int> grouping)
         {
             var x = new Axis(_area, AxisName.X);
             var y = new Axis(_area, AxisName.Y);
 
+            // x
+            x.Title = "Date";
+            if (grouping != null)
+            {
+                x.IntervalAutoMode = IntervalAutoMode.FixedCount;
+                switch (grouping.Item1)
+                {
+                    case DateInterval.Year:
+                        x.IntervalType = DateTimeIntervalType.Years;
+                        break;
+                    case DateInterval.Month:
+                        x.IntervalType = DateTimeIntervalType.Months;
+                        break;
+                    case DateInterval.Day:
+                        x.IntervalType = DateTimeIntervalType.Days;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+                x.Interval = grouping.Item2;
+
+                if (grouping.Item1 == DateInterval.Day)
+                    if (grouping.Item2 == 5 || grouping.Item2 == 7)
+                        x.IntervalOffset = -1;
+                    else if (grouping.Item2 == 14)
+                        x.IntervalOffset = -9;
+                    else if (grouping.Item2 == 21)
+                        x.IntervalOffset = -12;
+            }
+            else
+                x.IntervalAutoMode = IntervalAutoMode.VariableCount;
+            
+            // y
             switch (_type)
             {
                 case GraphType.ZoneData:
-                    // x
-                    x.IntervalType = DateTimeIntervalType.Days;
-                    x.IntervalAutoMode = IntervalAutoMode.FixedCount;
-                    x.Title = "Date";
-                    x.Interval = 1;
-                    // y
                     y.IntervalType = DateTimeIntervalType.Seconds;
                     y.IntervalAutoMode = IntervalAutoMode.VariableCount;
                     y.LabelStyle.Format = "HH:mm";
                     y.Title = "Duration";
+                    y.Minimum = _series.MinimumY;
                     y.Maximum = _series.MaximumY;
                     break;
                 case GraphType.ZoneDataArea:
-                    // x
-                    x.IntervalType = DateTimeIntervalType.Days;
-                    x.IntervalAutoMode = IntervalAutoMode.FixedCount;
-                    x.Title = "Date";
-                    x.Interval = 1;
-                    // y
                     y.IntervalType = DateTimeIntervalType.Seconds;
                     y.IntervalAutoMode = IntervalAutoMode.VariableCount;
                     y.LabelStyle.Format = "HH:mm";
                     y.Title = "Duration";
+                    y.Minimum = _series.MinimumY;
                     y.Maximum = _series.MaximumY;
                     break;
                 case GraphType.BiodataFigures:
-                    // x
-                    x.IntervalType = DateTimeIntervalType.Days;
-                    x.IntervalAutoMode = IntervalAutoMode.VariableCount;
-                    x.Title = "Date";
-                    // y
                     y.Interval = 5;
                     y.Minimum = _series.MinimumY;
                     y.Maximum = _series.MaximumY;
                     break;
                 case GraphType.Distance:
-                    // x
-                    x.IntervalType = DateTimeIntervalType.Days;
-                    x.IntervalAutoMode = IntervalAutoMode.FixedCount;
-                    x.Title = "Date";
-                    x.Interval = 1;
-                    // y
                     y.IntervalAutoMode = IntervalAutoMode.VariableCount;
                     y.Title = "Distance";
                     y.Maximum = _series.MaximumY;
@@ -123,18 +136,18 @@ namespace TrainingLog.Statistics
             _series = AbstractSeriesCollection.GetCollection(_type);
         }
 
-        private void InitializeGraph(Entry[] entries)
+        private void InitializeGraph(Entry[] entries, Tuple<DateInterval, int> grouping)
         {
             InitializeSeries();
 
-            InitializeData(entries);
+            InitializeData(entries, grouping);
 
-            InitializeAxes();
+            InitializeAxes(grouping);
         }
 
-        private void InitializeData(Entry[] entries)
+        private void InitializeData(Entry[] entries, Tuple<DateInterval, int> grouping)
         {
-            _series.AddPoints(entries);
+            _series.AddPoints(entries, grouping);
             foreach (var s in _series.Series.Where(s => s.Points.Count > 0))
                 Chart.Series.Add(s);
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Linq;
+using Microsoft.VisualBasic;
 using TrainingLog.Entries;
 
 namespace TrainingLog.Statistics
@@ -39,8 +40,6 @@ namespace TrainingLog.Statistics
 
         private const int CyclingSeries = 1;
 
-        private const int TotalSeries = 2;
-
         #endregion
 
         #region Constructor
@@ -49,27 +48,19 @@ namespace TrainingLog.Statistics
         {
             _series.AddRange(new[]
                                  {
-                                     new Series("Running Distance")
+                                     new Series("Running")
                                          {
                                              XValueType = ChartValueType.Date,
                                              YValueType = ChartValueType.Double,
                                              ChartType = SeriesChartType.StackedColumn,
                                              Color = Color.RoyalBlue
                                          },
-                                     new Series("Cycling Distance")
+                                     new Series("Cycling")
                                          {
                                              XValueType = ChartValueType.Date,
                                              YValueType = ChartValueType.Double,
                                              ChartType = SeriesChartType.StackedColumn,
                                              Color = Color.Green,
-                                         },
-                                     new Series("Total Distance")
-                                         {
-                                             XValueType = ChartValueType.Date,
-                                             YValueType = ChartValueType.Double,
-                                             ChartType = SeriesChartType.Spline,
-                                             BorderWidth = 10,
-                                             Color = Color.Red
                                          }
                                  });
         }
@@ -78,66 +69,74 @@ namespace TrainingLog.Statistics
 
         #region Main Methods
 
-        public override void AddPoints(Entry[] entries)
+        public override void AddPoints(Entry[] entries, Tuple<DateInterval, int> grouping)
         {
-            var lastDate = DateTime.MaxValue;
+            if (entries.Length == 0)
+                return;
 
-            foreach (var te in entries.Cast<TrainingEntry>())
+            var intervalStart = GetStartOfInterval(entries[0].Date ?? DateTime.MaxValue, grouping.Item1, grouping.Item2);
+            var intervalEnd = GetEndOfInterval(intervalStart, grouping.Item1, grouping.Item2);
+
+            var points = new List<Tuple<DateTime, double, double>> { new Tuple<DateTime, double, double>(intervalStart, 0, 0) };
+
+            foreach (var e in entries.Cast<TrainingEntry>())
             {
-                if (te.Date == lastDate)
+                var last = points.LastOrDefault();
+                if (last != null && (e.Date ?? DateTime.MinValue) < last.Item1)
+                    throw new Exception("entries are not ordered");
+
+                // are we still in same interval?
+                if (last != null && e.Date < intervalEnd)
                 {
-                    // add distance to last point
-                    _series[te.Sport == Common.Sport.Running ? RunningSeries : CyclingSeries].Points[
-                        _series[te.Sport == Common.Sport.Running ? RunningSeries : CyclingSeries].Points.Count - 1]
-                        .YValues[0] += te.DistanceKm;
+                    // add to last tuple
+                    points[points.Count - 1] = new Tuple<DateTime, double, double>(last.Item1,
+                        last.Item2 + (e.Sport.Equals(Common.Sport.Running) ? e.DistanceKm : 0),
+                        last.Item3 + (e.Sport.Equals(Common.Sport.Cycling) ? e.DistanceKm : 0));
                 }
                 else
                 {
-                    // add zero-datapoints for training-free days
-                    while (lastDate != DateTime.MaxValue &&
-                           (te.Date ?? DateTime.MinValue).DayOfYear != lastDate.DayOfYear + 1)
-                    {
-                        lastDate = lastDate.AddDays(1);
+                    // update end of interval
+                    intervalStart = intervalEnd;
+                    intervalEnd = GetEndOfInterval(intervalEnd, grouping.Item1, grouping.Item2);
 
-                        foreach (var foo in _series)
-                        {
-                            var dpp = new DataPoint();
-                            dpp.SetValueXY(lastDate, 0);
-                            foo.Points.Add(dpp);
-                        }
+                    while (e.Date >= intervalEnd)
+                    {
+                        // add empty tuple
+                        points.Add(new Tuple<DateTime, double, double>(intervalStart, 0, 0));
+
+                        intervalStart = intervalEnd;
+                        intervalEnd = GetEndOfInterval(intervalEnd, grouping.Item1, grouping.Item2);
                     }
 
-                    // add new datapoint to each series
-                    var dp = new DataPoint();
-                    dp.SetValueXY(te.Date ?? DateTime.MinValue, te.DistanceKm);
-                    _series[te.Sport == Common.Sport.Running ? RunningSeries : CyclingSeries].Points.Add(dp);
-                    dp = dp.Clone();
-                    dp.SetValueY(0);
-                    _series[te.Sport == Common.Sport.Cycling? RunningSeries : CyclingSeries].Points.Add(dp);
-                    
-                    lastDate = te.Date ?? DateTime.MinValue;
+                    // add new tuple
+                    points.Add(new Tuple<DateTime, double, double>(intervalStart, 
+                        e.Sport.Equals(Common.Sport.Running) ? e.DistanceKm : 0,
+                        e.Sport.Equals(Common.Sport.Cycling) ? e.DistanceKm : 0));
                 }
             }
 
-            _series[TotalSeries].Points.Clear();
-
-            // find max, feed total distance
-            for (var i = 0; i < _series[0].Points.Count; i++)
+            foreach (var t in points)
             {
-                //var allSet = _series.All(s => !s.Points[i].YValues[0].Equals(0));
+                var p1 = new DataPoint();
+                var p2 = new DataPoint();
+                p1.SetValueXY(t.Item1, t.Item2);
+                p2.SetValueXY(t.Item1, t.Item3);
+                _series[0].Points.Add(p1);
+                _series[1].Points.Add(p2);
+            }
 
-                //if (allSet)
-                //    for (var j = _series.Count - 1; j >= 1; j--)
-                //        _series[j - 1].Points[i].YValues[0] += _series[j].Points[i].YValues[0];
+            if (_series[0].Points.Count == 1)
+                _series[0].Points.Add(_series[0].Points[0]);
+            if (_series[1].Points.Count == 1)
+                _series[1].Points.Add(_series[1].Points[0]);
 
+            // find max
+            for (var i = 0; i < _series[1].Points.Count; i++)
+            {
                 var max = _series[RunningSeries].Points[i].YValues[0] + _series[CyclingSeries].Points[i].YValues[0];
 
                 if (max > _maxY)
                     _maxY = max;
-
-                var dp = new DataPoint();
-                dp.SetValueXY(_series[0].Points[i].XValue, max);
-                _series[TotalSeries].Points.Add(dp);
             }
         }
 

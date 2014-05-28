@@ -23,6 +23,8 @@ namespace TrainingLog.Forms
             InitializeComponent();
 
             GetInstance = this;
+
+            ButShowStatisticsClick(null, null);
         }
 
         #endregion

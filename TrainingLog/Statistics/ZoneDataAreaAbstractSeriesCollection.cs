@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms.DataVisualization.Charting;
+using Microsoft.VisualBasic;
 using TrainingLog.Controls;
 using TrainingLog.Entries;
 
@@ -13,7 +14,7 @@ namespace TrainingLog.Statistics
 
         public override double MinimumY
         {
-            get { throw new Exception(); }
+            get { return 0; }
         }
 
         public override double MaximumY
@@ -23,9 +24,7 @@ namespace TrainingLog.Statistics
                 if (Series[0].Points.Count == 0)
                     return 100;
 
-                var max = Series[0].Points.Select(p => p.YValues[0]).Max();
-
-                var dt = DateTime.FromOADate(max).Add(new TimeSpan(0, 30, 0));
+                var dt = DateTime.FromOADate(_maxY).Add(new TimeSpan(0, 30, 0));
 
                 return new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute / 30 * 30, 0).ToOADate();
             }
@@ -42,6 +41,8 @@ namespace TrainingLog.Statistics
         #endregion
 
         #region Private Fields
+
+        private double _maxY = double.MinValue;
 
         private readonly ZoneDataSeries _series;
 
@@ -100,62 +101,104 @@ namespace TrainingLog.Statistics
 
         #region Main Methods
 
-        public override void AddPoints(Entry[] entries)
+        public override void AddPoints(Entry[] entries, Tuple<DateInterval, int> grouping)
         {
-            var lastDate = DateTime.MaxValue;
+            if (entries.Length == 0)
+                return;
 
-            foreach (var te in entries.Cast<TrainingEntry>())
+            var intervalStart = GetStartOfInterval(entries[0].Date ?? DateTime.MaxValue, grouping.Item1, grouping.Item2);
+            var intervalEnd = GetEndOfInterval(intervalStart, grouping.Item1, grouping.Item2);
+            var previousIntervalStart = intervalStart.AddSeconds(-1);
+
+            var points = new List<Tuple<DateTime, DateTime, DateTime, DateTime, DateTime, DateTime>>
+                             {
+                                 new Tuple<DateTime, DateTime, DateTime, DateTime, DateTime, DateTime>(intervalStart, DateTime.MinValue, DateTime.MinValue, DateTime.MinValue, DateTime.MinValue, DateTime.MinValue)
+                             };
+
+            foreach (var e in entries.Cast<TrainingEntry>())
             {
-                if (te.Date == lastDate)
+                var last = points.LastOrDefault();
+                if (last != null && (e.Date ?? DateTime.MinValue) < last.Item1)
+                    throw new Exception("entries are not ordered");
+
+                if (e.HrZones == null)
+                    throw new Exception("entry has no zonedata");
+
+                // are we still in same interval?
+                if (last != null && e.Date < intervalEnd)
                 {
-                    // add times to last point
-                    var subsum = 0.0;
-                    for (var j = 0; j < 5; j++)
-                    {
-                        var zd = (te.HrZones ?? ZoneData.Empty()).Zones[j];
-
-                        var addedTime = new DateTime(1, 1, 1, zd.Hours, zd.Minutes, zd.Seconds).ToOADate();
-
-                        _series.Series[4-j].Points[_series.Series[j].Points.Count - 1].YValues[0] += addedTime + subsum;
-
-                        subsum += addedTime;
-                    }
+                    // add to last tuple
+                    points[points.Count - 1] = new Tuple<DateTime, DateTime, DateTime, DateTime, DateTime, DateTime>(last.Item1,
+                        last.Item2.Add(e.HrZones.Value.Zone1),
+                        last.Item3.Add(e.HrZones.Value.Zone2),
+                        last.Item4.Add(e.HrZones.Value.Zone3),
+                        last.Item5.Add(e.HrZones.Value.Zone4),
+                        last.Item6.Add(e.HrZones.Value.Zone5));
                 }
                 else
                 {
-                    // add zero-datapoints for training-free days
-                    while (lastDate != DateTime.MaxValue && (te.Date ?? DateTime.MinValue).DayOfYear != lastDate.DayOfYear + 1)
-                    {
-                        lastDate = lastDate.AddDays(1);
+                    // update end of interval
+                    intervalStart = intervalEnd;
+                    intervalEnd = GetEndOfInterval(intervalEnd, grouping.Item1, grouping.Item2);
 
-                        foreach (var foo in _series.Series)
-                        {
-                            var dp = new DataPoint();
-                            dp.SetValueXY(lastDate, 0);
-                            foo.Points.Add(dp);
-                        }
+                    while (e.Date >= intervalEnd)
+                    {
+                        // add empty tuple
+                        points.Add(new Tuple<DateTime, DateTime, DateTime, DateTime, DateTime, DateTime>(intervalStart, DateTime.MinValue, DateTime.MinValue, DateTime.MinValue, DateTime.MinValue, DateTime.MinValue));
+
+                        intervalStart = intervalEnd;
+                        intervalEnd = GetEndOfInterval(intervalEnd, grouping.Item1, grouping.Item2);
                     }
 
-                    // add new datapoint to each series
-                    var subsum = 0.0;
-                    for (var j = 0; j < 5; j++)
-                    {
-                        var zd = (te.HrZones ?? ZoneData.Empty()).Zones[j];
-
-                        var dp = new DataPoint();
-                        dp.SetValueXY(te.Date ?? DateTime.MinValue,
-                                      subsum + new DateTime(1, 1, 1, zd.Hours, zd.Minutes, zd.Seconds).ToOADate());
-                        _series.Series[4-j].Points.Add(dp);
-
-                        subsum += new DateTime(1, 1, 1, zd.Hours, zd.Minutes, zd.Seconds).ToOADate();
-                    }
+                    // add new tuple
+                    points.Add(new Tuple<DateTime, DateTime, DateTime, DateTime, DateTime, DateTime>(intervalStart,
+                            DateTime.MinValue.Add(e.HrZones.Value.Zone1),
+                            DateTime.MinValue.Add(e.HrZones.Value.Zone2),
+                            DateTime.MinValue.Add(e.HrZones.Value.Zone3),
+                            DateTime.MinValue.Add(e.HrZones.Value.Zone4),
+                            DateTime.MinValue.Add(e.HrZones.Value.Zone5)));
                 }
+            }
 
-                lastDate = te.Date ?? DateTime.MinValue;
+            // add zero-point before
+            var zeroPoint = new DataPoint();
+            zeroPoint.SetValueXY(previousIntervalStart, 0);
+            foreach (var s in _series.Series)
+                s.Points.Add(zeroPoint);
+
+            foreach (var t in points)
+            {
+                var ts = new[] {t.Item2, t.Item3, t.Item4, t.Item5, t.Item6};
+
+                var sum = 0.0;
+                for (var i = 0; i < 5; i++)
+                {
+                    while (ts[i].DayOfYear > 1)
+                    {
+                        sum++;
+                        ts[i] = ts[i].AddDays(-1);
+                    }
+                    sum += ts[i].ToOADate();
+                    var dp = new DataPoint();
+                    dp.SetValueXY(t.Item1, sum);
+                    _series.Series[4 - i].Points.Add(dp);
+                }
+            }
+
+            // add zero-point after
+            zeroPoint = new DataPoint();
+            zeroPoint.SetValueXY(intervalStart.AddSeconds(1), 0);
+            foreach (var s in _series.Series)
+                s.Points.Add(zeroPoint.Clone());
+
+            // find max
+            for (var i = 0; i < _series.Series[0].Points.Count; i++)
+            {
+                foreach (var s in _series.Series.Where(s => s.Points[i].YValues[0] > _maxY))
+                    _maxY = s.Points[i].YValues[0];
             }
         }
 
         #endregion
-
     }
 }

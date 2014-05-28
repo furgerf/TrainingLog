@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Microsoft.VisualBasic;
 using TrainingLog.Controls;
 using TrainingLog.Entries;
 using TrainingLog.Statistics;
@@ -16,6 +17,22 @@ namespace TrainingLog.Forms
         public static StatisticsForm GetInstance
         {
             get { return _instance ?? (_instance = new StatisticsForm()); }
+        }
+
+        public Tuple<DateInterval,int> GroupingInterval
+        {
+            get
+            {
+                if (comGrouping.Text.Contains("day"))
+                    return new Tuple<DateInterval, int>(DateInterval.Day, int.Parse(comGrouping.Text.Substring(0, comGrouping.Text.IndexOf(' '))));
+                if (comGrouping.Text.Contains("week"))
+                    return new Tuple<DateInterval, int>(DateInterval.Day, 7 * int.Parse(comGrouping.Text.Substring(0, comGrouping.Text.IndexOf(' '))));
+                if (comGrouping.Text.Contains("month"))
+                    return new Tuple<DateInterval, int>(DateInterval.Month, int.Parse(comGrouping.Text.Substring(0, comGrouping.Text.IndexOf(' '))));
+                if (comGrouping.Text.Contains("year"))
+                    return new Tuple<DateInterval, int>(DateInterval.Year, int.Parse(comGrouping.Text.Substring(0, comGrouping.Text.IndexOf(' '))));
+                throw new Exception("invalid text: " + comGrouping.Text);
+            }
         }
 
         #endregion
@@ -63,14 +80,17 @@ namespace TrainingLog.Forms
         {
             InitializeComponent();
 
+            comGrouping.SelectedIndex = 0;
+            comGrouping.SelectedIndexChanged += (s, e) => { UpdateData(); comGrouping.Focus(); };
+
             ((DateTimePicker)dfcFrom.GetControl()).Value = DateTime.Today.Subtract(new TimeSpan(31 * 6, 0, 0, 0));
             ((DateTimePicker)dfcTo.GetControl()).Value = DateTime.Today;
-            ((DateTimePicker)dfcFrom.GetControl()).ValueChanged += UpdateData;
-            ((DateTimePicker)dfcTo.GetControl()).ValueChanged += UpdateData;
+            ((DateTimePicker)dfcFrom.GetControl()).ValueChanged += (s, e) => { UpdateData(); dfcFrom.Focus(); };
+            ((DateTimePicker)dfcTo.GetControl()).ValueChanged += (s, e) => { UpdateData(); dfcTo.Focus(); };
 
             efcTrainingType.LabelText = "Training";
             efcTrainingType.DataFromEntry = e => ((TrainingEntry)e).TrainingType.ToString();
-            ((ComboBox)efcTrainingType.GetControl()).SelectedValueChanged += UpdateData;
+            ((ComboBox)efcTrainingType.GetControl()).SelectedValueChanged += (s, e) => { UpdateData(); efcTrainingType.Focus(); };
             ((ComboBox)efcSport.GetControl()).SelectedValueChanged += (s, e) =>
                                                         {
                                                             var types = efcSport.GetControl()
@@ -86,15 +106,15 @@ namespace TrainingLog.Forms
             efcSport.LabelText = "Sport";
             efcSport.DataFromEntry = e => ((TrainingEntry)e).Sport.ToString();
             efcSport.Items = new[] { EnumFilterControl.All }.Concat(Enum.GetNames(typeof(Common.Sport)).Where(e => !e.Equals("Count"))).ToArray();
-            ((ComboBox)efcSport.GetControl()).SelectedValueChanged += UpdateData;
+            ((ComboBox)efcSport.GetControl()).SelectedValueChanged += (s, e) => { UpdateData(); efcSport.Focus(); };
             
             _filters = new IFilter[] {dfcFrom, dfcTo, efcSport, efcTrainingType};
 
             _loadData = () =>
                             {
-                                AddDistanceGraph();
-                                AddZoneDataGraph();
                                 AddZoneDataAreaGraph();
+                                AddZoneDataGraph();
+                                AddDistanceGraph();
                                 AddBiodataRestingHrGraph();
                             };
         }
@@ -116,7 +136,7 @@ namespace TrainingLog.Forms
 
         private void AddDistanceGraph()
         {
-            var graph = new Graph(Graph.GraphType.Distance, FilteredTrainingEntries.Where(te => te.DistanceMSpecified).OrderBy(te => te.Date).Cast<Entry>().ToArray()) { Title = "Distance per day" };
+            var graph = new Graph(Graph.GraphType.Distance, FilteredTrainingEntries.Where(te => te.DistanceMSpecified).OrderBy(te => te.Date).Cast<Entry>().ToArray(), GroupingInterval) { Title = "Distance" };
             AddGraph(graph);
         }
 
@@ -124,7 +144,7 @@ namespace TrainingLog.Forms
         {
             var entries = FilteredBiodataEntries.Where(e => e.RestingHeartRateSpecified || e.WeightSpecified || e.OwnIndexSpecified).Cast<Entry>().OrderBy(e => e.Date).ToArray();
 
-            var graph = new Graph(Graph.GraphType.BiodataFigures, entries) { Title = "Resting Heart Rate per day" };
+            var graph = new Graph(Graph.GraphType.BiodataFigures, entries, new Tuple<DateInterval, int>(DateInterval.Day, 1)) { Title = "Resting Heart Rate per day" };
             AddGraph(graph);
         }
 
@@ -132,7 +152,7 @@ namespace TrainingLog.Forms
         {
             var entries = FilteredTrainingEntries.Cast<Entry>().OrderBy(ee => ee.Date).ToArray();
 
-            var graph = new Graph(Graph.GraphType.ZoneData, entries) { Title = "Zone Data per training" };
+            var graph = new Graph(Graph.GraphType.ZoneData, entries, new Tuple<DateInterval, int>(DateInterval.Day, 1)) { Title = "Zone Data per training" };
             AddGraph(graph);
         }
 
@@ -140,7 +160,7 @@ namespace TrainingLog.Forms
         {
             var entries = FilteredTrainingEntries.Cast<Entry>().OrderBy(ee => ee.Date).ToArray();
 
-            var graph = new Graph(Graph.GraphType.ZoneDataArea, entries) { Title = "Zone Data area per day" };
+            var graph = new Graph(Graph.GraphType.ZoneDataArea, entries, GroupingInterval) { Title = "Zone Data area" };
             AddGraph(graph);
         }
 
@@ -152,7 +172,6 @@ namespace TrainingLog.Forms
             graph.Chart.Location = new Point(0,0);
             graph.Chart.Size = page.Size;
             page.SizeChanged += (s, e) => graph.Chart.Size = page.Size;
-
             // add controls
             page.Controls.Add(graph.Chart);
             tabTabs.Controls.Add(page);

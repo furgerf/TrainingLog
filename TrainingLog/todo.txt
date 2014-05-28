@@ -1,0 +1,12 @@
+﻿Urgency		Workload	What?
+--------------------------------------------------------------------------------------------------------------------------------------------------
+	4			5		Re-do the training log form, probably with custom control instead of GList
+	3			2		Implement saving of edited entry
+	1			4		Add more statistics
+	1			2		Move some settings to settings form
+	2			3		Add sweat data
+	2			3		Implement race entries
+	3			4		Re-check filter concept
+	1			2		Import HR data from PPT
+	1			1		Add a few icons...
+

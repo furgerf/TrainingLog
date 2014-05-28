@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms.DataVisualization.Charting;
+using Microsoft.VisualBasic;
 using TrainingLog.Controls;
 using TrainingLog.Entries;
 
@@ -13,7 +14,7 @@ namespace TrainingLog.Statistics
 
         public override double MinimumY
         {
-            get { throw new Exception(); }
+            get { return 0; }
         }
 
         public override double MaximumY
@@ -114,7 +115,7 @@ namespace TrainingLog.Statistics
 
         #region Main Methods
 
-        public override void AddPoints(Entry[] entries)
+        public override void AddPoints(Entry[] entries, Tuple<DateInterval, int> grouping)
         {
             var data = new List<TrainingEntry[]>();
             var index = 0;
