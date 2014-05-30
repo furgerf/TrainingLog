@@ -161,8 +161,7 @@ namespace TrainingLog.Statistics
             }
 
             // add zero-point before
-            var zeroPoint = new DataPoint();
-            zeroPoint.SetValueXY(previousIntervalStart, 0);
+            var zeroPoint = new DataPoint(previousIntervalStart.ToOADate(), 0);
             foreach (var s in _series.Series)
                 s.Points.Add(zeroPoint);
 
@@ -179,15 +178,13 @@ namespace TrainingLog.Statistics
                         ts[i] = ts[i].AddDays(-1);
                     }
                     sum += ts[i].ToOADate();
-                    var dp = new DataPoint();
-                    dp.SetValueXY(t.Item1, sum);
+                    var dp = new DataPoint(t.Item1.ToOADate(), sum);
                     _series.Series[4 - i].Points.Add(dp);
                 }
             }
 
             // add zero-point after
-            zeroPoint = new DataPoint();
-            zeroPoint.SetValueXY(intervalStart.AddSeconds(1), 0);
+            zeroPoint = new DataPoint(intervalStart.AddSeconds(1).ToOADate(), 0);
             foreach (var s in _series.Series)
                 s.Points.Add(zeroPoint.Clone());
 

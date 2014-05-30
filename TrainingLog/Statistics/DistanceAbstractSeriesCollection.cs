@@ -117,10 +117,8 @@ namespace TrainingLog.Statistics
 
             foreach (var t in points)
             {
-                var p1 = new DataPoint();
-                var p2 = new DataPoint();
-                p1.SetValueXY(t.Item1, t.Item2);
-                p2.SetValueXY(t.Item1, t.Item3);
+                var p1 = new DataPoint(t.Item1.ToOADate(), t.Item2);
+                var p2 = new DataPoint(t.Item1.ToOADate(), t.Item3);
                 _series[0].Points.Add(p1);
                 _series[1].Points.Add(p2);
             }

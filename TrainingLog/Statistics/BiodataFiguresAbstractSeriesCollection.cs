@@ -47,6 +47,10 @@ namespace TrainingLog.Statistics
 
         private const int WeightSeries = 3;
 
+        private const int NiggleSeries = 4;
+
+        private const int NoteSeries = 5;
+
         #endregion
 
         #region Constructor
@@ -91,6 +95,24 @@ namespace TrainingLog.Statistics
                                              BorderWidth = 10,
                                              Color = Color.Red,
                                              IsValueShownAsLabel = true
+                                         },
+                                     new Series("Niggles")
+                                         {
+                                             XValueType = ChartValueType.Date,
+                                             YValueType = ChartValueType.Int32,
+                                             ChartType = SeriesChartType.Point,
+                                             MarkerSize = 10,
+                                             MarkerStyle = MarkerStyle.Cross,
+                                             Color = Color.DarkOrange
+                                         },
+                                     new Series("Notes")
+                                         {
+                                             XValueType = ChartValueType.Date,
+                                             YValueType = ChartValueType.Int32,
+                                             ChartType = SeriesChartType.Point,
+                                             MarkerSize = 10,
+                                             MarkerStyle = MarkerStyle.Square,
+                                             Color = Color.Yellow
                                          }
                                  });
         }
@@ -102,6 +124,9 @@ namespace TrainingLog.Statistics
         public override void AddPoints(Entry[] entries, Tuple<DateInterval, int> grouping)
         {
             var hrAvg = 0.0;
+
+            var lastNoteSpecified = 0;
+            var lastNiggleSpecified = 0;
             
             foreach (var be in entries.Cast<BiodataEntry>())
             {
@@ -112,10 +137,7 @@ namespace TrainingLog.Statistics
                         _minY = rhr;
                     if (rhr > _maxY)
                         _maxY = rhr;
-
-                    var dp = new DataPoint();
-                    dp.SetValueXY(be.Date ?? DateTime.MaxValue, rhr);
-                    _series[RestingHrSeries].Points.Add(dp);
+                    _series[RestingHrSeries].Points.Add(new DataPoint((be.Date ?? DateTime.MaxValue).ToOADate(), rhr));
 
                     hrAvg += rhr;
                 }
@@ -127,9 +149,7 @@ namespace TrainingLog.Statistics
                         _minY = oi;
                     if (oi > _maxY)
                         _maxY = oi;
-                    var dp = new DataPoint();
-                    dp.SetValueXY(be.Date ?? DateTime.MaxValue, oi);
-                    _series[OwnIndexSeries].Points.Add(dp);
+                    _series[OwnIndexSeries].Points.Add(new DataPoint((be.Date ?? DateTime.MaxValue).ToOADate(), oi));
                 }
 
                 if (be.WeightSpecified)
@@ -139,11 +159,26 @@ namespace TrainingLog.Statistics
                         _maxY = (int)weight;
                     if (weight > _maxY)
                         _minY = (int)Math.Ceiling(weight);
-                    var dp = new DataPoint();
-                    dp.SetValueXY(be.Date ?? DateTime.MaxValue, weight);
-                    _series[WeightSeries].Points.Add(dp);
+                    _series[WeightSeries].Points.Add(new DataPoint((be.Date ?? DateTime.MaxValue).ToOADate(), (double)weight));
                 }
+
+                if (be.NigglesSpecified)
+                    _series[NiggleSeries].Points.Add(new DataPoint((be.Date ?? DateTime.MaxValue).ToOADate(), lastNiggleSpecified--) { Label = be.Niggles });
+                else
+                    lastNiggleSpecified = 0;
+
+
+                if (be.NoteSpecified)
+                    _series[NoteSeries].Points.Add(new DataPoint((be.Date ?? DateTime.MaxValue).ToOADate(), lastNoteSpecified--) { Label = be.Note });
+                else
+                    lastNoteSpecified = 0;
             }
+
+            foreach (var p in _series[NiggleSeries].Points)
+                p.YValues[0] += MinimumY + 10;
+
+            foreach (var p in _series[NoteSeries].Points)
+                p.YValues[0] += MinimumY + 5;
 
             // ensure every (line-)series has at least 2 points
             foreach (var s in _series.Where(s => s.ChartType == SeriesChartType.Spline && s.Points.Count == 1))
@@ -155,10 +190,8 @@ namespace TrainingLog.Statistics
 
             hrAvg = Math.Round(hrAvg/entries.Count(e => ((BiodataEntry) e).RestingHeartRateSpecified), 2);
             _series[AverageRestingHrSeries].Points.Clear();
-            var minAvg = new DataPoint();
-            minAvg.SetValueXY(entries.First(e => ((BiodataEntry)e).RestingHeartRateSpecified).Date ?? DateTime.MinValue, hrAvg);
-            var maxAvg= new DataPoint();
-            maxAvg.SetValueXY(entries[entries.Length - 1].Date ?? DateTime.MinValue, hrAvg);
+            var minAvg = new DataPoint((entries.First(e => ((BiodataEntry)e).RestingHeartRateSpecified).Date ?? DateTime.MinValue).ToOADate(), hrAvg);
+            var maxAvg= new DataPoint((entries[entries.Length - 1].Date ?? DateTime.MinValue).ToOADate(), hrAvg);
             _series[AverageRestingHrSeries].Points.Add(minAvg);
             _series[AverageRestingHrSeries].Points.Add(maxAvg);
         }

@@ -161,9 +161,8 @@ namespace TrainingLog.Statistics
                     {
                         var zd = tes[i] == null ? TimeSpan.Zero : (tes[i].HrZones ?? ZoneData.Empty()).Zones[j];
 
-                        var dp = new DataPoint();
-                        dp.SetValueXY(tes[0].Date ?? DateTime.MinValue,
-                                      new DateTime(1, 1, 1, zd.Hours, zd.Minutes, zd.Seconds));
+                        var dp = new DataPoint((tes[0].Date ?? DateTime.MinValue).ToOADate(),
+                                      new DateTime(1, 1, 1, zd.Hours, zd.Minutes, zd.Seconds).ToOADate());
                         _series[i].Series[j].Points.Add(dp);
                     }
                 }

@@ -117,8 +117,9 @@ namespace TrainingLog.Forms
             comGrouping.SelectedIndexChanged += (s, e) => { UpdateData(); comGrouping.Focus(); };
 
             // prepare filters and update graphs when values change
-            ((DateTimePicker)dfcFrom.GetControl()).Value = DateTime.Today.Subtract(new TimeSpan(31 * 6, 0, 0, 0));
-            ((DateTimePicker)dfcTo.GetControl()).Value = DateTime.Today;
+            var orderedEntries = Model.Instance.Entries.OrderBy(e => e.Date);
+            ((DateTimePicker) dfcFrom.GetControl()).Value = orderedEntries.First().Date ?? DateTime.MinValue;
+            ((DateTimePicker)dfcTo.GetControl()).Value = orderedEntries.Last().Date ?? DateTime.MaxValue;
             ((DateTimePicker)dfcFrom.GetControl()).ValueChanged += (s, e) => { UpdateData(); dfcFrom.Focus(); };
             ((DateTimePicker)dfcTo.GetControl()).ValueChanged += (s, e) => { UpdateData(); dfcTo.Focus(); };
 
