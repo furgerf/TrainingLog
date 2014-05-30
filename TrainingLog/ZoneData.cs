@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace TrainingLog
@@ -93,32 +94,19 @@ namespace TrainingLog
         public void Normailze(TimeSpan duration)
         {
             MessageBox.Show("Should fix normalizing (last zone is messed up)");
-            var sum = Zone1.TotalSeconds + Zone2.TotalSeconds + Zone3.TotalSeconds + Zone4.TotalSeconds +
-                      Zone5.TotalSeconds;
+            var sum = Zones.Sum(e => e.TotalSeconds);
 
             var seconds = duration.TotalSeconds - sum;
 
-            var perc2 = (int)(Zone2.TotalSeconds / sum * seconds);
-            var perc3 = (int)(Zone3.TotalSeconds / sum * seconds);
-            var perc4 = (int)(Zone4.TotalSeconds / sum * seconds);
-            var perc5 = (int)(Zone5.TotalSeconds / sum * seconds);
+            var perc = new int[4];
+            for (var i = 1; i < 5; i++)
+                perc[i - 1] = (int) (Zones[i].TotalSeconds/sum*seconds);
 
-            if (seconds > 0)
-            {
-                Zones[4] = Zone5.Add(TimeSpan.FromSeconds(perc5));
-                Zones[3] = Zone4.Add(TimeSpan.FromSeconds(perc4));
-                Zones[2] = Zone3.Add(TimeSpan.FromSeconds(perc3));
-                Zones[1] = Zone2.Add(TimeSpan.FromSeconds(perc2));
-                Zones[0] = Zone1.Add(TimeSpan.FromSeconds(seconds - perc5 - perc4 - perc3 - perc2));
-            }
-            else if (seconds < 0)
-            {
-                Zones[4] = Zone5.Subtract(TimeSpan.FromSeconds(-perc5));
-                Zones[3] = Zone4.Subtract(TimeSpan.FromSeconds(-perc4));
-                Zones[2] = Zone3.Subtract(TimeSpan.FromSeconds(-perc3));
-                Zones[1] = Zone2.Subtract(TimeSpan.FromSeconds(-perc2));
-                Zones[0] = Zone1.Subtract(TimeSpan.FromSeconds(-seconds - perc5 - perc4 - perc3 - perc2));
-            }
+            var sign = seconds < 0 ? -1 : 1;
+
+            for (var i = 4; i >= 0; i--)
+                Zones[i] = Zones[i].Add(TimeSpan.FromSeconds(sign * perc[i - 1]));
+            Zones[0] = Zone1.Add(TimeSpan.FromSeconds(sign * seconds - perc.Sum()));
         }
 
         #endregion
