@@ -50,6 +50,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\ControlList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ControlList.Designer.cs">
+      <DependentUpon>ControlList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Copy of EntryListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Copy of EntryListControl.Designer.cs">
+      <DependentUpon>Copy of EntryListControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\EnumFilterControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -148,6 +160,12 @@
     <Compile Include="ZoneData.cs" />
     <Compile Include="Statistics\ZoneDataAbstractSeriesCollection.cs" />
     <Compile Include="Statistics\ZoneDataSeries.cs" />
+    <EmbeddedResource Include="Controls\ControlList.resx">
+      <DependentUpon>ControlList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Copy of EntryListControl.resx">
+      <DependentUpon>Copy of EntryListControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\DateFilterControl.resx">
       <DependentUpon>DateFilterControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -209,6 +227,7 @@
     <None Include="Resources\delete.ico" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\edit.ico" />
     <Content Include="todo.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
