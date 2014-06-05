@@ -81,8 +81,8 @@ namespace TrainingLog.Controls
             if (item.SubItems[DateColumnIndex].Control is DateTimePicker)
                 date = (item.SubItems[DateColumnIndex].Control as DateTimePicker).Value;
 
-            if (item.SubItems[DateColumnIndex].Control is ColorDatePicker)
-                date = (item.SubItems[DateColumnIndex].Control as ColorDatePicker).Value;
+            //if (item.SubItems[DateColumnIndex].Control is ColorDatePicker)
+            //    date = (item.SubItems[DateColumnIndex].Control as ColorDatePicker).Value;
 
             if (date == null)
                 throw new Exception("Don\'t know where the date control is!");

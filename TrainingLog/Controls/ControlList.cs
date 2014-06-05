@@ -39,8 +39,6 @@ namespace TrainingLog.Controls
 
         private SortOrder _sortOrder;
 
-        private readonly List<IFilter> _filters = new List<IFilter>(); 
-
         #endregion
 
         #region Constructor
@@ -54,6 +52,21 @@ namespace TrainingLog.Controls
 
             // so it doesn't overlay the header when scrolling
             panArea.SendToBack();
+
+            // update scrollbar
+            ItemsChanged += () =>
+                                {
+                                    vscScroll.Maximum = panArea.Height < vscScroll.Height ? 0 : panArea.Height - vscScroll.Height;
+                                    vscScroll.Enabled = vscScroll.Maximum != 0;
+                                    vscScroll.SmallChange = vscScroll.Maximum / 50;
+                                    vscScroll.LargeChange = vscScroll.Maximum / 10;
+                                };
+
+            panArea.MouseWheel += (s, e) =>
+                                      {
+                                          vscScroll.Value -= e.Delta;
+                                          VscScrollScroll(s, new ScrollEventArgs(ScrollEventType.EndScroll, vscScroll.Value + e.Delta, vscScroll.Value));
+                                      };
         }
 
         #endregion
@@ -113,8 +126,6 @@ namespace TrainingLog.Controls
             _controls.Add(controls);
 
             panArea.Height = ItemHeight * _controls.Count < vscScroll.Height ? vscScroll.Height : ItemHeight * _controls.Count;
-            vscScroll.Maximum = panArea.Height < vscScroll.Height ? 0 : panArea.Height - vscScroll.Height;
-            vscScroll.Enabled = vscScroll.Maximum != 0;
 
             if (ItemsChanged != null)
                 ItemsChanged();
@@ -128,8 +139,6 @@ namespace TrainingLog.Controls
             _controls.Clear();
 
             panArea.Height = ItemHeight * _controls.Count < vscScroll.Height ? vscScroll.Height : ItemHeight * _controls.Count;
-            vscScroll.Maximum = panArea.Height < vscScroll.Height ? 0 : panArea.Height - vscScroll.Height;
-            vscScroll.Enabled = vscScroll.Maximum != 0;
 
             if (ItemsChanged != null)
                 ItemsChanged();
@@ -147,10 +156,6 @@ namespace TrainingLog.Controls
             panArea.Height = panArea.Height > Height - lisHeader.Height ? panArea.Height : Height - lisHeader.Height;
             vscScroll.Location = new Point(panArea.Width, lisHeader.Height);
             vscScroll.Height = Height - lisHeader.Height;
-            
-            // update scrollbar
-            vscScroll.Maximum = panArea.Height < vscScroll.Height ? 0 : panArea.Height - vscScroll.Height;
-            vscScroll.Enabled = vscScroll.Maximum != 0;
         }
 
         private void LisHeaderColumnWidthChanging(object sender, ColumnWidthChangingEventArgs e)
@@ -237,8 +242,6 @@ namespace TrainingLog.Controls
             foreach (var c in newControls)
                 AddItem(c);
         }
-
-        //TODO: Add event that is triggered whenever items change so that ELC can set back colors when that happens
 
         #endregion
     }

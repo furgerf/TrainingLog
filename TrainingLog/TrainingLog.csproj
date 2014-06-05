@@ -56,12 +56,6 @@
     <Compile Include="Controls\ControlList.Designer.cs">
       <DependentUpon>ControlList.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Copy of EntryListControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\Copy of EntryListControl.Designer.cs">
-      <DependentUpon>Copy of EntryListControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\EnumFilterControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -70,9 +64,6 @@
     </Compile>
     <Compile Include="Statistics\BiodataFiguresAbstractSeriesCollection.cs" />
     <Compile Include="Entries\BiodataEntry.cs" />
-    <Compile Include="Controls\ColorDatePicker.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Controls\DateFilterControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -162,9 +153,6 @@
     <Compile Include="Statistics\ZoneDataSeries.cs" />
     <EmbeddedResource Include="Controls\ControlList.resx">
       <DependentUpon>ControlList.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\Copy of EntryListControl.resx">
-      <DependentUpon>Copy of EntryListControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\DateFilterControl.resx">
       <DependentUpon>DateFilterControl.cs</DependentUpon>
