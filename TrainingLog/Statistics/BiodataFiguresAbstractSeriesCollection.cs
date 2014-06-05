@@ -81,10 +81,9 @@ namespace TrainingLog.Statistics
                                          {
                                              XValueType = ChartValueType.Date,
                                              YValueType = ChartValueType.Int32,
-                                             ChartType = SeriesChartType.Point,
+                                             ChartType = SeriesChartType.Spline,
                                              IsValueShownAsLabel = true,
-                                             MarkerSize = 10,
-                                             MarkerStyle = MarkerStyle.Circle,
+                                             BorderWidth = 10,
                                              Color = Color.Green
                                          },
                                      new Series("Weight")
