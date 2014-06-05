@@ -121,23 +121,26 @@ namespace TrainingLog.Controls
             _entryMap.Add(id, entry);
 
 
-            var butDelete = new Button
-                                {
-                                    Image = Common.IconEdit.ToBitmap(),
-                                    ImageAlign = ContentAlignment.MiddleCenter,
-                                    FlatStyle = FlatStyle.Flat,
-                                    Name = id.ToString(CultureInfo.InvariantCulture)
-                                };
-
             var butEdit = new Button
                               {
-                                  Image = Common.IconDelete.ToBitmap(),
+                                  Image = Common.IconEdit.ToBitmap(),
                                   ImageAlign = ContentAlignment.MiddleCenter,
-                                  FlatStyle = FlatStyle.Flat,
+                                  FlatStyle = FlatStyle.Standard,
                                   Name = id.ToString(CultureInfo.InvariantCulture)
                               };
+            butEdit.Click += (s, e) => MessageBox.Show("Editing not yet implemented!");
 
-            cliEntries.AddItem(new[] {butDelete, butEdit}.Concat(data).ToArray());
+            var butDelete = new Button
+                                {
+                                    Image = Common.IconDelete.ToBitmap(),
+                                    ImageAlign = ContentAlignment.MiddleCenter,
+                                    FlatStyle = FlatStyle.Standard,
+                                    UseVisualStyleBackColor = false,
+                                    Name = id.ToString(CultureInfo.InvariantCulture)
+                                };
+            butDelete.Click += (s, e) => MessageBox.Show("Deleting not yet implemented!");
+
+            cliEntries.AddItem(new[] { butEdit, butDelete }.Concat(data).ToArray());
 
             return true;
         }
@@ -165,15 +168,35 @@ namespace TrainingLog.Controls
             grpEntries.Size = new Size(Width, Height - grpEntries.Location.Y);
             cliEntries.Size = new Size(Width - 4, grpEntries.Height - 14);
 
-            // adjust size to available width 
-            var factor = Math.Floor(100 * cliEntries.Width / (double)_columns.Sum(w => w.Width)) / 100;
-            for (var i = 0; i < _columns.Length; i++)
-                _columns[i].Width = (int)(factor * _columns[i].Width);
+            // find last column with flexible width
+            var lastFlexible = -1;
+            for (var i = _columns.Length - 1; i >= 0; i--)
+                if (!_columns[i].FixedSize)
+                {
+                    lastFlexible = i;
+                    break;
+                }
 
-            for (var i = 2; i < cliEntries.Columns.Length - 1; i++)
-                cliEntries.Columns[i].Width = _columns[i - 2].Width;
+            if (lastFlexible == -1)
+                return;
 
-            cliEntries.Columns[cliEntries.Columns.Length - 1].Width = Width - _columns.Sum(w => w.Width) + _columns[_columns.Length - 1].Width - ButtonColumnWidth - ButtonColumnWidth - 24;
+            // available width
+            var availableWidth = _columns.Where(c => c.FixedSize)
+                                         .Aggregate(cliEntries.Width, (current, c) => current - c.Width);
+
+            // width of flexible parts
+            var flexibleWidth = _columns.Where(c => !c.FixedSize).Aggregate(0, (current, c) => current + c.Width);
+
+            var factor = Math.Floor(100*(double) availableWidth/flexibleWidth/100);
+
+            for (var i = 0; i < lastFlexible; i++)
+                if (!_columns[i].FixedSize)
+                    _columns[i].Width = (int) (factor*_columns[i].Width);
+            _columns[lastFlexible].Width += Width - _columns.Sum(c => c.Width);
+
+            for (var i = 2; i < cliEntries.Columns.Length; i++)
+                if (!_columns[i - 2].FixedSize)
+                    cliEntries.Columns[i].Width = _columns[i - 2].Width;
         }
 
         #endregion

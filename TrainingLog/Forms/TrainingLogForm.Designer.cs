@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.grpMain = new System.Windows.Forms.GroupBox();
-            this.chkEdit = new System.Windows.Forms.CheckBox();
             this.chkUnified = new System.Windows.Forms.CheckBox();
             this.chkRace = new System.Windows.Forms.CheckBox();
             this.chkBiodata = new System.Windows.Forms.CheckBox();
@@ -40,7 +39,6 @@
             // 
             // grpMain
             // 
-            this.grpMain.Controls.Add(this.chkEdit);
             this.grpMain.Controls.Add(this.chkUnified);
             this.grpMain.Controls.Add(this.chkRace);
             this.grpMain.Controls.Add(this.chkBiodata);
@@ -51,19 +49,6 @@
             this.grpMain.TabIndex = 1;
             this.grpMain.TabStop = false;
             this.grpMain.Text = "Select data to display";
-            // 
-            // chkEdit
-            // 
-            this.chkEdit.AutoSize = true;
-            this.chkEdit.Checked = true;
-            this.chkEdit.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkEdit.Location = new System.Drawing.Point(136, 65);
-            this.chkEdit.Name = "chkEdit";
-            this.chkEdit.Size = new System.Drawing.Size(78, 17);
-            this.chkEdit.TabIndex = 4;
-            this.chkEdit.Text = "Edit entries";
-            this.chkEdit.UseVisualStyleBackColor = true;
-            this.chkEdit.CheckedChanged += new System.EventHandler(this.ChkEditCheckedChanged);
             // 
             // chkUnified
             // 
@@ -151,6 +136,5 @@
         private System.Windows.Forms.CheckBox chkBiodata;
         private System.Windows.Forms.CheckBox chkTraining;
         private System.Windows.Forms.Button butClose;
-        private System.Windows.Forms.CheckBox chkEdit;
     }
 }
