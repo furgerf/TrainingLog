@@ -42,7 +42,10 @@ namespace TrainingLog.Forms
 
         private Size ScreenSize
         {
-            get { return WindowState == FormWindowState.Maximized ? Screen.PrimaryScreen.WorkingArea.Size : ClientSize; }
+            get
+            {
+                return WindowState == FormWindowState.Maximized ? Screen.FromControl(this).WorkingArea.Size : ClientSize;
+            }
         }
 
         private readonly IFilter[] _filters;

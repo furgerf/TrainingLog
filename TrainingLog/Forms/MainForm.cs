@@ -24,36 +24,37 @@ namespace TrainingLog.Forms
 
             GetInstance = this;
 
-            ButShowStatisticsClick(null, null);
-            //ButShowLogClick(null, null);
+            //ButShowStatisticsClick();
+            ButShowLogClick();
+            //ButSettingsClick();
         }
 
         #endregion
 
         #region Event Handling
 
-        private void ButAddTrainingClick(object sender, EventArgs e)
+        private void ButAddTrainingClick(object sender = null, EventArgs e = null)
         {
             Hide();
             TrainingEntryForm.GetInstance.Show();
             TrainingEntryForm.GetInstance.BringToFront();
         }
 
-        private void ButAddBiodataClick(object sender, EventArgs e)
+        private void ButAddBiodataClick(object sender = null, EventArgs e = null)
         {
             Hide();
             BiodataEntryForm.GetInstance.Show();
             BiodataEntryForm.GetInstance.BringToFront();
         }
 
-        private void ButShowLogClick(object sender, EventArgs e)
+        private void ButShowLogClick(object sender = null, EventArgs e = null)
         {
             Hide();
             TrainingLogForm.GetInstance.Show();
             TrainingLogForm.GetInstance.BringToFront();
         }
 
-        private void ButShowStatisticsClick(object sender, EventArgs e)
+        private void ButShowStatisticsClick(object sender = null, EventArgs e = null)
         {
             Hide();
             StatisticsForm.GetInstance.UpdateData();
@@ -61,7 +62,7 @@ namespace TrainingLog.Forms
             StatisticsForm.GetInstance.BringToFront();
         }
 
-        private void ButSettingsClick(object sender, EventArgs e)
+        private void ButSettingsClick(object sender = null, EventArgs e = null)
         {
             Hide();
             SettingsForm.GetInstance.Show();
