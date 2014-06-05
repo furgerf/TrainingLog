@@ -19,6 +19,27 @@ namespace TrainingLog.Forms
 
         #region Constructor
 
+        public BiodataEntryForm(BiodataEntry entry)
+            : this()
+        {
+            if (entry.FeelingSpecified)
+                comFeeling.Text = Enum.GetName(typeof (Common.Index), entry.Feeling ?? Common.Index.Count);
+            if (entry.NigglesSpecified)
+                txtNiggles.Text = entry.Niggles;
+            if (entry.NoteSpecified)
+                txtNotes.Text = entry.Note;
+            if (entry.OwnIndexSpecified)
+                numOwnIndex.Value = entry.OwnIndex ?? decimal.MinValue;
+            if (entry.RestingHeartRateSpecified)
+                numRestingHeartRate.Value = entry.RestingHeartRate ?? decimal.MinValue;
+            if (entry.SleepDurationStringSpecified)
+                numSleepDuration.Value = (decimal) (entry.SleepDuration ?? TimeSpan.MaxValue).TotalHours;
+            if (entry.SleepQualitySpecified)
+                comSleepQuality.Text = Enum.GetName(typeof (Common.Index), entry.SleepQuality ?? Common.Index.Count);
+            if (entry.WeightSpecified)
+                numWeight.Value = entry.Weight ?? decimal.MinValue;
+        }
+
         public BiodataEntryForm()
         {
             InitializeComponent();

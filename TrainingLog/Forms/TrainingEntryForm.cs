@@ -43,6 +43,39 @@ namespace TrainingLog.Forms
 
         #region Constructor
 
+        public TrainingEntryForm(TrainingEntry entry)
+            : this()
+        {
+            if (entry.AverageHrSpecified)
+                txtAvgHR.Text = entry.AverageHr.ToString();
+            if (entry.CaloriesSpecified)
+                txtCalories.Text = entry.Calories.ToString();
+            if (entry.DateSpecified)
+                datDate.Value = entry.Date ?? DateTime.MinValue;
+            if (entry.DistanceMSpecified)
+                txtDistance.Text = entry.DistanceKm.ToString();
+            if (entry.DurationStringSpecified)
+                txtDuration.Text = entry.DurationString.Replace(':', '.');
+            if (entry.FeelingSpecified)
+                comFeeling.Text = Enum.GetName(typeof(Common.Index), entry.Feeling ?? Common.Index.Count);
+            if (entry.HrZoneStringSpecified)
+            {
+                txtZone1.Text = (entry.HrZones ?? ZoneData.Empty()).Zone1.ToString().Replace(':', '.');
+                txtZone2.Text = (entry.HrZones ?? ZoneData.Empty()).Zone2.ToString().Replace(':', '.');
+                txtZone3.Text = (entry.HrZones ?? ZoneData.Empty()).Zone3.ToString().Replace(':', '.');
+                txtZone4.Text = (entry.HrZones ?? ZoneData.Empty()).Zone4.ToString().Replace(':', '.');
+                txtZone5.Text = (entry.HrZones ?? ZoneData.Empty()).Zone5.ToString().Replace(':', '.');
+            }
+            if (entry.NoteSpecified)
+                txtNotes.Text = entry.Note;
+            if (entry.SportSpecified)
+                comSport.Text = Enum.GetName(typeof (Common.Sport), entry.Sport ?? Common.Sport.Count);
+            if (entry.TrainingTypeSpecified)
+                comTrainingType.Text = Enum.GetName(typeof (Common.TrainingType), entry.TrainingType);
+
+            DistanceTimeChanged();
+        }
+
         public TrainingEntryForm()
         {
             InitializeComponent();
@@ -229,7 +262,7 @@ namespace TrainingLog.Forms
             labSpeed.Text = "Speed: ";
         }
 
-        private void DistanceTimeChanged(object sender, EventArgs e)
+        private void DistanceTimeChanged(object sender = null, EventArgs e = null)
         {
             if (txtDistance.Text == "" || txtDuration.Text == "")
                 return;
