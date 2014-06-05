@@ -21,6 +21,10 @@ namespace TrainingLog.Controls
 
         public Control[][] Items { get { return _controls.ToArray(); } }
 
+        public delegate void OnItemsChanged();
+
+        public event OnItemsChanged ItemsChanged;
+
         #endregion
 
         #region Private Fields
@@ -111,6 +115,9 @@ namespace TrainingLog.Controls
             panArea.Height = ItemHeight * _controls.Count < vscScroll.Height ? vscScroll.Height : ItemHeight * _controls.Count;
             vscScroll.Maximum = panArea.Height < vscScroll.Height ? 0 : panArea.Height - vscScroll.Height;
             vscScroll.Enabled = vscScroll.Maximum != 0;
+
+            if (ItemsChanged != null)
+                ItemsChanged();
         }
 
         public void ClearItems()
@@ -123,6 +130,9 @@ namespace TrainingLog.Controls
             panArea.Height = ItemHeight * _controls.Count < vscScroll.Height ? vscScroll.Height : ItemHeight * _controls.Count;
             vscScroll.Maximum = panArea.Height < vscScroll.Height ? 0 : panArea.Height - vscScroll.Height;
             vscScroll.Enabled = vscScroll.Maximum != 0;
+
+            if (ItemsChanged != null)
+                ItemsChanged();
         }
 
         #endregion
@@ -166,14 +176,69 @@ namespace TrainingLog.Controls
             SortColumn(2);
         }
 
+        private static bool IsBefore(string a, string b, bool numeric, SortOrder order)
+        {
+            bool res;
+
+            if (numeric)
+            {
+                double c;
+                double d;
+
+                if (!double.TryParse(a, out c))
+                    throw new ArgumentException();
+                if (!double.TryParse(b, out d))
+                    throw new ArgumentException();
+
+                res = c < d;
+            }
+            else
+                res = String.Compare(a, b, StringComparison.Ordinal) > 0;
+
+            return order == SortOrder.Descending ^ res;
+        }
+
         private void SortColumn(int column)
         {
+            if (_controls.Count == 0)
+                return;
+
             _sortOrder = _sortedColumnIndex == column ? SortOrder.Ascending : SortOrder.Descending;
             _sortedColumnIndex = column;
 
-            // todo implement sorting
-            MessageBox.Show("Sorting not implemented");
+            if (_controls[0][_sortedColumnIndex].Tag == null)
+                throw new ArgumentException();
+            double d;
+            var numericSort = double.TryParse(_controls[0][_sortedColumnIndex].Tag.ToString(), out d);
+            if (_controls.Any(c => c[_sortedColumnIndex].Tag == null || double.TryParse(c[_sortedColumnIndex].Tag.ToString(), out d) != numericSort))
+                throw new ArgumentException();
+
+            // insertion sort
+            var newControls = new List<Control[]>();
+            
+            foreach (var c in _controls)
+            {
+                var inserted = false;
+                for (var i = 0; i < newControls.Count; i++)
+                    if (c[_sortedColumnIndex].Tag.Equals(newControls[i][_sortedColumnIndex].Tag) ||
+                        IsBefore(c[_sortedColumnIndex].Tag.ToString(), newControls[i][_sortedColumnIndex].Tag.ToString(),
+                                 numericSort, _sortOrder))
+                    {
+                        newControls.Insert(i, c);
+                        inserted = true;
+                        break;
+                    }
+
+                if (!inserted)
+                    newControls.Add(c);
+            }
+
+            ClearItems();
+            foreach (var c in newControls)
+                AddItem(c);
         }
+
+        //TODO: Add event that is triggered whenever items change so that ELC can set back colors when that happens
 
         #endregion
     }

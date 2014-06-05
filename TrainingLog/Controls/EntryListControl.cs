@@ -77,6 +77,8 @@ namespace TrainingLog.Controls
             InitializeComponent();
 
             cliEntries.ItemHeight = ButtonColumnWidth;
+
+            cliEntries.ItemsChanged += SetBackColor;
         }
 
         #endregion
@@ -136,8 +138,6 @@ namespace TrainingLog.Controls
                               };
 
             cliEntries.AddItem(new[] {butDelete, butEdit}.Concat(data).ToArray());
-
-            SetBackColor();
 
             return true;
         }
