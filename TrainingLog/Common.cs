@@ -62,7 +62,7 @@ namespace TrainingLog
 
         public static readonly Icon IconDelete;
 
-        public static readonly Icon IconSave;
+        public static readonly Icon IconEdit;
 
         #endregion
 
@@ -71,7 +71,7 @@ namespace TrainingLog
         static Common()
         {
             IconDelete = (Icon)Resources.ResourceManager.GetObject("delete");
-            IconSave = (Icon)Resources.ResourceManager.GetObject("save");
+            IconEdit = (Icon)Resources.ResourceManager.GetObject("edit");
         }
 
         #endregion
