@@ -35,7 +35,7 @@ namespace TrainingLog.Controls
         
         private int _itemHeight = 20;
 
-        private int _sortedColumnIndex;
+        private int _sortedColumnIndex = -1;
 
         private SortOrder _sortOrder;
 
@@ -54,24 +54,37 @@ namespace TrainingLog.Controls
             panArea.SendToBack();
 
             // update scrollbar
-            ItemsChanged += () =>
-                                {
-                                    vscScroll.Maximum = panArea.Height < vscScroll.Height ? 0 : panArea.Height - vscScroll.Height;
-                                    vscScroll.Enabled = vscScroll.Maximum != 0;
-                                    vscScroll.SmallChange = vscScroll.Maximum / 50;
-                                    vscScroll.LargeChange = vscScroll.Maximum / 10;
-                                };
+            panArea.SizeChanged += (s, e) => UpdateScrollbar();
+            ItemsChanged += UpdateScrollbar;
 
+            //// reapply sorting when items change
+            //ItemsChanged += ReapplySorting;
+
+            // add mouse scroll wheel capability
             panArea.MouseWheel += (s, e) =>
                                       {
+                                          var oldValue = vscScroll.Value;
                                           vscScroll.Value -= e.Delta;
-                                          VscScrollScroll(s, new ScrollEventArgs(ScrollEventType.EndScroll, vscScroll.Value + e.Delta, vscScroll.Value));
+                                          if (vscScroll.Value < 0)
+                                              vscScroll.Value = 0;
+                                          if (vscScroll.Value > vscScroll.Maximum)
+                                              vscScroll.Value = vscScroll.Maximum;
+                                          var newValue = vscScroll.Value;
+                                          VscScrollScroll(s, new ScrollEventArgs(ScrollEventType.EndScroll, oldValue, newValue));
                                       };
         }
 
         #endregion
 
         #region Main Methods
+
+        private void UpdateScrollbar()
+        {
+            vscScroll.Maximum = panArea.Height < Height - lisHeader.Location.Y ? 0 : panArea.Height - Height + lisHeader.Location.Y;
+            vscScroll.Enabled = vscScroll.Maximum != 0;
+            vscScroll.SmallChange = vscScroll.Maximum / 50;
+            vscScroll.LargeChange = vscScroll.Maximum / 10;
+        }
 
         public void ClearColumns()
         {
@@ -108,8 +121,9 @@ namespace TrainingLog.Controls
                 AddColumn(c.Header, c.Width);
         }
 
-        public void AddItem(Control[] controls)
+        public void AddItem(Control[] controls, bool updateControls = true)
         {
+            // todo: change from adding to inserting
             if (controls.Length != _columns.Count)
                 throw new ArgumentException();
 
@@ -125,6 +139,9 @@ namespace TrainingLog.Controls
 
             _controls.Add(controls);
 
+            if (!updateControls)
+                return;
+
             panArea.Height = ItemHeight * _controls.Count < vscScroll.Height ? vscScroll.Height : ItemHeight * _controls.Count;
 
             if (ItemsChanged != null)
@@ -137,6 +154,30 @@ namespace TrainingLog.Controls
                 c.Parent = null;
 
             _controls.Clear();
+
+            panArea.Height = ItemHeight * _controls.Count < vscScroll.Height ? vscScroll.Height : ItemHeight * _controls.Count;
+
+            if (ItemsChanged != null)
+                ItemsChanged();
+        }
+
+        public void RemoveItem(Control[] item)
+        {
+            // remove old item
+            _controls.Remove(item);
+            foreach (var c in item)
+                c.Parent = null;
+
+            // backup remaining controls
+            var controls = new Control[_controls.Count][];
+            _controls.CopyTo(controls);
+
+            // clear controls
+            ClearItems();
+
+            // re-add controls
+            foreach (var c in controls)
+                AddItem(c, false);
 
             panArea.Height = ItemHeight * _controls.Count < vscScroll.Height ? vscScroll.Height : ItemHeight * _controls.Count;
 
@@ -168,7 +209,7 @@ namespace TrainingLog.Controls
         private void VscScrollScroll(object sender, ScrollEventArgs e)
         {
             // move area
-            panArea.Location = new Point(panArea.Location.X, panArea.Location.Y - (e.NewValue - e.OldValue));
+            panArea.Location = new Point(panArea.Location.X, -vscScroll.Value);
         }
 
         private void SortColumns(object sender, ColumnClickEventArgs e)
@@ -176,31 +217,49 @@ namespace TrainingLog.Controls
             SortColumn(e.Column);
         }
 
+        private void ReapplySorting()
+        {
+            // only reapply sorting if sorting has occured before
+            if (_sortedColumnIndex < 0)
+                return;
+
+            var order = _sortOrder;
+            SortColumn(_sortedColumnIndex);
+            if (order == SortOrder.Descending)
+                SortColumn(_sortedColumnIndex);
+        }
+
         public void SortByDate()
         {
-            SortColumn(2);
+            DateTime d;
+            if (DateTime.TryParse(_controls[0][2].Text, out d))
+            {
+                SortColumn(2);
+                return;
+            }
+
+            for (var i = 0; i < _controls[0].Length; i++)
+                if (DateTime.TryParse(_controls[0][i].Text, out d))
+                {
+                    SortColumn(i);
+                    return;
+                }
         }
 
         private static bool IsBefore(string a, string b, bool numeric, SortOrder order)
         {
-            bool res;
+            if (!numeric)
+                return order == SortOrder.Descending ^ String.Compare(a, b, StringComparison.Ordinal) > 0;
 
-            if (numeric)
-            {
-                double c;
-                double d;
+            double c;
+            double d;
 
-                if (!double.TryParse(a, out c))
-                    throw new ArgumentException();
-                if (!double.TryParse(b, out d))
-                    throw new ArgumentException();
+            if (!double.TryParse(a, out c))
+                throw new ArgumentException();
+            if (!double.TryParse(b, out d))
+                throw new ArgumentException();
 
-                res = c < d;
-            }
-            else
-                res = String.Compare(a, b, StringComparison.Ordinal) > 0;
-
-            return order == SortOrder.Descending ^ res;
+            return order == SortOrder.Descending ^ c < d;
         }
 
         private void SortColumn(int column)

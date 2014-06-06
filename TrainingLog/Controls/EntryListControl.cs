@@ -45,11 +45,6 @@ namespace TrainingLog.Controls
 
                 cliEntries.ClearColumns();
 
-                // edit/delete
-                cliEntries.AddColumn("", ButtonColumnWidth);
-                cliEntries.AddColumn("", ButtonColumnWidth);
-
-                // "normal" columns
                 cliEntries.AddColumns(_columns);
             }
         }
@@ -58,7 +53,7 @@ namespace TrainingLog.Controls
 
         #region Private Fields
 
-        private const int ButtonColumnWidth = 23;
+        public const int ButtonColumnWidth = 23;
 
         private EntryListColumn[] _columns;
 
@@ -96,9 +91,9 @@ namespace TrainingLog.Controls
             cliEntries.ClearItems();
         }
 
-        public bool AddEntry(Control[] data, Entry entry)
+        public bool AddEntry(Control[] data, Entry entry, bool addButtons = true)
         {
-            if (data.Length != cliEntries.Columns.Length - 2)
+            if (data.Length != cliEntries.Columns.Length - (addButtons ? 2 : 0))
                 return false;
 
             var id = _entryMap.Keys.Count;
@@ -120,27 +115,82 @@ namespace TrainingLog.Controls
 
             _entryMap.Add(id, entry);
 
+            Control[] item;
+            if (addButtons)
+            {
+                var butEdit = new Button
+                                  {
+                                      Image = Common.IconEdit.ToBitmap(),
+                                      ImageAlign = ContentAlignment.MiddleCenter,
+                                      FlatStyle = FlatStyle.Standard,
+                                      Name = id.ToString(CultureInfo.InvariantCulture)
+                                  };
+                var butDelete = new Button
+                                    {
+                                        Image = Common.IconDelete.ToBitmap(),
+                                        ImageAlign = ContentAlignment.MiddleCenter,
+                                        FlatStyle = FlatStyle.Standard,
+                                        UseVisualStyleBackColor = false,
+                                        Name = id.ToString(CultureInfo.InvariantCulture)
+                                    };
 
-            var butEdit = new Button
-                              {
-                                  Image = Common.IconEdit.ToBitmap(),
-                                  ImageAlign = ContentAlignment.MiddleCenter,
-                                  FlatStyle = FlatStyle.Standard,
-                                  Name = id.ToString(CultureInfo.InvariantCulture)
-                              };
-            butEdit.Click += (s, e) => MessageBox.Show("Editing not yet implemented!");
+                item = new[] { butEdit, butDelete }.Concat(data).ToArray();
 
-            var butDelete = new Button
-                                {
-                                    Image = Common.IconDelete.ToBitmap(),
-                                    ImageAlign = ContentAlignment.MiddleCenter,
-                                    FlatStyle = FlatStyle.Standard,
-                                    UseVisualStyleBackColor = false,
-                                    Name = id.ToString(CultureInfo.InvariantCulture)
-                                };
-            butDelete.Click += (s, e) => MessageBox.Show("Deleting not yet implemented!");
+                butEdit.Click += (s, e) =>
+                                     {
+                                         Form form;
+                                         if (entry is TrainingEntry)
+                                             form = new TrainingEntryForm(entry as TrainingEntry);
+                                         else if (entry is BiodataEntry)
+                                             form = new BiodataEntryForm(entry as BiodataEntry);
+                                         else
+                                         {
+                                             MessageBox.Show("TODO: Add constructor to edit biodata entry");
+                                             return;
+                                         }
 
-            cliEntries.AddItem(new[] { butEdit, butDelete }.Concat(data).ToArray());
+                                         form.Closing += (ss, ee) =>
+                                                             {
+                                                                 Entry newEntry;
+                                                                 Control[] controls;
+                                                                 if (form is TrainingEntryForm)
+                                                                     newEntry = (form as TrainingEntryForm).NewEntry;
+                                                                 else if (form is BiodataEntryForm)
+                                                                     newEntry = (form as BiodataEntryForm).NewEntry;
+                                                                 else
+                                                                     throw new Exception();
+
+                                                                 if (newEntry == null)
+                                                                     return;
+
+                                                                 if (form is TrainingEntryForm)
+                                                                     controls = TrainingLogForm.GetInstance.ControlsForTrainingEntry(newEntry as TrainingEntry);
+                                                                 else if (form is BiodataEntryForm)
+                                                                     controls = TrainingLogForm.GetInstance.ControlsForBiodataEntry(newEntry as BiodataEntry);
+                                                                 else
+                                                                     throw new Exception();
+
+                                                                 Model.Instance.RemoveEntry(entry);
+                                                                 AddEntry(controls, newEntry);
+                                                                 cliEntries.RemoveItem(item);
+                                                             };
+
+                                         form.Show();
+                                     };
+
+                butDelete.Click += (s, e) =>
+                                       {
+                                           if (MessageBox.Show("Are you sure you want to delete the entry?", "Do you want to delete?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                                               return;
+
+                                           Model.Instance.RemoveEntry(entry);
+                                           cliEntries.RemoveItem(item);
+                                       };
+            }
+            else
+                item = data.ToArray();
+
+            cliEntries.AddItem(item);
 
             return true;
         }
@@ -194,9 +244,9 @@ namespace TrainingLog.Controls
                     _columns[i].Width = (int) (factor*_columns[i].Width);
             _columns[lastFlexible].Width += Width - _columns.Sum(c => c.Width);
 
-            for (var i = 2; i < cliEntries.Columns.Length; i++)
-                if (!_columns[i - 2].FixedSize)
-                    cliEntries.Columns[i].Width = _columns[i - 2].Width;
+            for (var i = 0; i < cliEntries.Columns.Length; i++)
+                if (!_columns[i].FixedSize)
+                    cliEntries.Columns[i].Width = _columns[i].Width;
         }
 
         #endregion
