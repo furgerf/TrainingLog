@@ -6,12 +6,14 @@ namespace TrainingLog.Forms
 {
     public partial class BiodataEntryForm : Form
     {
-        #region Static Access
+        #region Public Fields
 
         public static BiodataEntryForm GetInstance
         {
             get { return _instance ?? (_instance = new BiodataEntryForm()); }
         }
+
+        public BiodataEntry NewEntry { get; private set; }
 
         private static BiodataEntryForm _instance;
 
@@ -101,6 +103,8 @@ namespace TrainingLog.Forms
                                         : Common.Index.None,
                                 Note = txtNotes.Text
                             };
+
+            NewEntry = entry;
 
             Model.Instance.AddEntry(entry);
 

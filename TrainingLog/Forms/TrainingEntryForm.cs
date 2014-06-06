@@ -16,6 +16,8 @@ namespace TrainingLog.Forms
             get { return _instance ?? (_instance = new TrainingEntryForm()); }
         }
 
+        public TrainingEntry NewEntry { get; private set; }
+
         #endregion
 
         #region Private Fields
@@ -433,6 +435,8 @@ namespace TrainingLog.Forms
                         : Common.Index.None,
                 Note = txtNotes.Text
             };
+
+            NewEntry = entry;
 
             Model.Instance.AddEntry(entry);
 
