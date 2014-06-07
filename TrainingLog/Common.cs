@@ -31,7 +31,7 @@ namespace TrainingLog
             new[]
                 {
                     TrainingType.Easy, TrainingType.Interval, TrainingType.Fartlek, TrainingType.Base, TrainingType.Long, 
-                    TrainingType.Tempo, TrainingType.Other
+                    TrainingType.Tempo, TrainingType.Other, TrainingType.Mountain
                 };
 
         public static readonly TrainingType[] SquashTypes = new[]
@@ -45,7 +45,7 @@ namespace TrainingLog
         public enum TrainingType
         {
             None = 0,
-            Easy = 10, Interval, Fartlek, Base, Long, Tempo, Other,
+            Easy = 10, Interval, Fartlek, Base, Long, Tempo, Mountain, Other,
             Solo = 20, Training, Club, Match, Count
         }
 

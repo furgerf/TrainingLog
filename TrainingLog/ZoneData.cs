@@ -93,7 +93,6 @@ namespace TrainingLog
 
         public void Normailze(TimeSpan duration)
         {
-            MessageBox.Show("Should fix normalizing (last zone is messed up)");
             var sum = Zones.Sum(e => e.TotalSeconds);
 
             var seconds = duration.TotalSeconds - sum;
@@ -104,7 +103,7 @@ namespace TrainingLog
 
             var sign = seconds < 0 ? -1 : 1;
 
-            for (var i = 4; i >= 0; i--)
+            for (var i = 4; i >= 1; i--)
                 Zones[i] = Zones[i].Add(TimeSpan.FromSeconds(sign * perc[i - 1]));
             Zones[0] = Zone1.Add(TimeSpan.FromSeconds(sign * seconds - perc.Sum()));
         }
