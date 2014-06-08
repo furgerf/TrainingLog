@@ -185,7 +185,7 @@ namespace TrainingLog.Forms
                         new ZoneDataBox { ZoneData = entry.HrZones ?? ZoneData.Empty(),  OverlayText = entry.AverageHrSpecified ? '\u00d8' + entry.AverageHr.ToString() : "", Tag = entry.AverageHr ?? 0 },
                         new Label{ Text = entry.DistanceKm > 0 ? entry.DistanceKm.ToString(CultureInfo.InvariantCulture) : "", TextAlign = ContentAlignment.MiddleCenter, Tag = entry.DistanceM ?? 0 },
                         new Label{ Text = entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof(Common.Index), entry.Feeling), BackColor = entry.Feeling < Common.Index.Count ? GetColor((double)entry.Feeling / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) : _elcTraining.FirstColor, TextAlign = ContentAlignment.MiddleCenter, Tag = entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof(Common.Index), entry.Feeling) },
-                        new Label{ Text = entry.Note, Tag = entry.Note, TextAlign = ContentAlignment.MiddleLeft }};
+                        new Label{ Text = entry.Note, Tag = entry.Note ?? "", TextAlign = ContentAlignment.MiddleLeft }};
         }
 
         private void AddBiodataEntries()
@@ -209,8 +209,8 @@ namespace TrainingLog.Forms
                         new Label{ Text = entry.OwnIndex == 0 ? "" : entry.OwnIndex.ToString(), BorderStyle = BorderStyle.None, TextAlign = ContentAlignment.MiddleCenter, Tag = entry.OwnIndex},
                         new Label{ Text = entry.Weight > 0 ? entry.Weight.ToString() : "", BorderStyle = BorderStyle.None, TextAlign = ContentAlignment.MiddleCenter, Tag = entry.Weight },
                         new Label{ Text = entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof(Common.Index), (entry.Feeling ?? Common.Index.Count)), BackColor = entry.Feeling < Common.Index.Count ? GetColor((double)(entry.Feeling ?? Common.Index.Count) / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) : _elcBiodata.FirstColor, TextAlign = ContentAlignment.MiddleCenter, Tag = entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof(Common.Index), (entry.Feeling ?? Common.Index.Count))}, 
-                        new Label{ Text = entry.Niggles, BorderStyle = BorderStyle.None, Tag = entry.Niggles, TextAlign = ContentAlignment.MiddleLeft },
-                        new Label{ Text = entry.Note, BorderStyle = BorderStyle.None, Tag = entry.Note, TextAlign = ContentAlignment.MiddleLeft }};
+                        new Label{ Text = entry.Niggles, BorderStyle = BorderStyle.None, Tag = entry.Niggles ?? "", TextAlign = ContentAlignment.MiddleLeft },
+                        new Label{ Text = entry.Note, BorderStyle = BorderStyle.None, Tag = entry.Note ?? "", TextAlign = ContentAlignment.MiddleLeft }};
         }
 
         private void AddUnifiedEntries()

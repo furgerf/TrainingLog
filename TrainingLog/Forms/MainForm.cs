@@ -25,7 +25,7 @@ namespace TrainingLog.Forms
             GetInstance = this;
 
             //ButShowStatisticsClick();
-            ButShowLogClick();
+            //ButShowLogClick();
             //ButSettingsClick();
         }
 
