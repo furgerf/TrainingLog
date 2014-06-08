@@ -75,8 +75,6 @@
             // chkBiodata
             // 
             this.chkBiodata.AutoSize = true;
-            this.chkBiodata.Checked = true;
-            this.chkBiodata.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkBiodata.Location = new System.Drawing.Point(6, 42);
             this.chkBiodata.Name = "chkBiodata";
             this.chkBiodata.Size = new System.Drawing.Size(67, 17);
@@ -88,8 +86,6 @@
             // chkTraining
             // 
             this.chkTraining.AutoSize = true;
-            this.chkTraining.Checked = true;
-            this.chkTraining.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkTraining.Location = new System.Drawing.Point(6, 19);
             this.chkTraining.Name = "chkTraining";
             this.chkTraining.Size = new System.Drawing.Size(64, 17);

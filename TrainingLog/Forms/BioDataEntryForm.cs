@@ -6,7 +6,7 @@ namespace TrainingLog.Forms
 {
     public partial class BiodataEntryForm : Form
     {
-        #region Public Fields
+        #region Fields
 
         public static BiodataEntryForm GetInstance
         {
@@ -17,6 +17,8 @@ namespace TrainingLog.Forms
 
         private static BiodataEntryForm _instance;
 
+        private DateTime _dateOverride = DateTime.MinValue;
+
         #endregion
 
         #region Constructor
@@ -24,6 +26,8 @@ namespace TrainingLog.Forms
         public BiodataEntryForm(BiodataEntry entry)
             : this()
         {
+            if (entry.DateSpecified)
+                _dateOverride = entry.Date ?? DateTime.MinValue;
             if (entry.FeelingSpecified)
                 comFeeling.Text = Enum.GetName(typeof (Common.Index), entry.Feeling ?? Common.Index.Count);
             if (entry.NigglesSpecified)
@@ -90,7 +94,7 @@ namespace TrainingLog.Forms
         {
             var entry = new BiodataEntry
                             {
-                                Date = DateTime.Today,
+                                Date = _dateOverride.Equals(DateTime.MinValue) ? DateTime.Today : _dateOverride,
                                 SleepDuration = new TimeSpan(0, (int) (60*numSleepDuration.Value), 0),
                                 SleepQuality = (Common.Index) (int) Common.Index.Count - comSleepQuality.SelectedIndex - 1,
                                 RestingHeartRate = (int) numRestingHeartRate.Value,

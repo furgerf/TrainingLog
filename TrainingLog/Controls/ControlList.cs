@@ -50,15 +50,9 @@ namespace TrainingLog.Controls
             // sort rows on column click
             lisHeader.ColumnClick += SortColumns;
 
-            // so it doesn't overlay the header when scrolling
-            panArea.SendToBack();
-
             // update scrollbar
             panArea.SizeChanged += (s, e) => UpdateScrollbar();
             ItemsChanged += UpdateScrollbar;
-
-            //// reapply sorting when items change
-            //ItemsChanged += ReapplySorting;
 
             // add mouse scroll wheel capability
             panArea.MouseWheel += (s, e) =>
@@ -78,32 +72,10 @@ namespace TrainingLog.Controls
 
         #region Main Methods
 
-        private void UpdateScrollbar()
+        public void AddColumns(EntryListColumn[] columns)
         {
-            vscScroll.Maximum = panArea.Height < Height - lisHeader.Location.Y ? 0 : panArea.Height - Height + lisHeader.Location.Y;
-            vscScroll.Enabled = vscScroll.Maximum != 0;
-            vscScroll.SmallChange = vscScroll.Maximum / 50;
-            vscScroll.LargeChange = vscScroll.Maximum / 10;
-        }
-
-        public void ClearColumns()
-        {
-            lisHeader.Columns.Clear();
-            _columns.Clear();
-        }
-
-        public void AddColumn(string name, int width)
-        {
-            foreach (var cc in _controls.SelectMany(c => c))
-                cc.Parent = null;
-
-            lisHeader.Columns.Add(name, width);
-            _columns.Add(lisHeader.Columns[lisHeader.Columns.Count - 1]);
-        }
-
-        public void AddColumn(EntryListColumn column)
-        {
-            AddColumn(column.Header, column.Width);
+            foreach (var c in columns)
+                AddColumn(c.Header, c.Width);
         }
 
         public void AddColumns(string[] names, int[] widths)
@@ -115,32 +87,84 @@ namespace TrainingLog.Controls
                 AddColumn(names[i], widths[i]);
         }
 
-        public void AddColumns(EntryListColumn[] columns)
+        public void AddColumn(EntryListColumn column)
         {
-            foreach (var c in columns)
-                AddColumn(c.Header, c.Width);
+            AddColumn(column.Header, column.Width);
+        }
+
+        public void AddColumn(string name, int width)
+        {
+            foreach (var cc in _controls.SelectMany(c => c))
+                cc.Parent = null;
+
+            lisHeader.Columns.Add(name, width);
+            _columns.Add(lisHeader.Columns[lisHeader.Columns.Count - 1]);
+        }
+
+        public void ClearColumns()
+        {
+            lisHeader.Columns.Clear();
+            _columns.Clear();
+        }
+
+        private void ArrangeRows()
+        {
+            for (var j = 0; j < _controls.Count; j++)
+            {
+                var x = 1;
+                for (var i = 0; i < _controls[j].Length; i++)
+                {
+                    _controls[j][i].Location = new Point(x, j*ItemHeight);
+                    x += _columns[i].Width;
+                }
+            }
+
         }
 
         public void AddItem(Control[] controls, bool updateControls = true)
         {
-            // todo: change from adding to inserting
             if (controls.Length != _columns.Count)
                 throw new ArgumentException();
 
-            var x = 1;
+            var index = 0;
+            if (_sortedColumnIndex >= 0)
+            {
+                double d;
+                var numeric = double.TryParse(controls[_sortedColumnIndex].Tag.ToString(), out d);
+                while (index < _controls.Count && !IsBefore(controls[_sortedColumnIndex].Tag.ToString(),
+                                _controls[index][_sortedColumnIndex].Tag.ToString(), numeric, _sortOrder))
+                    index++;
+            }
+
             for (var i = 0; i < controls.Length; i++)
             {
                 controls[i].Parent = panArea;
-                controls[i].Location = new Point(x, _controls.Count * ItemHeight);
                 controls[i].Size = new Size(_columns[i].Width, ItemHeight);
-
-                x += _columns[i].Width;
             }
 
-            _controls.Add(controls);
+            _controls.Insert(index, controls);
 
             if (!updateControls)
                 return;
+
+            ArrangeRows();
+
+            panArea.Height = ItemHeight * _controls.Count < vscScroll.Height ? vscScroll.Height : ItemHeight * _controls.Count;
+
+            if (ItemsChanged != null)
+                ItemsChanged();
+        }
+
+        public void RemoveItem(Control[] item)
+        {
+            // remove old item
+            _controls.Remove(item);
+            foreach (var c in item)
+                c.Parent = null;
+
+            _controls.Remove(item);
+
+            ArrangeRows();
 
             panArea.Height = ItemHeight * _controls.Count < vscScroll.Height ? vscScroll.Height : ItemHeight * _controls.Count;
 
@@ -161,28 +185,12 @@ namespace TrainingLog.Controls
                 ItemsChanged();
         }
 
-        public void RemoveItem(Control[] item)
+        private void UpdateScrollbar()
         {
-            // remove old item
-            _controls.Remove(item);
-            foreach (var c in item)
-                c.Parent = null;
-
-            // backup remaining controls
-            var controls = new Control[_controls.Count][];
-            _controls.CopyTo(controls);
-
-            // clear controls
-            ClearItems();
-
-            // re-add controls
-            foreach (var c in controls)
-                AddItem(c, false);
-
-            panArea.Height = ItemHeight * _controls.Count < vscScroll.Height ? vscScroll.Height : ItemHeight * _controls.Count;
-
-            if (ItemsChanged != null)
-                ItemsChanged();
+            vscScroll.Maximum = panArea.Height < panBack.Height ? 0 : panArea.Height - panBack.Height;
+            vscScroll.Enabled = vscScroll.Maximum != 0;
+            vscScroll.SmallChange = vscScroll.Maximum / 50;
+            vscScroll.LargeChange = vscScroll.Maximum / 10;
         }
 
         #endregion
@@ -193,9 +201,9 @@ namespace TrainingLog.Controls
         {
             // fix control size
             lisHeader.Width = Width - vscScroll.Width;
-            panArea.Width = lisHeader.Width;
-            panArea.Height = panArea.Height > Height - lisHeader.Height ? panArea.Height : Height - lisHeader.Height;
-            vscScroll.Location = new Point(panArea.Width, lisHeader.Height);
+            panBack.Size = new Size(lisHeader.Width, vscScroll.Height);
+            panArea.Size = new Size(panBack.Width, panArea.Height > panBack.Height ? panArea.Height : panBack.Height);
+            vscScroll.Location = new Point(panBack.Width, lisHeader.Height);
             vscScroll.Height = Height - lisHeader.Height;
         }
 
@@ -215,18 +223,6 @@ namespace TrainingLog.Controls
         private void SortColumns(object sender, ColumnClickEventArgs e)
         {
             SortColumn(e.Column);
-        }
-
-        private void ReapplySorting()
-        {
-            // only reapply sorting if sorting has occured before
-            if (_sortedColumnIndex < 0)
-                return;
-
-            var order = _sortOrder;
-            SortColumn(_sortedColumnIndex);
-            if (order == SortOrder.Descending)
-                SortColumn(_sortedColumnIndex);
         }
 
         public void SortByDate()
@@ -249,7 +245,7 @@ namespace TrainingLog.Controls
         private static bool IsBefore(string a, string b, bool numeric, SortOrder order)
         {
             if (!numeric)
-                return order == SortOrder.Descending ^ String.Compare(a, b, StringComparison.Ordinal) > 0;
+                return (order == SortOrder.Descending) ^ (String.Compare(a, b, StringComparison.Ordinal) < 0);
 
             double c;
             double d;
@@ -259,7 +255,7 @@ namespace TrainingLog.Controls
             if (!double.TryParse(b, out d))
                 throw new ArgumentException();
 
-            return order == SortOrder.Descending ^ c < d;
+            return (order == SortOrder.Descending) ^ (c < d);
         }
 
         private void SortColumn(int column)
@@ -267,7 +263,9 @@ namespace TrainingLog.Controls
             if (_controls.Count == 0)
                 return;
 
-            _sortOrder = _sortedColumnIndex == column ? SortOrder.Ascending : SortOrder.Descending;
+            _sortOrder = _sortedColumnIndex == column
+                             ? _sortOrder == SortOrder.Descending ? SortOrder.Ascending : SortOrder.Descending
+                             : SortOrder.Descending;
             _sortedColumnIndex = column;
 
             if (_controls[0][_sortedColumnIndex].Tag == null)
@@ -297,9 +295,21 @@ namespace TrainingLog.Controls
                     newControls.Add(c);
             }
 
-            ClearItems();
+            _controls.Clear();
             foreach (var c in newControls)
-                AddItem(c);
+                _controls.Add(c);
+
+            for (var j = 0; j < _controls.Count; j++){
+                var x = 1;
+                for (var i = 0; i < _controls[j].Length; i++)
+                {
+                    _controls[j][i].Location = new Point(x, j * ItemHeight);
+                    x += _columns[i].Width;
+                }
+            }
+
+            if (ItemsChanged != null)
+                ItemsChanged();
         }
 
         #endregion

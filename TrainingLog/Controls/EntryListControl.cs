@@ -91,7 +91,7 @@ namespace TrainingLog.Controls
             cliEntries.ClearItems();
         }
 
-        public bool AddEntry(Control[] data, Entry entry, bool addButtons = true)
+        public bool AddEntry(Control[] data, Entry entry, bool addButtons = true, bool updateControl = true)
         {
             if (data.Length != cliEntries.Columns.Length - (addButtons ? 2 : 0))
                 return false;
@@ -190,7 +190,7 @@ namespace TrainingLog.Controls
             else
                 item = data.ToArray();
 
-            cliEntries.AddItem(item);
+            cliEntries.AddItem(item, updateControl);
 
             return true;
         }

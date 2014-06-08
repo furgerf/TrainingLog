@@ -167,7 +167,7 @@ namespace TrainingLog.Forms
         {
             _elcTraining.ClearEntries();
 
-            foreach (var entry in Model.Instance.TrainingEntries.Where(entry => !_elcTraining.AddEntry(ControlsForTrainingEntry(entry), entry)))
+            foreach (var entry in Model.Instance.TrainingEntries.Where(entry => !_elcTraining.AddEntry(ControlsForTrainingEntry(entry), entry, updateControl: entry.Equals(Model.Instance.TrainingEntries.Last()))))
                 MessageBox.Show("Problem adding entry " + entry, "Problem adding entry", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             _elcTraining.SortByDate();

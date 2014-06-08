@@ -31,7 +31,7 @@ namespace TrainingLog
             new[]
                 {
                     TrainingType.Easy, TrainingType.Interval, TrainingType.Fartlek, TrainingType.Base, TrainingType.Long, 
-                    TrainingType.Tempo, TrainingType.Other, TrainingType.Mountain
+                    TrainingType.Tempo, TrainingType.Mountain, TrainingType.Other
                 };
 
         public static readonly TrainingType[] SquashTypes = new[]
