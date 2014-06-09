@@ -7,13 +7,19 @@ namespace TrainingLog.Statistics
 {
     public abstract class AbstractSeriesCollection
     {
+        #region Properties
+
         public abstract double MinimumY { get; }
 
         public abstract double MaximumY { get; }
-
-        public abstract void AddPoints(Entry[] entries, Tuple<DateInterval,int> grouping);
-
+       
         public abstract Series[] Series { get; }
+
+        #endregion
+
+        #region Methods
+
+        public abstract void AddPoints(Entry[] entries, Tuple<DateInterval, int> grouping);
 
         public static AbstractSeriesCollection GetCollection(Graph.GraphType type)
         {
@@ -32,7 +38,7 @@ namespace TrainingLog.Statistics
             }
         }
 
-        protected DateTime GetEndOfInterval(DateTime now, DateInterval interval, int count)
+        protected static DateTime GetEndOfInterval(DateTime now, DateInterval interval, int count)
         {
             switch (interval)
             {
@@ -49,7 +55,7 @@ namespace TrainingLog.Statistics
             }
         }
 
-        protected DateTime GetStartOfInterval(DateTime now, DateInterval interval, int count)
+        protected static DateTime GetStartOfInterval(DateTime now, DateInterval interval, int count)
         {
             switch (interval)
             {
@@ -63,5 +69,7 @@ namespace TrainingLog.Statistics
                     throw new ArgumentOutOfRangeException("interval");
             }
         }
+
+        #endregion
     }
 }

@@ -30,13 +30,7 @@ namespace TrainingLog.Statistics
             }
         }
 
-        public override Series[] Series
-        {
-            get
-            {
-                return _series.Series;
-            }
-        }
+        public override Series[] Series { get { return _series; } }
 
         #endregion
 
@@ -44,7 +38,7 @@ namespace TrainingLog.Statistics
 
         private double _maxY = double.MinValue;
 
-        private readonly ZoneDataSeries _series;
+        private readonly Series[] _series;
 
         #endregion
 
@@ -52,49 +46,49 @@ namespace TrainingLog.Statistics
 
         public ZoneDataAreaAbstractSeriesCollection()
         {
-            _series = new ZoneDataSeries(new[]
-                                   {
-                                       new Series("Zone 5")
-                                           {
-                                               XValueType = ChartValueType.Date,
-                                               YValueType = ChartValueType.Time,
-                                               ChartType = SeriesChartType.SplineArea,
-                                               Color = ZoneDataBox.Zone5Color,
-                                               IsVisibleInLegend = false
-                                           },
-                                       new Series("Zone 4")
-                                           {
-                                               XValueType = ChartValueType.Date,
-                                               YValueType = ChartValueType.Time,
-                                               ChartType = SeriesChartType.SplineArea,
-                                               Color = ZoneDataBox.Zone4Color,
-                                               IsVisibleInLegend = false
-                                           },
-                                       new Series("Zone 3")
-                                           {
-                                               XValueType = ChartValueType.Date,
-                                               YValueType = ChartValueType.Time,
-                                               ChartType = SeriesChartType.SplineArea,
-                                               Color = ZoneDataBox.Zone3Color,
-                                               IsVisibleInLegend = false
-                                           },
-                                       new Series("Zone 2")
-                                           {
-                                               XValueType = ChartValueType.Date,
-                                               YValueType = ChartValueType.Time,
-                                               ChartType = SeriesChartType.SplineArea,
-                                               Color = ZoneDataBox.Zone2Color,
-                                               IsVisibleInLegend = false
-                                           },
-                                       new Series("Zone 1")
-                                           {
-                                               XValueType = ChartValueType.Date,
-                                               YValueType = ChartValueType.Time,
-                                               ChartType = SeriesChartType.SplineArea,
-                                               Color = ZoneDataBox.Zone1Color,
-                                               IsVisibleInLegend = false
-                                           }
-                                   });
+            _series = new[]
+                          {
+                              new Series("Zone 5")
+                                  {
+                                      XValueType = ChartValueType.Date,
+                                      YValueType = ChartValueType.Time,
+                                      ChartType = SeriesChartType.SplineArea,
+                                      Color = ZoneDataBox.Zone5Color,
+                                      IsVisibleInLegend = false
+                                  },
+                              new Series("Zone 4")
+                                  {
+                                      XValueType = ChartValueType.Date,
+                                      YValueType = ChartValueType.Time,
+                                      ChartType = SeriesChartType.SplineArea,
+                                      Color = ZoneDataBox.Zone4Color,
+                                      IsVisibleInLegend = false
+                                  },
+                              new Series("Zone 3")
+                                  {
+                                      XValueType = ChartValueType.Date,
+                                      YValueType = ChartValueType.Time,
+                                      ChartType = SeriesChartType.SplineArea,
+                                      Color = ZoneDataBox.Zone3Color,
+                                      IsVisibleInLegend = false
+                                  },
+                              new Series("Zone 2")
+                                  {
+                                      XValueType = ChartValueType.Date,
+                                      YValueType = ChartValueType.Time,
+                                      ChartType = SeriesChartType.SplineArea,
+                                      Color = ZoneDataBox.Zone2Color,
+                                      IsVisibleInLegend = false
+                                  },
+                              new Series("Zone 1")
+                                  {
+                                      XValueType = ChartValueType.Date,
+                                      YValueType = ChartValueType.Time,
+                                      ChartType = SeriesChartType.SplineArea,
+                                      Color = ZoneDataBox.Zone1Color,
+                                      IsVisibleInLegend = false
+                                  }
+                          };
         }
 
         #endregion
@@ -162,7 +156,7 @@ namespace TrainingLog.Statistics
 
             // add zero-point before
             var zeroPoint = new DataPoint(previousIntervalStart.ToOADate(), 0);
-            foreach (var s in _series.Series)
+            foreach (var s in _series)
                 s.Points.Add(zeroPoint);
 
             foreach (var t in points)
@@ -179,20 +173,21 @@ namespace TrainingLog.Statistics
                     }
                     sum += ts[i].ToOADate();
                     var dp = new DataPoint(t.Item1.ToOADate(), sum);
-                    _series.Series[4 - i].Points.Add(dp);
+                    _series[4 - i].Points.Add(dp);
                 }
             }
 
             // add zero-point after
             zeroPoint = new DataPoint(intervalStart.AddSeconds(1).ToOADate(), 0);
-            foreach (var s in _series.Series)
+            foreach (var s in _series)
                 s.Points.Add(zeroPoint.Clone());
 
             // find max
             _maxY = double.MinValue;
-            for (var i = 0; i < _series.Series[0].Points.Count; i++)
+            for (var i = 0; i < _series[0].Points.Count; i++)
             {
-                foreach (var s in _series.Series.Where(s => s.Points[i].YValues[0] > _maxY))
+                var i1 = i;
+                foreach (var s in _series.Where(s => s.Points[i1].YValues[0] > _maxY))
                     _maxY = s.Points[i].YValues[0];
             }
         }

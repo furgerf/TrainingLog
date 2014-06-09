@@ -32,70 +32,61 @@ namespace TrainingLog.Statistics
             }
         }
 
-        public override Series[] Series
-        {
-            get
-            {
-                var result = new List<Series>();
-                foreach (var s in _series)
-                    result.AddRange(s.Series);
-                return result.ToArray();
-            }
-        }
+        public override Series[] Series { get { return _series.ToArray(); } }
 
         #endregion
 
         #region Private Fields
-        
-        private readonly List<ZoneDataSeries> _series = new List<ZoneDataSeries>();
 
-        private ZoneDataSeries GetZoneDataSeries
+        private readonly List<Series> _series = new List<Series>();
+
+        private IEnumerable<Series> GetZoneDataSeries
         {
             get
             {
-                return new ZoneDataSeries(new[]
-                                              {
-                                                  new Series("Zone 1 (" + _series.Count + ")")
-                                                      {
-                                                          XValueType = ChartValueType.Date,
-                                                          YValueType = ChartValueType.Time,
-                                                          ChartType = SeriesChartType.StackedColumn,
-                                                          Color = ZoneDataBox.Zone1Color,
-                                                          IsVisibleInLegend = false
-                                                      },
-                                                  new Series("Zone 2 (" + _series.Count + ")")
-                                                      {
-                                                          XValueType = ChartValueType.Date,
-                                                          YValueType = ChartValueType.Time,
-                                                          ChartType = SeriesChartType.StackedColumn,
-                                                          Color = ZoneDataBox.Zone2Color,
-                                                          IsVisibleInLegend = false
-                                                      },
-                                                  new Series("Zone 3 (" + _series.Count + ")")
-                                                      {
-                                                          XValueType = ChartValueType.Date,
-                                                          YValueType = ChartValueType.Time,
-                                                          ChartType = SeriesChartType.StackedColumn,
-                                                          Color = ZoneDataBox.Zone3Color,
-                                                          IsVisibleInLegend = false
-                                                      },
-                                                  new Series("Zone 4 (" + _series.Count + ")")
-                                                      {
-                                                          XValueType = ChartValueType.Date,
-                                                          YValueType = ChartValueType.Time,
-                                                          ChartType = SeriesChartType.StackedColumn,
-                                                          Color = ZoneDataBox.Zone4Color,
-                                                          IsVisibleInLegend = false
-                                                      },
-                                                  new Series("Zone 5 (" + _series.Count + ")")
-                                                      {
-                                                          XValueType = ChartValueType.Date,
-                                                          YValueType = ChartValueType.Time,
-                                                          ChartType = SeriesChartType.StackedColumn,
-                                                          Color = ZoneDataBox.Zone5Color,
-                                                          IsVisibleInLegend = false
-                                                      }
-                                              });
+                return new[]
+                           {
+                               new Series("Zone 1 (" + _series.Count + ")")
+                                   {
+                                       XValueType = ChartValueType.Date,
+                                       YValueType = ChartValueType.Time,
+                                       ChartType = SeriesChartType.StackedColumn,
+                                       Color = ZoneDataBox.Zone1Color,
+                                       IsVisibleInLegend = false
+                                   },
+                               new Series("Zone 2 (" + _series.Count + ")")
+                                   {
+                                       XValueType = ChartValueType.Date,
+                                       YValueType = ChartValueType.Time,
+                                       ChartType = SeriesChartType.StackedColumn,
+                                       Color = ZoneDataBox.Zone2Color,
+                                       IsVisibleInLegend = false
+                                   },
+                               new Series("Zone 3 (" + _series.Count + ")")
+                                   {
+                                       XValueType = ChartValueType.Date,
+                                       YValueType = ChartValueType.Time,
+                                       ChartType = SeriesChartType.StackedColumn,
+                                       Color = ZoneDataBox.Zone3Color,
+                                       IsVisibleInLegend = false
+                                   },
+                               new Series("Zone 4 (" + _series.Count + ")")
+                                   {
+                                       XValueType = ChartValueType.Date,
+                                       YValueType = ChartValueType.Time,
+                                       ChartType = SeriesChartType.StackedColumn,
+                                       Color = ZoneDataBox.Zone4Color,
+                                       IsVisibleInLegend = false
+                                   },
+                               new Series("Zone 5 (" + _series.Count + ")")
+                                   {
+                                       XValueType = ChartValueType.Date,
+                                       YValueType = ChartValueType.Time,
+                                       ChartType = SeriesChartType.StackedColumn,
+                                       Color = ZoneDataBox.Zone5Color,
+                                       IsVisibleInLegend = false
+                                   }
+                           };
             }
         }
 
@@ -105,10 +96,10 @@ namespace TrainingLog.Statistics
 
         public ZoneDataAbstractSeriesCollection()
         {
-            _series.Add(GetZoneDataSeries);
-            _series.Add(GetZoneDataSeries);
-            _series.Add(GetZoneDataSeries);
-            //_series.Add(GetZoneDataSeries);
+            // enough series for 3 trainings in one day
+            _series.AddRange(GetZoneDataSeries);
+            _series.AddRange(GetZoneDataSeries);
+            _series.AddRange(GetZoneDataSeries);
         }
 
         #endregion
@@ -149,7 +140,7 @@ namespace TrainingLog.Statistics
                 }
 
                 // add new array
-                data.Add(new TrainingEntry[_series.Count]);
+                data.Add(new TrainingEntry[_series.Count / 5]);
                 data[index][0] = (TrainingEntry) e;
             }
 
@@ -163,7 +154,8 @@ namespace TrainingLog.Statistics
 
                         var dp = new DataPoint((tes[0].Date ?? DateTime.MinValue).ToOADate(),
                                       new DateTime(1, 1, 1, zd.Hours, zd.Minutes, zd.Seconds).ToOADate());
-                        _series[i].Series[j].Points.Add(dp);
+                        //_series[i].Series[j].Points.Add(dp);
+                        _series[5*i + j].Points.Add(dp);
                     }
                 }
             }

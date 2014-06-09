@@ -144,7 +144,6 @@
     <Compile Include="Common.cs" />
     <Compile Include="ZoneData.cs" />
     <Compile Include="Statistics\ZoneDataAbstractSeriesCollection.cs" />
-    <Compile Include="Statistics\ZoneDataSeries.cs" />
     <EmbeddedResource Include="Controls\ControlList.resx">
       <DependentUpon>ControlList.cs</DependentUpon>
     </EmbeddedResource>

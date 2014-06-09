@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Windows.Forms.DataVisualization.Charting;
 using Microsoft.VisualBasic;
 using TrainingLog.Entries;
@@ -15,7 +14,8 @@ namespace TrainingLog.Statistics
             ZoneData,
             ZoneDataArea,
             BiodataFigures,
-            Distance
+            Distance,
+            Running
         }
 
         #endregion
@@ -50,6 +50,7 @@ namespace TrainingLog.Statistics
         private readonly GraphType _type;
 
         private readonly Func<Tuple<DateInterval, int>> _getGrouping;
+
         private readonly Func<Entry[]> _getEntries;
 
         #endregion
@@ -140,7 +141,7 @@ namespace TrainingLog.Statistics
                     y.LabelStyle.Format = "{0} km";
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException("type");
+                    throw new ArgumentOutOfRangeException("grouping");
             }
 
             _area.AxisX = x;
