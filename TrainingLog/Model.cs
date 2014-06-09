@@ -59,9 +59,9 @@ namespace TrainingLog
             WriteEntries();
         }
 
-        private void WriteEntries()
+        public void WriteEntries(string path = null)
         {
-            using (var tw = new StreamWriter(MainForm.GetInstance.Settings.DataPath))
+            using (var tw = new StreamWriter(path ?? MainForm.GetInstance.Settings.DataPath))
             {
                 var ser = new XmlSerializer(typeof(EntryList));
                 ser.Serialize(tw, new EntryList(TrainingEntries, BiodataEntries));

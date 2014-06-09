@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.grpLog = new System.Windows.Forms.GroupBox();
+            this.butOpenFolder = new System.Windows.Forms.Button();
+            this.butBackup = new System.Windows.Forms.Button();
             this.butChangeLogPath = new System.Windows.Forms.Button();
             this.butOpenLog = new System.Windows.Forms.Button();
             this.txtLogPath = new System.Windows.Forms.TextBox();
@@ -39,6 +41,8 @@
             // 
             // grpLog
             // 
+            this.grpLog.Controls.Add(this.butOpenFolder);
+            this.grpLog.Controls.Add(this.butBackup);
             this.grpLog.Controls.Add(this.butChangeLogPath);
             this.grpLog.Controls.Add(this.butOpenLog);
             this.grpLog.Controls.Add(this.txtLogPath);
@@ -49,6 +53,26 @@
             this.grpLog.TabIndex = 0;
             this.grpLog.TabStop = false;
             this.grpLog.Text = "Log";
+            // 
+            // butOpenFolder
+            // 
+            this.butOpenFolder.Location = new System.Drawing.Point(91, 39);
+            this.butOpenFolder.Name = "butOpenFolder";
+            this.butOpenFolder.Size = new System.Drawing.Size(75, 23);
+            this.butOpenFolder.TabIndex = 6;
+            this.butOpenFolder.Text = "Open Folder";
+            this.butOpenFolder.UseVisualStyleBackColor = true;
+            this.butOpenFolder.Click += new System.EventHandler(this.ButOpenFolderClick);
+            // 
+            // butBackup
+            // 
+            this.butBackup.Location = new System.Drawing.Point(208, 39);
+            this.butBackup.Name = "butBackup";
+            this.butBackup.Size = new System.Drawing.Size(99, 23);
+            this.butBackup.TabIndex = 5;
+            this.butBackup.Text = "Create Backup";
+            this.butBackup.UseVisualStyleBackColor = true;
+            this.butBackup.Click += new System.EventHandler(this.ButBackupClick);
             // 
             // butChangeLogPath
             // 
@@ -123,5 +147,7 @@
         private System.Windows.Forms.TextBox txtLogPath;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button butExit;
+        private System.Windows.Forms.Button butBackup;
+        private System.Windows.Forms.Button butOpenFolder;
     }
 }

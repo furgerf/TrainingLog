@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 
@@ -48,12 +49,12 @@ namespace TrainingLog.Forms
                 Close();
         }
 
-        private void ButExitClick(object sender, System.EventArgs e)
+        private void ButExitClick(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void ButChangeLogPathClick(object sender, System.EventArgs e)
+        private void ButChangeLogPathClick(object sender, EventArgs e)
         {
             var f = new OpenFileDialog
                         {
@@ -67,9 +68,20 @@ namespace TrainingLog.Forms
             txtLogPath.Text = f.FileName;
         }
 
-        private void ButOpenLogClick(object sender, System.EventArgs e)
+        private void ButOpenLogClick(object sender, EventArgs e)
         {
             Process.Start(_settings.DataPath);
+        }
+
+        private void ButBackupClick(object sender, EventArgs e)
+        {
+            Model.Instance.WriteEntries(new FileInfo(_settings.DataPath).DirectoryName + "\\backup\\log_" + DateTime.Today.ToString("yyyy_MM_dd") + ".xml");
+            MessageBox.Show("Backup created successfully!", "Backup created", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void ButOpenFolderClick(object sender, EventArgs e)
+        {
+            Process.Start(new FileInfo(_settings.DataPath).DirectoryName ?? "C:\\");
         }
 
         #endregion
