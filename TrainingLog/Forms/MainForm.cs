@@ -11,6 +11,8 @@ namespace TrainingLog.Forms
 
         public bool CloseForms { get; private set; }
 
+        public Settings Settings { get; private set; }
+
         #endregion
 
         #region Constructor
@@ -23,6 +25,10 @@ namespace TrainingLog.Forms
             InitializeComponent();
 
             GetInstance = this;
+
+            Settings = Settings.LoadSettings();
+
+            Model.Initialize();
 
             //ButShowStatisticsClick();
             //ButShowLogClick();

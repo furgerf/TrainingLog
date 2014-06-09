@@ -15,7 +15,6 @@ namespace TrainingLog.Controls
             get
             {
                 int i;
-
                 return int.TryParse(Text, out i) ? i : int.MinValue;
             }
         }
@@ -34,7 +33,7 @@ namespace TrainingLog.Controls
 
         #region Event Handling
 
-        private void ValidateKey(object sender, KeyPressEventArgs e)
+        private static void ValidateKey(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar)
                 && !char.IsDigit(e.KeyChar))

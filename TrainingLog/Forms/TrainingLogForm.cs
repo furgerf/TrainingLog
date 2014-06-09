@@ -180,11 +180,11 @@ namespace TrainingLog.Forms
             return new Control[]{
                         new Label{ Text = (entry.Date ?? DateTime.MinValue).ToLongDateString(), TextAlign = ContentAlignment.MiddleCenter, Tag = (entry.Date ?? DateTime.MinValue).ToOADate() },
                         new Label{ Text = entry.Sport + (entry.TrainingTypeSpecified ? " (" + entry.TrainingType + ")" : ""), TextAlign = ContentAlignment.MiddleCenter, Tag = entry.Sport + (entry.TrainingTypeSpecified ? " (" + entry.TrainingType + ")" : "") },
-                        new Label{ Text = entry.Duration.ToString().Replace(':', '.'), TextAlign = ContentAlignment.MiddleCenter, Tag = (entry.Duration ?? TimeSpan.Zero).TotalSeconds },
+                        new Label{ Text = entry.Duration.ToString(), TextAlign = ContentAlignment.MiddleCenter, Tag = (entry.Duration ?? TimeSpan.Zero).TotalSeconds },
                         new Label{ Text = entry.Calories == 0 ? "" : entry.Calories.ToString(), TextAlign = ContentAlignment.MiddleCenter, Tag = entry.Calories ?? 0 },
                         new ZoneDataBox { ZoneData = entry.HrZones ?? ZoneData.Empty(),  OverlayText = entry.AverageHrSpecified ? '\u00d8' + entry.AverageHr.ToString() : "", Tag = entry.AverageHr ?? 0 },
                         new Label{ Text = entry.DistanceKm > 0 ? entry.DistanceKm.ToString(CultureInfo.InvariantCulture) : "", TextAlign = ContentAlignment.MiddleCenter, Tag = entry.DistanceM ?? 0 },
-                        new Label{ Text = entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof(Common.Index), entry.Feeling), BackColor = entry.Feeling < Common.Index.Count ? GetColor((double)entry.Feeling / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) : _elcTraining.FirstColor, TextAlign = ContentAlignment.MiddleCenter, Tag = entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof(Common.Index), entry.Feeling) },
+                        new Label{ Text = entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof(Common.Index), entry.Feeling ?? Common.Index.Count), BackColor = entry.Feeling < Common.Index.Count ? GetColor((double)(entry.Feeling ?? Common.Index.Count) / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) : _elcTraining.FirstColor, TextAlign = ContentAlignment.MiddleCenter, Tag = entry.Feeling == Common.Index.None ? "" : Enum.GetName(typeof(Common.Index), entry.Feeling ?? Common.Index.Count) },
                         new Label{ Text = entry.Note, Tag = entry.Note ?? "", TextAlign = ContentAlignment.MiddleLeft }};
         }
 

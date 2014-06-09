@@ -75,29 +75,15 @@ namespace TrainingLog.Controls
         public void AddColumns(EntryListColumn[] columns)
         {
             foreach (var c in columns)
-                AddColumn(c.Header, c.Width);
-        }
-
-        public void AddColumns(string[] names, int[] widths)
-        {
-            if (names.Length != widths.Length)
-                throw new ArgumentException();
-
-            for (var i = 0; i < names.Length; i++)
-                AddColumn(names[i], widths[i]);
+                AddColumn(c);
         }
 
         public void AddColumn(EntryListColumn column)
         {
-            AddColumn(column.Header, column.Width);
-        }
-
-        public void AddColumn(string name, int width)
-        {
             foreach (var cc in _controls.SelectMany(c => c))
                 cc.Parent = null;
 
-            lisHeader.Columns.Add(name, width);
+            lisHeader.Columns.Add(column.Header, column.Width);
             _columns.Add(lisHeader.Columns[lisHeader.Columns.Count - 1]);
         }
 
@@ -119,6 +105,8 @@ namespace TrainingLog.Controls
                 }
             }
 
+            panArea.Height = ItemHeight * _controls.Count < vscScroll.Height ? vscScroll.Height : ItemHeight * _controls.Count;
+            UpdateScrollbar();
         }
 
         public void AddItem(Control[] controls, bool updateControls = true)
@@ -149,8 +137,6 @@ namespace TrainingLog.Controls
 
             ArrangeRows();
 
-            panArea.Height = ItemHeight * _controls.Count < vscScroll.Height ? vscScroll.Height : ItemHeight * _controls.Count;
-
             if (ItemsChanged != null)
                 ItemsChanged();
         }
@@ -158,15 +144,11 @@ namespace TrainingLog.Controls
         public void RemoveItem(Control[] item)
         {
             // remove old item
-            _controls.Remove(item);
             foreach (var c in item)
                 c.Parent = null;
-
             _controls.Remove(item);
-
+            
             ArrangeRows();
-
-            panArea.Height = ItemHeight * _controls.Count < vscScroll.Height ? vscScroll.Height : ItemHeight * _controls.Count;
 
             if (ItemsChanged != null)
                 ItemsChanged();
@@ -179,7 +161,7 @@ namespace TrainingLog.Controls
 
             _controls.Clear();
 
-            panArea.Height = ItemHeight * _controls.Count < vscScroll.Height ? vscScroll.Height : ItemHeight * _controls.Count;
+            ArrangeRows();
 
             if (ItemsChanged != null)
                 ItemsChanged();

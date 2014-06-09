@@ -15,15 +15,15 @@ namespace TrainingLog.Controls
             get
             {
                 var txt = Text;
-                var split = txt.Split('.');
+                var split = txt.Split(':');
                 while (split.Length < 3)
                 {
-                    txt = "00." + txt;
-                    split = txt.Split('.');
+                    txt = "00:" + txt;
+                    split = txt.Split(':');
                 }
                 TimeSpan ts;
 
-                return TimeSpan.TryParse(txt.Replace('.', ':'), out ts) ? ts : TimeSpan.MinValue;
+                return TimeSpan.TryParse(txt, out ts) ? ts : TimeSpan.MinValue;
             }
         }
 
@@ -45,14 +45,14 @@ namespace TrainingLog.Controls
         {
             if (!char.IsControl(e.KeyChar)
                 && !char.IsDigit(e.KeyChar)
-                && e.KeyChar != '.')
+                && e.KeyChar != ':')
             {
                 e.Handled = true;
             }
 
             // only allow two decimal points
-            if (e.KeyChar == '.'
-                && ((TextBox)sender).Text.Split('.').Length > 2)
+            if (e.KeyChar == ':'
+                && ((TextBox)sender).Text.Split(':').Length > 2)
             {
                 e.Handled = true;
             }

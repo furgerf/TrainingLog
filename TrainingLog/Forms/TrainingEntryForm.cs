@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 using Microsoft.Win32;
@@ -55,18 +56,18 @@ namespace TrainingLog.Forms
             if (entry.DateSpecified)
                 datDate.Value = entry.Date ?? DateTime.MinValue;
             if (entry.DistanceMSpecified)
-                txtDistance.Text = entry.DistanceKm.ToString();
+                txtDistance.Text = entry.DistanceKm.ToString(CultureInfo.InvariantCulture);
             if (entry.DurationStringSpecified)
-                txtDuration.Text = entry.DurationString.Replace(':', '.');
+                txtDuration.Text = entry.DurationString;
             if (entry.FeelingSpecified)
                 comFeeling.Text = Enum.GetName(typeof(Common.Index), entry.Feeling ?? Common.Index.Count);
             if (entry.HrZoneStringSpecified)
             {
-                txtZone1.Text = (entry.HrZones ?? ZoneData.Empty()).Zone1.ToString().Replace(':', '.');
-                txtZone2.Text = (entry.HrZones ?? ZoneData.Empty()).Zone2.ToString().Replace(':', '.');
-                txtZone3.Text = (entry.HrZones ?? ZoneData.Empty()).Zone3.ToString().Replace(':', '.');
-                txtZone4.Text = (entry.HrZones ?? ZoneData.Empty()).Zone4.ToString().Replace(':', '.');
-                txtZone5.Text = (entry.HrZones ?? ZoneData.Empty()).Zone5.ToString().Replace(':', '.');
+                txtZone1.Text = (entry.HrZones ?? ZoneData.Empty()).Zone1.ToString();
+                txtZone2.Text = (entry.HrZones ?? ZoneData.Empty()).Zone2.ToString();
+                txtZone3.Text = (entry.HrZones ?? ZoneData.Empty()).Zone3.ToString();
+                txtZone4.Text = (entry.HrZones ?? ZoneData.Empty()).Zone4.ToString();
+                txtZone5.Text = (entry.HrZones ?? ZoneData.Empty()).Zone5.ToString();
             }
             if (entry.NoteSpecified)
                 txtNotes.Text = entry.Note;
@@ -92,7 +93,7 @@ namespace TrainingLog.Forms
 
             comFeeling.Items.Add("");
             for (var i = Common.Index.Count - 1; i >= 0; i--)
-                comFeeling.Items.Add(Enum.GetName(typeof(Common.Index), i));
+                comFeeling.Items.Add(Enum.GetName(typeof(Common.Index), i) ??  "ERROR ENUM NAME NOT FOUND");
         }
 
         #endregion
@@ -106,7 +107,7 @@ namespace TrainingLog.Forms
             txtDuration.Text = "";
             txtDuration.BackColor = Color.White;
             txtCalories.Text = "";
-            chkSweatData.Checked = false;
+            chkRace.Checked = false;
             txtAvgHR.Text = "";
             txtZone1.Text = "";
             txtZone1.BackColor = Color.White;
@@ -131,11 +132,11 @@ namespace TrainingLog.Forms
             zoneData = new ZoneData();
 
             // duration
-            if (txtDuration.Text.Split('.').Length == 2)
-                txtDuration.Text = "0." + txtDuration.Text;
-            if (txtDuration.Text.Split('.').Length == 3)
+            if (txtDuration.Text.Split(':').Length == 2)
+                txtDuration.Text = "0:" + txtDuration.Text;
+            if (txtDuration.Text.Split(':').Length == 3)
             {
-                if (!TimeSpan.TryParse(txtDuration.Text.Replace('.', ':'), out duration))
+                if (!TimeSpan.TryParse(txtDuration.Text, out duration))
                 {
                     MessageBox.Show("Please enter a valid duration", "Invalid Duration", MessageBoxButtons.OK,
                                    MessageBoxIcon.Information);
@@ -164,30 +165,30 @@ namespace TrainingLog.Forms
             if (txtZone1.Text != "" || txtZone2.Text != "" || txtZone3.Text != "" || txtZone4.Text != "" || txtZone5.Text != "")
             {
                 // ensure TS format is fine
-                if (txtZone1.Text.Split('.').Length == 2)
-                    txtZone1.Text = "0." + txtZone1.Text;
-                if (txtZone2.Text.Split('.').Length == 2)
-                    txtZone2.Text = "0." + txtZone2.Text;
-                if (txtZone3.Text.Split('.').Length == 2)
-                    txtZone3.Text = "0." + txtZone3.Text;
-                if (txtZone4.Text.Split('.').Length == 2)
-                    txtZone4.Text = "0." + txtZone4.Text;
-                if (txtZone5.Text.Split('.').Length == 2)
-                    txtZone5.Text = "0." + txtZone5.Text;
+                if (txtZone1.Text.Split(':').Length == 2)
+                    txtZone1.Text = "0:" + txtZone1.Text;
+                if (txtZone2.Text.Split(':').Length == 2)
+                    txtZone2.Text = "0:" + txtZone2.Text;
+                if (txtZone3.Text.Split(':').Length == 2)
+                    txtZone3.Text = "0:" + txtZone3.Text;
+                if (txtZone4.Text.Split(':').Length == 2)
+                    txtZone4.Text = "0:" + txtZone4.Text;
+                if (txtZone5.Text.Split(':').Length == 2)
+                    txtZone5.Text = "0:" + txtZone5.Text;
 
                 if (txtZone1.Text == "")
-                    txtZone1.Text = "0.0.0";
+                    txtZone1.Text = "0:0:0";
                 if (txtZone2.Text == "")
-                    txtZone2.Text = "0.0.0";
+                    txtZone2.Text = "0:0:0";
                 if (txtZone3.Text == "")
-                    txtZone3.Text = "0.0.0";
+                    txtZone3.Text = "0:0:0";
                 if (txtZone4.Text == "")
-                    txtZone4.Text = "0.0.0";
+                    txtZone4.Text = "0:0:0";
                 if (txtZone5.Text == "")
-                    txtZone5.Text = "0.0.0";
+                    txtZone5.Text = "0:0:0";
 
-                if (!ZoneData.TryParse(txtZone5.Text.Replace('.', ':') + '_' + txtZone4.Text.Replace('.', ':') + '_' + txtZone3.Text.Replace('.', ':') + '_' +
-                                                     txtZone2.Text.Replace('.', ':') + '_' + txtZone1.Text.Replace('.', ':'), out
+                if (!ZoneData.TryParse(txtZone5.Text + '_' + txtZone4.Text + '_' + txtZone3.Text + '_' +
+                                                     txtZone2.Text + '_' + txtZone1.Text, out
                                                                                               zoneData))
                 {
                     MessageBox.Show("Please enter valid zone data", "Invalid Zone Data", MessageBoxButtons.OK,
@@ -227,7 +228,7 @@ namespace TrainingLog.Forms
             Close();
         }
 
-        private void ChkSweatDataCheckedChanged(object sender, EventArgs e)
+        private void ChkRaceCheckedChanged(object sender, EventArgs e)
         {
             MessageBox.Show("Not implemented!");
         }
@@ -380,7 +381,7 @@ namespace TrainingLog.Forms
                     continue;
                 data[_xmlKeys1.Length + 2] = s.Substring(s.IndexOf('>') + 1);
             }
-            txtDuration.Text = data[0].Replace(':', '.');
+            txtDuration.Text = data[0];
             txtAvgHR.Text = data[1];
             txtCalories.Text = data[2];
             txtDistance.Text = data[3];
@@ -394,11 +395,11 @@ namespace TrainingLog.Forms
                                 MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             else
             {
-                txtZone5.Text = zones[0].Replace(':', '.');
-                txtZone4.Text = zones[1].Replace(':', '.');
-                txtZone3.Text = zones[2].Replace(':', '.');
-                txtZone2.Text = zones[3].Replace(':', '.');
-                txtZone1.Text = zones[4].Replace(':', '.');
+                txtZone5.Text = zones[0];
+                txtZone4.Text = zones[1];
+                txtZone3.Text = zones[2];
+                txtZone2.Text = zones[3];
+                txtZone1.Text = zones[4];
             }
         }
 

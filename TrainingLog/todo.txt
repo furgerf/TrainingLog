@@ -1,11 +1,10 @@
 ﻿Urgency		Workload	What?
 --------------------------------------------------------------------------------------------------------------------------------------------------
-	3			2		Implement saving of edited entry
 	1			4		Add more statistics
 	1			2		Move some settings to settings form
-	2			3		Add sweat data
 	2			3		Implement race entries
 	3			4		Re-check filter concept
-	1			2		Import HR data from PPT
+	1			2		Import data-over-time from PPT
 	1			1		Add a few icons...
 	3			1		Fix scrolling (ensure bottom of list can be reached + no problems occur when (de-)activating entry types in training log
+	2			2		Get the TrainingLogForm to load faster

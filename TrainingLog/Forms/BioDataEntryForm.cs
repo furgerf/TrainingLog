@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using TrainingLog.Entries;
 
@@ -18,6 +19,8 @@ namespace TrainingLog.Forms
         private static BiodataEntryForm _instance;
 
         private DateTime _dateOverride = DateTime.MinValue;
+
+        private readonly Size _formSize;
 
         #endregion
 
@@ -52,12 +55,14 @@ namespace TrainingLog.Forms
 
             // fill combobox lists
             for (var i = Common.Index.Count - 1; i >= 0; i--)
-                comSleepQuality.Items.Add(Enum.GetName(typeof (Common.Index), i));
+                comSleepQuality.Items.Add(Enum.GetName(typeof (Common.Index), i) ?? "ENUM NAME NOT FOUND");
             comSleepQuality.SelectedIndex = (int)Common.Index.Okay;
 
             comFeeling.Items.Add("");
             for (var i = Common.Index.Count - 1; i >= 0; i--)
-                comFeeling.Items.Add(Enum.GetName(typeof (Common.Index), i));
+                comFeeling.Items.Add(Enum.GetName(typeof(Common.Index), i) ?? "ENUM NAME NOT FOUND");
+
+            _formSize = Size;
         }
 
         #endregion
@@ -133,6 +138,16 @@ namespace TrainingLog.Forms
             {
                 Close();
             }
+        }
+
+        private void BiodataEntryFormResize(object sender, EventArgs e)
+        {
+            Size = _formSize;
+        }
+
+        private void BiodataEntryFormResizeBegin(object sender, EventArgs e)
+        {
+
         }
 
         #endregion

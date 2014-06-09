@@ -46,7 +46,7 @@ namespace TrainingLog.Controls
         
         private string _labelText;
 
-        private bool _initialized;
+        //private bool _initialized;
         private string[] _items;
 
         public const string All = "All";

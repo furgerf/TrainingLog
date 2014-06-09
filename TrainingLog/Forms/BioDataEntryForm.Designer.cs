@@ -328,7 +328,9 @@
             this.Name = "BiodataEntryForm";
             this.Text = "Enter BioData";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BioDataEntryFormFormClosing);
+            this.ResizeBegin += new System.EventHandler(this.BiodataEntryFormResizeBegin);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.BioDataEntryFormKeyDown);
+            this.Resize += new System.EventHandler(this.BiodataEntryFormResize);
             this.grpSleep.ResumeLayout(false);
             this.grpSleep.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numSleepDuration)).EndInit();

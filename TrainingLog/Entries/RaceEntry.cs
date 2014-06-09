@@ -12,8 +12,6 @@ namespace TrainingLog.Entries
 
         #region Private Fields
 
-
-
         #endregion
 
         #region Constructor

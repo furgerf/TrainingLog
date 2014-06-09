@@ -4,6 +4,7 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
 using TrainingLog.Entries;
+using TrainingLog.Forms;
 
 namespace TrainingLog
 {
@@ -21,8 +22,6 @@ namespace TrainingLog
         #endregion
 
         #region Private Fields
-
-        private const string DataFilePath = "log.xml";
 
         private static Model _instance;
 
@@ -62,7 +61,7 @@ namespace TrainingLog
 
         private void WriteEntries()
         {
-            using (var tw = new StreamWriter(DataFilePath))
+            using (var tw = new StreamWriter(MainForm.GetInstance.Settings.DataPath))
             {
                 var ser = new XmlSerializer(typeof(EntryList));
                 ser.Serialize(tw, new EntryList(TrainingEntries, BiodataEntries));
@@ -74,7 +73,7 @@ namespace TrainingLog
             _entries.Clear();
 
             var serializer = new XmlSerializer(typeof (EntryList));
-            using (var stringReader = new StringReader(File.ReadAllText(DataFilePath)))
+            using (var stringReader = new StringReader(File.ReadAllText(MainForm.GetInstance.Settings.DataPath)))
             using (var reader = XmlReader.Create(stringReader))
             {
                 _entries.AddRange(((EntryList) serializer.Deserialize(reader)).AllEntries);

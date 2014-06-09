@@ -28,9 +28,6 @@ namespace TrainingLog.Entries
         [XmlIgnore]
         public double Speed { get { return DistanceKm / (Duration ?? TimeSpan.MinValue).TotalHours; } }
 
-        [XmlIgnore]
-        public SweatData SweatData { get { return _sweatData; } set { _sweatData = value; _sweatData.TrainingEntry = this; } }
-
         [XmlElement("Sport")]
         public Common.Sport? Sport { get; set; }
         public bool SportSpecified { get { return Sport != null; } }
@@ -84,9 +81,6 @@ namespace TrainingLog.Entries
 
         [XmlIgnore]
         private Common.TrainingType _trainingType;
-
-        [XmlIgnore]
-        private SweatData _sweatData;
 
         #endregion
 
