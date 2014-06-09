@@ -5,7 +5,7 @@ using TrainingLog.Entries;
 
 namespace TrainingLog.Statistics
 {
-    public class Graph
+    public class Graph : IStatisticsPage
     {
         #region Enums
 
@@ -14,8 +14,7 @@ namespace TrainingLog.Statistics
             ZoneData,
             ZoneDataArea,
             BiodataFigures,
-            Distance,
-            Running
+            Distance
         }
 
         #endregion
@@ -176,7 +175,7 @@ namespace TrainingLog.Statistics
             _series.AddPoints(entries, grouping);
         }
 
-        public void UpdateGraph()
+        public void UpdateStatistics()
         {
             var entries = _getEntries();
             var grouping = _getGrouping();

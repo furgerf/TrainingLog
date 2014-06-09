@@ -108,8 +108,14 @@
     <Compile Include="Controls\TimeSpanTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Statistics\RunningSeriesCollection.cs" />
     <Compile Include="Statistics\DistanceSeriesCollection.cs" />
+    <Compile Include="Statistics\IStatisticsPage.cs" />
+    <Compile Include="Statistics\RunningStatisticsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Statistics\RunningStatisticsControl.Designer.cs">
+      <DependentUpon>RunningStatisticsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Statistics\ZoneDataAreaSeriesCollection.cs" />
     <Compile Include="Statistics\Graph.cs" />
     <Compile Include="Statistics\AbstractSeriesCollection.cs" />
@@ -188,6 +194,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Statistics\RunningStatisticsControl.resx">
+      <DependentUpon>RunningStatisticsControl.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
