@@ -8,7 +8,7 @@ using TrainingLog.Entries;
 
 namespace TrainingLog.Statistics
 {
-    public class DistanceAbstractSeriesCollection : AbstractSeriesCollection
+    public class DistanceSeriesCollection : AbstractSeriesCollection
     {   
         #region Public Fields
 
@@ -44,7 +44,7 @@ namespace TrainingLog.Statistics
 
         #region Constructor
 
-        public DistanceAbstractSeriesCollection()
+        public DistanceSeriesCollection()
         {
             _series.AddRange(new[]
                                  {

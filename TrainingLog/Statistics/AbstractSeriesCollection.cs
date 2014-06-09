@@ -26,13 +26,13 @@ namespace TrainingLog.Statistics
             switch (type)
             {
                 case Graph.GraphType.ZoneData:
-                    return new ZoneDataAbstractSeriesCollection();
+                    return new ZoneDataSeriesCollection();
                 case Graph.GraphType.ZoneDataArea:
-                    return new ZoneDataAreaAbstractSeriesCollection();
+                    return new ZoneDataAreaSeriesCollection();
                 case Graph.GraphType.BiodataFigures:
-                    return new BiodataFiguresAbstractSeriesCollection();
+                    return new BiodataFiguresSeriesCollection();
                 case Graph.GraphType.Distance:
-                    return new DistanceAbstractSeriesCollection();
+                    return new DistanceSeriesCollection();
                 default:
                     throw new ArgumentOutOfRangeException("type");
             }

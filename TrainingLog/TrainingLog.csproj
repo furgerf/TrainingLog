@@ -63,7 +63,7 @@
       <DependentUpon>EnumFilterControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
-    <Compile Include="Statistics\BiodataFiguresAbstractSeriesCollection.cs" />
+    <Compile Include="Statistics\BiodataFiguresSeriesCollection.cs" />
     <Compile Include="Entries\BiodataEntry.cs" />
     <Compile Include="Controls\DateFilterControl.cs">
       <SubType>UserControl</SubType>
@@ -108,8 +108,9 @@
     <Compile Include="Controls\TimeSpanTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Statistics\DistanceAbstractSeriesCollection.cs" />
-    <Compile Include="Statistics\ZoneDataAreaAbstractSeriesCollection.cs" />
+    <Compile Include="Statistics\RunningSeriesCollection.cs" />
+    <Compile Include="Statistics\DistanceSeriesCollection.cs" />
+    <Compile Include="Statistics\ZoneDataAreaSeriesCollection.cs" />
     <Compile Include="Statistics\Graph.cs" />
     <Compile Include="Statistics\AbstractSeriesCollection.cs" />
     <Compile Include="Model.cs" />
@@ -143,7 +144,7 @@
     <Compile Include="Entries\TrainingEntry.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="ZoneData.cs" />
-    <Compile Include="Statistics\ZoneDataAbstractSeriesCollection.cs" />
+    <Compile Include="Statistics\ZoneDataSeriesCollection.cs" />
     <EmbeddedResource Include="Controls\ControlList.resx">
       <DependentUpon>ControlList.cs</DependentUpon>
     </EmbeddedResource>

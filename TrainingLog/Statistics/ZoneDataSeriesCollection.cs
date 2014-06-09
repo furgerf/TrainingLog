@@ -8,7 +8,7 @@ using TrainingLog.Entries;
 
 namespace TrainingLog.Statistics
 {
-    public class ZoneDataAbstractSeriesCollection : AbstractSeriesCollection
+    public class ZoneDataSeriesCollection : AbstractSeriesCollection
     {   
         #region Public Fields
 
@@ -94,7 +94,7 @@ namespace TrainingLog.Statistics
 
         #region Constructor
 
-        public ZoneDataAbstractSeriesCollection()
+        public ZoneDataSeriesCollection()
         {
             // enough series for 3 trainings in one day
             _series.AddRange(GetZoneDataSeries);

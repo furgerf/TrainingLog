@@ -8,7 +8,7 @@ using TrainingLog.Entries;
 
 namespace TrainingLog.Statistics
 {
-    public class BiodataFiguresAbstractSeriesCollection : AbstractSeriesCollection
+    public class BiodataFiguresSeriesCollection : AbstractSeriesCollection
     {   
         #region Public Fields
 
@@ -55,7 +55,7 @@ namespace TrainingLog.Statistics
 
         #region Constructor
 
-        public BiodataFiguresAbstractSeriesCollection()
+        public BiodataFiguresSeriesCollection()
         {
             _series.AddRange(new[]
                                  {
