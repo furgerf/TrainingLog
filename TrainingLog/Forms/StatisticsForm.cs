@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -50,9 +51,9 @@ namespace TrainingLog.Forms
 
         private readonly IFilter[] _filters;
 
-        private readonly Graph[] _graphs;
+        private readonly IStatisticsPage[] _pages;
 
-        private readonly bool[] _dirtyGraphs;
+        private readonly bool[] _dirtyPages;
 
         #endregion
 
@@ -67,19 +68,22 @@ namespace TrainingLog.Forms
             InitializeFilters();
             _filters = new IFilter[] { dfcFrom, dfcTo, efcSport, efcTrainingType };
 
-            // graphs
-            _graphs = GetGraphs();
-            _dirtyGraphs = new bool[_graphs.Length];
+            // pages
+            var graphs = GetGraphs();
+            var pages = GetPages();
+            foreach (var g in graphs)
+                AddGraph(g as Graph);
+            foreach (var p in pages)
+                AddPage(p as Control);
 
-            foreach (var g in _graphs)
-                AddGraph(g);
-
+            _pages = graphs.Concat(pages).ToArray();
+            _dirtyPages = new bool[_pages.Length];
 
             tabTabs.SelectedIndexChanged += (s, e) =>
                                                 {
-                                                    if (!_dirtyGraphs[tabTabs.SelectedIndex]) return;
-                                                    _graphs[tabTabs.SelectedIndex].UpdateGraph();
-                                                    _dirtyGraphs[tabTabs.SelectedIndex] = false;
+                                                        if (!_dirtyPages[tabTabs.SelectedIndex]) return;
+                                                        _pages[tabTabs.SelectedIndex].UpdateStatistics();
+                                                        _dirtyPages[tabTabs.SelectedIndex] = false;
                                                 };
         }
 
@@ -92,12 +96,13 @@ namespace TrainingLog.Forms
             if (tabTabs.Controls.Count == 0)
                 return;
 
+            // active tab is a graph
             // visible page: update graph
-            _graphs[tabTabs.SelectedIndex].UpdateGraph();
+            _pages[tabTabs.SelectedIndex].UpdateStatistics();
 
             // all other pages: mark as dirty
             foreach (var p in from Control p in tabTabs.Controls where tabTabs.Controls.IndexOf(p) != tabTabs.SelectedIndex select p)
-                _dirtyGraphs[tabTabs.Controls.IndexOf(p)] = true;
+                _dirtyPages[tabTabs.Controls.IndexOf(p)] = true;
         }
 
         private void AddGraph(Graph graph)
@@ -111,6 +116,19 @@ namespace TrainingLog.Forms
             // add controls
             page.Controls.Add(graph.Chart);
             tabTabs.Controls.Add(page);
+        }
+
+        private void AddPage(Control page)
+        {
+            var tabPage = new TabPage(page.Name);
+
+            // location/size
+            page.Location = new Point(0, 0);
+            page.Size = tabPage.Size;
+            tabPage.SizeChanged += (s, e) => page.Size = tabPage.Size;
+            // add controls
+            tabPage.Controls.Add(page);
+            tabTabs.Controls.Add(tabPage);
         }
 
         private void InitializeFilters()
@@ -147,9 +165,9 @@ namespace TrainingLog.Forms
             ((ComboBox)efcSport.GetControl()).SelectedValueChanged += (s, e) => { UpdateData(); efcSport.Focus(); };
         }
 
-        private Graph[] GetGraphs()
+        private IStatisticsPage[] GetGraphs()
         {
-            return new[]{
+            return new IStatisticsPage[]{
                 new Graph(Graph.GraphType.BiodataFigures, 
                     () => Model.Instance.BiodataEntries.Except((from te in Model.Instance.BiodataEntries from f in _filters where !f.IsEntryVisible(te) select te)).OrderBy(te => te.Date).Cast<Entry>().ToArray(),
                     () => new Tuple<DateInterval, int>(DateInterval.Day, 1))
@@ -170,6 +188,14 @@ namespace TrainingLog.Forms
                     () => GroupingInterval)
                     { Title = "Zone Data area" }
             };
+        }
+
+        private IStatisticsPage[] GetPages()
+        {
+            return new IStatisticsPage[]
+                       {
+                           new RunningStatisticsControl { GetEntries = () => Model.Instance.TrainingEntries.Where(e => e.Sport == Common.Sport.Running).OrderBy(e => e.Date).ToArray()}
+                       };
         }
 
         #endregion

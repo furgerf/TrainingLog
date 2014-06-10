@@ -13,6 +13,8 @@ namespace TrainingLog.Controls
         public static readonly Color Zone4Color = Color.Orange;
         public static readonly Color Zone5Color = Color.OrangeRed;
 
+        public static Color[] ZoneColors { get { return new[] { Zone1Color, Zone2Color, Zone3Color, Zone4Color, Zone5Color }; } }
+
         public Brush Brush1 { get; set; }
         public Brush Brush2 { get; set; }
         public Brush Brush3 { get; set; }

@@ -426,7 +426,6 @@ namespace TrainingLog.Forms
                 Sport = (Common.Sport)comSport.SelectedIndex,
                 TrainingType = comTrainingType.Text.Equals("") ? Common.TrainingType.None : (Common.TrainingType)Enum.Parse(typeof(Common.TrainingType), comTrainingType.Text),
                 Calories = txtCalories.Text == "" ? 0 : int.Parse(txtCalories.Text),
-                //TODO: save sweat data
                 AverageHr = txtAvgHR.Text == "" ? 0 : int.Parse(txtAvgHR.Text),
                 HrZones = zoneData,
                 DistanceKm = txtDistance.Text == "" ? 0 : double.Parse(txtDistance.Text),

@@ -154,7 +154,6 @@ namespace TrainingLog.Statistics
 
                         var dp = new DataPoint((tes[0].Date ?? DateTime.MinValue).ToOADate(),
                                       new DateTime(1, 1, 1, zd.Hours, zd.Minutes, zd.Seconds).ToOADate());
-                        //_series[i].Series[j].Points.Add(dp);
                         _series[5*i + j].Points.Add(dp);
                     }
                 }
