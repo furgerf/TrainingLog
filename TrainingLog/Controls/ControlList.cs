@@ -50,22 +50,7 @@ namespace TrainingLog.Controls
             // sort rows on column click
             lisHeader.ColumnClick += SortColumns;
 
-            // update scrollbar
-            panArea.SizeChanged += (s, e) => UpdateScrollbar();
-            ItemsChanged += UpdateScrollbar;
-
-            // add mouse scroll wheel capability
-            panArea.MouseWheel += (s, e) =>
-                                      {
-                                          var oldValue = vscScroll.Value;
-                                          vscScroll.Value -= e.Delta;
-                                          if (vscScroll.Value < 0)
-                                              vscScroll.Value = 0;
-                                          if (vscScroll.Value > vscScroll.Maximum)
-                                              vscScroll.Value = vscScroll.Maximum;
-                                          var newValue = vscScroll.Value;
-                                          VscScrollScroll(s, new ScrollEventArgs(ScrollEventType.EndScroll, oldValue, newValue));
-                                      };
+            // TODO add mouse scroll wheel capability
         }
 
         #endregion
@@ -104,9 +89,6 @@ namespace TrainingLog.Controls
                     x += _columns[i].Width;
                 }
             }
-
-            panArea.Height = ItemHeight * _controls.Count < vscScroll.Height ? vscScroll.Height : ItemHeight * _controls.Count;
-            UpdateScrollbar();
         }
 
         public void AddItem(Control[] controls, bool updateControls = true)
@@ -127,7 +109,7 @@ namespace TrainingLog.Controls
             for (var i = 0; i < controls.Length; i++)
             {
                 controls[i].Parent = panArea;
-                controls[i].Size = new Size(_columns[i].Width, ItemHeight);
+                controls[i].Size = new Size(_columns[i].Width - (i == controls.Length - 1 ? 22 : 0), ItemHeight);
             }
 
             _controls.Insert(index, controls);
@@ -167,14 +149,6 @@ namespace TrainingLog.Controls
                 ItemsChanged();
         }
 
-        private void UpdateScrollbar()
-        {
-            vscScroll.Maximum = panArea.Height < panBack.Height ? 0 : panArea.Height - panBack.Height;
-            vscScroll.Enabled = vscScroll.Maximum != 0;
-            vscScroll.SmallChange = vscScroll.Maximum / 50;
-            vscScroll.LargeChange = vscScroll.Maximum / 10;
-        }
-
         #endregion
 
         #region Event Handling
@@ -182,11 +156,8 @@ namespace TrainingLog.Controls
         private void ControlListResize(object sender, EventArgs e)
         {
             // fix control size
-            lisHeader.Width = Width - vscScroll.Width;
-            panBack.Size = new Size(lisHeader.Width, vscScroll.Height);
-            panArea.Size = new Size(panBack.Width, panArea.Height > panBack.Height ? panArea.Height : panBack.Height);
-            vscScroll.Location = new Point(panBack.Width, lisHeader.Height);
-            vscScroll.Height = Height - lisHeader.Height;
+            lisHeader.Width = Width - 16;       // allow for panel vertical scroll bar
+            panArea.Size = new Size(Width, Height - lisHeader.Height);
         }
 
         private void LisHeaderColumnWidthChanging(object sender, ColumnWidthChangingEventArgs e)
@@ -194,12 +165,6 @@ namespace TrainingLog.Controls
             // forces column width to remain the same
             e.Cancel = true;
             e.NewWidth = _columns[e.ColumnIndex].Width;
-        }
-
-        private void VscScrollScroll(object sender, ScrollEventArgs e)
-        {
-            // move area
-            panArea.Location = new Point(panArea.Location.X, -vscScroll.Value);
         }
 
         private void SortColumns(object sender, ColumnClickEventArgs e)

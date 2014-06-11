@@ -6,5 +6,8 @@
 	3			4		Re-check filter concept
 	1			2		Import data-over-time from PPT
 	1			1		Add a few icons...
-	3			1		Fix scrolling (ensure bottom of list can be reached + no problems occur when (de-)activating entry types in training log
 	2			2		Get the TrainingLogForm to load faster
+	1			1		Highlight selected row in TLF and allow movement with arrows
+	3			1		Re-enable mouse wheel scrolling
+
+
