@@ -11,6 +11,20 @@ namespace TrainingLog.Controls
     {
         #region Public Fields
 
+        public int SelectedIndex
+        {
+            get { return _selectedIndex; }
+            set
+            {
+                if (value == _selectedIndex)
+                    value = -1;
+                var old = _selectedIndex;
+                _selectedIndex = value;
+                if (SelectedIndexChanged != null)
+                    SelectedIndexChanged(old, _selectedIndex);
+            }
+        }
+
         public int ItemHeight
         {
             get { return _itemHeight; }
@@ -25,6 +39,10 @@ namespace TrainingLog.Controls
 
         public event OnItemsChanged ItemsChanged;
 
+        public delegate void OnSelectedIndexChanged(int oldIndex, int newIndex);
+
+        public event OnSelectedIndexChanged SelectedIndexChanged;
+
         #endregion
 
         #region Private Fields
@@ -38,6 +56,7 @@ namespace TrainingLog.Controls
         private int _sortedColumnIndex = -1;
 
         private SortOrder _sortOrder;
+        private int _selectedIndex = -1;
 
         #endregion
 
@@ -49,8 +68,6 @@ namespace TrainingLog.Controls
 
             // sort rows on column click
             lisHeader.ColumnClick += SortColumns;
-
-            // TODO add mouse scroll wheel capability
         }
 
         #endregion
@@ -110,6 +127,17 @@ namespace TrainingLog.Controls
             {
                 controls[i].Parent = panArea;
                 controls[i].Size = new Size(_columns[i].Width - (i == controls.Length - 1 ? 22 : 0), ItemHeight);
+                controls[i].TabStop = false;
+                var i1 = i;
+                controls[i].Click += (s, e) =>
+                                         {
+                                             for (var j = 0; j < _controls.Count; j++)
+                                                 if (_controls[j][i1].Equals(s))
+                                                 {
+                                                     SelectedIndex = j;
+                                                     break;
+                                                 }
+                                         };
             }
 
             _controls.Insert(index, controls);

@@ -281,6 +281,16 @@ namespace TrainingLog.Forms
             throw new NotImplementedException();
         }
 
+        public void UpdateData()
+        {
+            _trainingdataAdded = false;
+            _biodataAdded = false;
+            _racedataAdded = false;
+            _unifieddataAdded = false;
+
+            EntrySelectionChanged();
+        }
+
         #endregion
 
         #region Event Handling

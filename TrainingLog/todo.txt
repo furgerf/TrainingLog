@@ -7,7 +7,5 @@
 	1			2		Import data-over-time from PPT
 	1			1		Add a few icons...
 	2			2		Get the TrainingLogForm to load faster
-	1			1		Highlight selected row in TLF and allow movement with arrows
-	3			1		Re-enable mouse wheel scrolling
-
+	3			2		Improve TLF updating
 

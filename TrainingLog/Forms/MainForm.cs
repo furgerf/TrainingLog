@@ -56,6 +56,7 @@ namespace TrainingLog.Forms
         private void ButShowLogClick(object sender = null, EventArgs e = null)
         {
             Hide();
+            TrainingLogForm.GetInstance.UpdateData();
             TrainingLogForm.GetInstance.Show();
             TrainingLogForm.GetInstance.BringToFront();
         }

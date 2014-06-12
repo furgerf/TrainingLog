@@ -25,6 +25,12 @@ namespace TrainingLog.Controls
             set { _colors[1] = value; }
         }
 
+        public Color SelectedColor
+        {
+            get { return _colors[2]; }
+            set { _colors[2] = value; }
+        }
+
         public string EntryName
         {
             get { return _entryName; }
@@ -61,7 +67,7 @@ namespace TrainingLog.Controls
 
         private readonly Dictionary<int, Entry> _entryMap = new Dictionary<int, Entry>();
 
-        private readonly Color[] _colors = new[] {Color.White, Color.LightGray};
+        private readonly Color[] _colors = new[] {Color.White, Color.LightGray, Color.LightSkyBlue};
 
         #endregion
 
@@ -74,6 +80,16 @@ namespace TrainingLog.Controls
             cliEntries.ItemHeight = ButtonColumnWidth;
 
             cliEntries.ItemsChanged += SetBackColor;
+
+            cliEntries.SelectedIndexChanged += (o, n) =>
+                                                   {
+                                                       if (o >= 0)
+                                                           foreach (var c in cliEntries.Items[o].Where(c => _colors.Contains(c.BackColor)))
+                                                               c.BackColor = _colors[o%2];
+                                                       if (n >= 0)
+                                                           foreach (var c in cliEntries.Items[n].Where(c => _colors.Contains(c.BackColor)))
+                                                               c.BackColor = _colors[2];
+                                                   };
         }
 
         #endregion
@@ -195,12 +211,12 @@ namespace TrainingLog.Controls
             return true;
         }
 
-        private void SetBackColor()
+        public void SetBackColor()
         {
             var controls = cliEntries.Items;
             for (var i = 0; i < controls.Length; i++)
                 foreach (var c in controls[i].Where(c => _colors.Contains(c.BackColor)))
-                    c.BackColor = _colors[i%2];
+                    c.BackColor = i == cliEntries.SelectedIndex ? _colors[2] : _colors[i%2];
         }
 
         #endregion
