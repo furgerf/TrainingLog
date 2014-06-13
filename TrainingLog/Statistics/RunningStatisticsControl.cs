@@ -88,6 +88,35 @@ namespace TrainingLog.Statistics
             // hr zones
             chaHeartZones.Series.Add(new Series("Heart Rate Zones") { ChartType = SeriesChartType.Pie });
             chaHeartZones.Series[SeriesHeartZones]["PieLabelStyle"] = "Inside";
+
+            // monthly training types
+            var trainingTypeColors = Common.GetTrainingTypeColors(Common.Sport.Running);
+            for (var i = 0; i < Common.GetTrainingTypes(Common.Sport.Running).Length; i++)
+            {
+                var tt = Common.GetTrainingTypes(Common.Sport.Running)[i];
+                chaMonthlyTrainingTypes.Series.Add(
+                    new Series(tt.ToString())
+                        {
+                            XValueType = ChartValueType.Date,
+                            YValueType = ChartValueType.Int32,
+                            ChartType = SeriesChartType.StackedColumn,
+                            Color = trainingTypeColors[i]
+                        });
+            }
+            //chaMonthlyTrainingTypes.Legends.Add(new Legend());
+            chaMonthlyTrainingTypes.ChartAreas[0].AxisX = new Axis(chaMonthlyTrainingTypes.ChartAreas[0], AxisName.X)
+            {
+                Title = "Date",
+                IntervalAutoMode = IntervalAutoMode.FixedCount,
+                IntervalType = DateTimeIntervalType.Months,
+                Interval = 1
+            };
+            chaMonthlyTrainingTypes.ChartAreas[0].AxisY = new Axis(chaMonthlyTrainingTypes.ChartAreas[0], AxisName.Y)
+            {
+                Title = "Trainings",
+                IntervalAutoMode = IntervalAutoMode.FixedCount,
+                Interval = 5
+            };
         }
 
         #endregion
@@ -101,9 +130,17 @@ namespace TrainingLog.Statistics
 
             var entries = GetEntries();
 
-            // totals
+            // cleanup
             foreach (var s in chaTotals.Series)
                 s.Points.Clear();
+            foreach (var s in chaTrainingTypes.Series)
+                s.Points.Clear();
+            foreach (var s in chaHeartZones.Series)
+                s.Points.Clear();
+            foreach (var s in chaMonthlyTrainingTypes.Series)
+                s.Points.Clear();
+
+            // totals
             var sum = 0.0;
             foreach (var e in entries)
             {
@@ -121,12 +158,13 @@ namespace TrainingLog.Statistics
 
             // training types
             var types = Common.GetTrainingTypes(Common.Sport.Running);
+            var trainingTypeColors = Common.GetTrainingTypeColors(Common.Sport.Running);
             var count = new int[types.Length];
             foreach (var e in entries)
                 count[Array.IndexOf(types, e.TrainingType)]++;
 
             for (var i = 0; i < types.Length; i++)
-                chaTrainingTypes.Series[SeriesTrainingTypes].Points.Add(new DataPoint(0, count[i]) {Label = Enum.GetName(typeof (Common.TrainingType), types[i]) + ": " + count[i]});
+                chaTrainingTypes.Series[SeriesTrainingTypes].Points.Add(new DataPoint(0, count[i]) {Label = Enum.GetName(typeof (Common.TrainingType), types[i]) + ": " + count[i], Color = trainingTypeColors[i]});
 
             // heart rate zones
             var zd = ZoneData.Empty();
@@ -136,6 +174,31 @@ namespace TrainingLog.Statistics
 
             for (var i = 0; i < 5; i++)
                 chaHeartZones.Series[SeriesHeartZones].Points.Add(new DataPoint(0, zd.Zones[i].TotalHours) { Color = ZoneDataBox.ZoneColors[i], Label = "Zone " + (i+1) + ":\n" + (zd.Zones[i].Days * 24 + zd.Zones[i].Hours) + "h " + zd.Zones[i].Minutes + "m " + zd.Zones[i].Seconds + "s"});
+
+            // monthly training types
+            // add dps from first to last month
+            var firstMonth = entries.First().Date ?? DateTime.MaxValue;
+            firstMonth = new DateTime(firstMonth.Year, firstMonth.Month, 1);
+            //var lastMonth = entries.Last().Date ?? DateTime.MaxValue;
+            //lastMonth = new DateTime(lastMonth.Year, lastMonth.Month, 1);
+            foreach (var s in chaMonthlyTrainingTypes.Series)
+                s.Points.Add(new DataPoint(firstMonth.ToOADate(), 0));
+
+            foreach (var e in entries)
+            {
+                if (e.Date == null)
+                    throw new Exception();
+                
+                if (e.Date.Value.Month != firstMonth.Month)
+                {
+                    // add new dp
+                    firstMonth = firstMonth.AddMonths(1);
+                    foreach (var s in chaMonthlyTrainingTypes.Series)
+                        s.Points.Add(new DataPoint(firstMonth.ToOADate(), 0));
+                }
+
+                chaMonthlyTrainingTypes.Series[Array.IndexOf(types, e.TrainingType)].Points.Last().YValues[0]++;
+            }
         }
 
         #endregion
@@ -150,11 +213,16 @@ namespace TrainingLog.Statistics
 
             grpTrainingTypes.Location = new Point(grpTotals.Location.X + grpTotals.Width + 2*Padding, Padding);
             grpTrainingTypes.Size = new Size((Size.Width - grpTrainingTypes.Location.X)/2 - Padding,
-                                             Size.Height - grpTrainingTypes.Location.Y - Padding);
+                                             (Size.Height - grpTrainingTypes.Location.Y)/2 - Padding);
 
             grpHeartZones.Location = new Point(grpTrainingTypes.Location.X + grpTrainingTypes.Width + 2*Padding, Padding);
             grpHeartZones.Size = new Size(Size.Width - grpHeartZones.Location.X - Padding,
                                           Size.Height - grpHeartZones.Location.Y - Padding);
+
+            grpMonthlyTrainingTypes.Location = new Point(grpTrainingTypes.Location.X, grpTrainingTypes.Location.Y + grpTrainingTypes.Height + 2*Padding);
+            grpMonthlyTrainingTypes.Size = new Size(grpTrainingTypes.Width,
+                                             Size.Height - grpMonthlyTrainingTypes.Location.Y - Padding);
+
         }
 
         private void GroupBoxResize(object sender, EventArgs e)
@@ -167,7 +235,8 @@ namespace TrainingLog.Statistics
                 return;
 
             // resize chart
-            grp.Controls[0].Size = new Size(grp.Width - 2 * grp.Controls[0].Location.X, grp.Height - 2 * grp.Controls[0].Location.Y);
+            grp.Controls[0].Location = new Point(Padding, grp.Controls[0].Location.Y);
+            grp.Controls[0].Size = new Size(grp.Width - 2 * Padding, grp.Height - grp.Controls[0].Location.Y - Padding);
         }
 
         #endregion

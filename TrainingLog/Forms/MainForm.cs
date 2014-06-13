@@ -30,7 +30,7 @@ namespace TrainingLog.Forms
 
             Model.Initialize();
 
-            //ButShowStatisticsClick();
+            ButShowStatisticsClick();
             //ButShowLogClick();
             //ButSettingsClick();
         }

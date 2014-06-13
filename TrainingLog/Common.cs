@@ -42,6 +42,11 @@ namespace TrainingLog
 
         public static readonly TrainingType[] AllTypes = EnduranceTypes.Concat(SquashTypes).ToArray();
 
+        public static Color[] EnduranceTypeColors = new []
+                                                        {
+                                                            Color.DarkGray, Color.Red, Color.DarkOliveGreen, Color.SkyBlue, Color.Goldenrod, Color.OrangeRed, Color.SaddleBrown, Color.LightGreen
+                                                        };
+
         public enum TrainingType
         {
             None = 0,
@@ -89,6 +94,21 @@ namespace TrainingLog
                     return SquashTypes;
                 case Sport.Other:
                     return new TrainingType[0];
+                default:
+                    throw new ArgumentOutOfRangeException("sport");
+            }
+        }
+
+        public static Color[] GetTrainingTypeColors(Sport sport)
+        {
+            switch (sport)
+            {
+                case Sport.Running:
+                case Sport.Cycling:
+                    var res = EnduranceTypeColors;
+                    if (res.Length != EnduranceTypes.Length)
+                        throw new Exception();
+                    return res;
                 default:
                     throw new ArgumentOutOfRangeException("sport");
             }
