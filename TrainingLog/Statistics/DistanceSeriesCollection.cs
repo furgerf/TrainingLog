@@ -24,8 +24,7 @@ namespace TrainingLog.Statistics
 
         public override double MaximumY
         {
-            // +9 to have at least 5 difference from max to top
-            get { var m = ((int)_maxY + 9) / 5 * 5; return m; }
+            get { return ((int) _maxY + 3)/2*2; }
         }
 
         #endregion

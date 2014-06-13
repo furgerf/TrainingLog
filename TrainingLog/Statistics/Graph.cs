@@ -134,7 +134,8 @@ namespace TrainingLog.Statistics
                     y.Maximum = _series.MaximumY;
                     break;
                 case GraphType.Distance:
-                    y.IntervalAutoMode = IntervalAutoMode.VariableCount;
+                    y.IntervalAutoMode = IntervalAutoMode.FixedCount;
+                    y.Interval = 2;
                     y.Title = "Distance";
                     y.Maximum = _series.MaximumY;
                     y.LabelStyle.Format = "{0} km";

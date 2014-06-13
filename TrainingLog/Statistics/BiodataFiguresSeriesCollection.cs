@@ -174,10 +174,10 @@ namespace TrainingLog.Statistics
             }
 
             foreach (var p in _series[NiggleSeries].Points)
-                p.YValues[0] += MinimumY + 10;
+                p.YValues[0] = p.YValues[0] * 2.5 + MinimumY + 8.5;
 
             foreach (var p in _series[NoteSeries].Points)
-                p.YValues[0] += MinimumY + 5;
+                p.YValues[0] = p.YValues[0] * 2.5 + MaximumY - 1.5;
 
             // ensure every (line-)series has at least 2 points
             foreach (var s in _series.Where(s => s.ChartType == SeriesChartType.Spline && s.Points.Count == 1))

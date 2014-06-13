@@ -44,7 +44,7 @@ namespace TrainingLog
 
         public static Color[] EnduranceTypeColors = new []
                                                         {
-                                                            Color.DarkGray, Color.Red, Color.DarkOliveGreen, Color.SkyBlue, Color.Goldenrod, Color.OrangeRed, Color.SaddleBrown, Color.LightGreen
+                                                            Color.LightGray, Color.Red, Color.DarkOliveGreen, Color.SteelBlue, Color.Goldenrod, Color.MediumPurple, Color.SaddleBrown, Color.LightGreen
                                                         };
 
         public enum TrainingType
