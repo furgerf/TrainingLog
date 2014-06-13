@@ -28,10 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea6 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea7 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea8 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea11 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea12 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea13 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea14 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea15 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             this.grpTotals = new System.Windows.Forms.GroupBox();
             this.chaTotals = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.grpTrainingTypes = new System.Windows.Forms.GroupBox();
@@ -40,6 +41,8 @@
             this.chaHeartZones = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.grpMonthlyTrainingTypes = new System.Windows.Forms.GroupBox();
             this.chaMonthlyTrainingTypes = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.grpMonthlyHeartZones = new System.Windows.Forms.GroupBox();
+            this.chaMonthlyHeartZones = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.grpTotals.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chaTotals)).BeginInit();
             this.grpTrainingTypes.SuspendLayout();
@@ -48,6 +51,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.chaHeartZones)).BeginInit();
             this.grpMonthlyTrainingTypes.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chaMonthlyTrainingTypes)).BeginInit();
+            this.grpMonthlyHeartZones.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chaMonthlyHeartZones)).BeginInit();
             this.SuspendLayout();
             // 
             // grpTotals
@@ -63,8 +68,8 @@
             // 
             // chaTotals
             // 
-            chartArea5.Name = "ChartArea1";
-            this.chaTotals.ChartAreas.Add(chartArea5);
+            chartArea11.Name = "ChartArea1";
+            this.chaTotals.ChartAreas.Add(chartArea11);
             this.chaTotals.Location = new System.Drawing.Point(6, 19);
             this.chaTotals.Name = "chaTotals";
             this.chaTotals.Size = new System.Drawing.Size(286, 168);
@@ -84,8 +89,8 @@
             // 
             // chaTrainingTypes
             // 
-            chartArea6.Name = "ChartArea1";
-            this.chaTrainingTypes.ChartAreas.Add(chartArea6);
+            chartArea12.Name = "ChartArea1";
+            this.chaTrainingTypes.ChartAreas.Add(chartArea12);
             this.chaTrainingTypes.Location = new System.Drawing.Point(6, 19);
             this.chaTrainingTypes.Name = "chaTrainingTypes";
             this.chaTrainingTypes.Size = new System.Drawing.Size(136, 168);
@@ -105,8 +110,8 @@
             // 
             // chaHeartZones
             // 
-            chartArea7.Name = "ChartArea1";
-            this.chaHeartZones.ChartAreas.Add(chartArea7);
+            chartArea13.Name = "ChartArea1";
+            this.chaHeartZones.ChartAreas.Add(chartArea13);
             this.chaHeartZones.Location = new System.Drawing.Point(6, 19);
             this.chaHeartZones.Name = "chaHeartZones";
             this.chaHeartZones.Size = new System.Drawing.Size(136, 168);
@@ -126,18 +131,40 @@
             // 
             // chaMonthlyTrainingTypes
             // 
-            chartArea8.Name = "ChartArea1";
-            this.chaMonthlyTrainingTypes.ChartAreas.Add(chartArea8);
+            chartArea14.Name = "ChartArea1";
+            this.chaMonthlyTrainingTypes.ChartAreas.Add(chartArea14);
             this.chaMonthlyTrainingTypes.Location = new System.Drawing.Point(6, 19);
             this.chaMonthlyTrainingTypes.Name = "chaMonthlyTrainingTypes";
             this.chaMonthlyTrainingTypes.Size = new System.Drawing.Size(136, 168);
             this.chaMonthlyTrainingTypes.TabIndex = 0;
             this.chaMonthlyTrainingTypes.Text = "chart2";
             // 
+            // grpMonthlyHeartZones
+            // 
+            this.grpMonthlyHeartZones.Controls.Add(this.chaMonthlyHeartZones);
+            this.grpMonthlyHeartZones.Location = new System.Drawing.Point(458, 199);
+            this.grpMonthlyHeartZones.Name = "grpMonthlyHeartZones";
+            this.grpMonthlyHeartZones.Size = new System.Drawing.Size(148, 193);
+            this.grpMonthlyHeartZones.TabIndex = 4;
+            this.grpMonthlyHeartZones.TabStop = false;
+            this.grpMonthlyHeartZones.Text = "Monthly Heart Rate Zones";
+            this.grpMonthlyHeartZones.Resize += new System.EventHandler(this.GroupBoxResize);
+            // 
+            // chaMonthlyHeartZones
+            // 
+            chartArea15.Name = "ChartArea1";
+            this.chaMonthlyHeartZones.ChartAreas.Add(chartArea15);
+            this.chaMonthlyHeartZones.Location = new System.Drawing.Point(6, 19);
+            this.chaMonthlyHeartZones.Name = "chaMonthlyHeartZones";
+            this.chaMonthlyHeartZones.Size = new System.Drawing.Size(136, 168);
+            this.chaMonthlyHeartZones.TabIndex = 0;
+            this.chaMonthlyHeartZones.Text = "chart2";
+            // 
             // RunningStatisticsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.grpMonthlyHeartZones);
             this.Controls.Add(this.grpMonthlyTrainingTypes);
             this.Controls.Add(this.grpHeartZones);
             this.Controls.Add(this.grpTrainingTypes);
@@ -153,6 +180,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.chaHeartZones)).EndInit();
             this.grpMonthlyTrainingTypes.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.chaMonthlyTrainingTypes)).EndInit();
+            this.grpMonthlyHeartZones.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.chaMonthlyHeartZones)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -167,5 +196,7 @@
         private System.Windows.Forms.DataVisualization.Charting.Chart chaHeartZones;
         private System.Windows.Forms.GroupBox grpMonthlyTrainingTypes;
         private System.Windows.Forms.DataVisualization.Charting.Chart chaMonthlyTrainingTypes;
+        private System.Windows.Forms.GroupBox grpMonthlyHeartZones;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chaMonthlyHeartZones;
     }
 }

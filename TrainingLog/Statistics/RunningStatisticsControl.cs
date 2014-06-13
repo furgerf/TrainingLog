@@ -53,13 +53,12 @@ namespace TrainingLog.Statistics
                 YAxisType = AxisType.Secondary,
                 Color = Color.Blue
             });
-            chaTotals.Legends.Add(new Legend());
             chaTotals.ChartAreas[0].AxisX = new Axis(chaTotals.ChartAreas[0], AxisName.X)
                                                 {
                                                     Title = "Date",
                                                     IntervalAutoMode = IntervalAutoMode.FixedCount,
                                                     IntervalType = DateTimeIntervalType.Weeks,
-                                                    Interval = 1
+                                                    Interval = 2
                                                 };
             chaTotals.ChartAreas[0].AxisY = new Axis(chaTotals.ChartAreas[0], AxisName.Y)
                                                 {
@@ -92,29 +91,45 @@ namespace TrainingLog.Statistics
             // monthly training types
             var trainingTypeColors = Common.GetTrainingTypeColors(Common.Sport.Running);
             for (var i = 0; i < Common.GetTrainingTypes(Common.Sport.Running).Length; i++)
-            {
-                var tt = Common.GetTrainingTypes(Common.Sport.Running)[i];
                 chaMonthlyTrainingTypes.Series.Add(
-                    new Series(tt.ToString())
-                        {
-                            XValueType = ChartValueType.Date,
-                            YValueType = ChartValueType.Int32,
-                            ChartType = SeriesChartType.StackedColumn,
-                            Color = trainingTypeColors[i]
-                        });
-            }
-            //chaMonthlyTrainingTypes.Legends.Add(new Legend());
+                    new Series(Common.GetTrainingTypes(Common.Sport.Running)[i].ToString())
+                    {
+                        XValueType = ChartValueType.Date,
+                        YValueType = ChartValueType.Int32,
+                        ChartType = SeriesChartType.StackedColumn,
+                        Color = trainingTypeColors[i]
+                    });
             chaMonthlyTrainingTypes.ChartAreas[0].AxisX = new Axis(chaMonthlyTrainingTypes.ChartAreas[0], AxisName.X)
             {
-                Title = "Date",
                 IntervalAutoMode = IntervalAutoMode.FixedCount,
                 IntervalType = DateTimeIntervalType.Months,
                 Interval = 1
             };
             chaMonthlyTrainingTypes.ChartAreas[0].AxisY = new Axis(chaMonthlyTrainingTypes.ChartAreas[0], AxisName.Y)
             {
-                Title = "Trainings",
                 IntervalAutoMode = IntervalAutoMode.FixedCount,
+                Interval = 5
+            };
+
+            // monthly hr zones
+            for (var i = 0; i < 5; i++)
+                chaMonthlyHeartZones.Series.Add(new Series("Zone " + (i + 1))
+                        {
+                            XValueType = ChartValueType.Date,
+                            YValueType = ChartValueType.Double,
+                            ChartType = SeriesChartType.StackedColumn,
+                            Color = ZoneDataBox.ZoneColors[i]
+                        });
+            chaMonthlyHeartZones.ChartAreas[0].AxisX = new Axis(chaMonthlyHeartZones.ChartAreas[0], AxisName.X)
+            {
+                IntervalAutoMode = IntervalAutoMode.FixedCount,
+                IntervalType = DateTimeIntervalType.Months,
+                Interval = 1
+            };
+            chaMonthlyHeartZones.ChartAreas[0].AxisY = new Axis(chaMonthlyHeartZones.ChartAreas[0], AxisName.Y)
+            {
+                IntervalAutoMode = IntervalAutoMode.FixedCount,
+                LabelStyle = { Format = "{0} h"},
                 Interval = 5
             };
         }
@@ -138,6 +153,8 @@ namespace TrainingLog.Statistics
             foreach (var s in chaHeartZones.Series)
                 s.Points.Clear();
             foreach (var s in chaMonthlyTrainingTypes.Series)
+                s.Points.Clear();
+            foreach (var s in chaMonthlyHeartZones.Series)
                 s.Points.Clear();
 
             // totals
@@ -164,40 +181,59 @@ namespace TrainingLog.Statistics
                 count[Array.IndexOf(types, e.TrainingType)]++;
 
             for (var i = 0; i < types.Length; i++)
-                chaTrainingTypes.Series[SeriesTrainingTypes].Points.Add(new DataPoint(0, count[i]) {Label = Enum.GetName(typeof (Common.TrainingType), types[i]) + ": " + count[i], Color = trainingTypeColors[i]});
+                chaTrainingTypes.Series[SeriesTrainingTypes].Points.Add(new DataPoint(0, count[i]) { Label = Enum.GetName(typeof(Common.TrainingType), types[i]) + ": " + count[i] + " (" + Math.Round((double)count[i]/count.Sum()*100, 1) + "%)", Color = trainingTypeColors[i] });
 
             // heart rate zones
             var zd = ZoneData.Empty();
             foreach (var e in entries.Where(e => e.HrZones != null))
                 for (var i = 0; i < 5; i++)
-                    zd.Zones[i] = zd.Zones[i].Add(e.HrZones.Value.Zones[i]);
+                    zd.Zones[i] = zd.Zones[i].Add((e.HrZones ?? ZoneData.Empty()).Zones[i]);
 
             for (var i = 0; i < 5; i++)
-                chaHeartZones.Series[SeriesHeartZones].Points.Add(new DataPoint(0, zd.Zones[i].TotalHours) { Color = ZoneDataBox.ZoneColors[i], Label = "Zone " + (i+1) + ":\n" + (zd.Zones[i].Days * 24 + zd.Zones[i].Hours) + "h " + zd.Zones[i].Minutes + "m " + zd.Zones[i].Seconds + "s"});
+                chaHeartZones.Series[SeriesHeartZones].Points.Add(new DataPoint(0, zd.Zones[i].TotalHours) { Color = ZoneDataBox.ZoneColors[i], Label = "Zone " + (i+1) + " (" + Math.Round(zd.Zones[i].TotalHours/zd.Duration.TotalHours*100, 1) + "%):\n" + (zd.Zones[i].Days * 24 + zd.Zones[i].Hours) + "h " + zd.Zones[i].Minutes + "m " + zd.Zones[i].Seconds + "s"});
 
             // monthly training types
-            // add dps from first to last month
-            var firstMonth = entries.First().Date ?? DateTime.MaxValue;
-            firstMonth = new DateTime(firstMonth.Year, firstMonth.Month, 1);
-            //var lastMonth = entries.Last().Date ?? DateTime.MaxValue;
-            //lastMonth = new DateTime(lastMonth.Year, lastMonth.Month, 1);
+            var month = entries.First().Date ?? DateTime.MaxValue;
+            month = new DateTime(month.Year, month.Month, 1);
             foreach (var s in chaMonthlyTrainingTypes.Series)
-                s.Points.Add(new DataPoint(firstMonth.ToOADate(), 0));
+                s.Points.Add(new DataPoint(month.ToOADate(), 0));
 
             foreach (var e in entries)
             {
                 if (e.Date == null)
                     throw new Exception();
-                
-                if (e.Date.Value.Month != firstMonth.Month)
+                if (e.Date.Value.Month != month.Month)
                 {
                     // add new dp
-                    firstMonth = firstMonth.AddMonths(1);
+                    month = month.AddMonths(1);
                     foreach (var s in chaMonthlyTrainingTypes.Series)
-                        s.Points.Add(new DataPoint(firstMonth.ToOADate(), 0));
+                        s.Points.Add(new DataPoint(month.ToOADate(), 0));
+                }
+                chaMonthlyTrainingTypes.Series[Array.IndexOf(types, e.TrainingType)].Points.Last().YValues[0]++;
+            }
+
+            // monthly training types
+            month = entries.First().Date ?? DateTime.MaxValue;
+            month = new DateTime(month.Year, month.Month, 1);
+            foreach (var s in chaMonthlyHeartZones.Series)
+                s.Points.Add(new DataPoint(month.ToOADate(), 0));
+
+            foreach (var e in entries)
+            {
+                if (e.Date == null)
+                    throw new Exception();
+                if (e.HrZones == null)
+                    continue;
+                if (e.Date.Value.Month != month.Month)
+                {
+                    // add new dp
+                    month = month.AddMonths(1);
+                    foreach (var s in chaMonthlyHeartZones.Series)
+                        s.Points.Add(new DataPoint(month.ToOADate(), 0));
                 }
 
-                chaMonthlyTrainingTypes.Series[Array.IndexOf(types, e.TrainingType)].Points.Last().YValues[0]++;
+                for (var i = 0; i < 5; i++)
+                    chaMonthlyHeartZones.Series[i].Points.Last().YValues[0] += e.HrZones.Value.Zones[i].TotalHours;
             }
         }
 
@@ -217,12 +253,15 @@ namespace TrainingLog.Statistics
 
             grpHeartZones.Location = new Point(grpTrainingTypes.Location.X + grpTrainingTypes.Width + 2*Padding, Padding);
             grpHeartZones.Size = new Size(Size.Width - grpHeartZones.Location.X - Padding,
-                                          Size.Height - grpHeartZones.Location.Y - Padding);
+                                          (Size.Height - grpHeartZones.Location.Y) / 2 - Padding);
 
-            grpMonthlyTrainingTypes.Location = new Point(grpTrainingTypes.Location.X, grpTrainingTypes.Location.Y + grpTrainingTypes.Height + 2*Padding);
+            grpMonthlyTrainingTypes.Location = new Point(grpTrainingTypes.Location.X, grpTrainingTypes.Location.Y + grpTrainingTypes.Height + 2 * Padding);
             grpMonthlyTrainingTypes.Size = new Size(grpTrainingTypes.Width,
                                              Size.Height - grpMonthlyTrainingTypes.Location.Y - Padding);
 
+            grpMonthlyHeartZones.Location = new Point(grpHeartZones.Location.X, grpMonthlyTrainingTypes.Location.Y);
+            grpMonthlyHeartZones.Size = new Size(grpHeartZones.Width,
+                                             Size.Height - grpMonthlyHeartZones.Location.Y - Padding);
         }
 
         private void GroupBoxResize(object sender, EventArgs e)

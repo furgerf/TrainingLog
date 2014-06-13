@@ -8,4 +8,5 @@
 	1			1		Add a few icons...
 	2			2		Get the TrainingLogForm to load faster
 	3			2		Improve TLF updating
-
+	3			2		Add entry of "special phases" such as pre-exam, military, holidays, etc.
+	1			2		Add annotations to statistics --^
