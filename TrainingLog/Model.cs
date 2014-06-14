@@ -18,6 +18,7 @@ namespace TrainingLog
         public RaceEntry[] RaceEntries { get { return _entries.Where(e => e is RaceEntry).Cast<RaceEntry>().ToArray(); } }
         public BiodataEntry[] BiodataEntries { get { return _entries.Where(e => e is BiodataEntry).Cast<BiodataEntry>().ToArray(); } }
         public TrainingEntry[] TrainingEntries { get { return _entries.Where(e => e is TrainingEntry).Cast<TrainingEntry>().ToArray(); } }
+        public NonSportEntry[] NonSportEntries { get { return _entries.Where(e => e is NonSportEntry).Cast<NonSportEntry>().ToArray(); } }
 
         #endregion
 
@@ -64,7 +65,7 @@ namespace TrainingLog
             using (var tw = new StreamWriter(path ?? MainForm.GetInstance.Settings.DataPath))
             {
                 var ser = new XmlSerializer(typeof(EntryList));
-                ser.Serialize(tw, new EntryList(TrainingEntries, BiodataEntries));
+                ser.Serialize(tw, new EntryList(TrainingEntries, BiodataEntries, NonSportEntries));
             }
         }
 

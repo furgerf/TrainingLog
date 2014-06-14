@@ -20,6 +20,8 @@ namespace TrainingLog.Statistics
 
         private const int SeriesTotalsTime = 1;
 
+        private const int SeriesTotalsNonSport = 2;
+
         private const int SeriesTrainingTypes = 0;
 
         private const int SeriesHeartZones = 0;
@@ -52,6 +54,10 @@ namespace TrainingLog.Statistics
                 BorderWidth = 3,
                 YAxisType = AxisType.Secondary,
                 Color = Color.Blue
+            });
+            chaTotals.Series.Add(new Series("Non-Sport")
+            {
+                XValueType = ChartValueType.Date,
             });
             chaTotals.ChartAreas[0].AxisX = new Axis(chaTotals.ChartAreas[0], AxisName.X)
                                                 {
@@ -144,6 +150,7 @@ namespace TrainingLog.Statistics
                 throw new Exception();
 
             var entries = GetEntries();
+            var nonSportEntries = Model.Instance.NonSportEntries;
 
             // cleanup
             foreach (var s in chaTotals.Series)
@@ -172,6 +179,8 @@ namespace TrainingLog.Statistics
                 sum += e.Duration.Value.TotalHours;
                 chaTotals.Series[SeriesTotalsTime].Points.Add(new DataPoint((e.Date ?? DateTime.MinValue).ToOADate(), sum));
             }
+            foreach (var e in nonSportEntries)
+                e.AddEntryToChart(chaTotals.ChartAreas[0], chaTotals.Series[SeriesTotalsNonSport], chaTotals.Annotations);
 
             // training types
             var types = Common.GetTrainingTypes(Common.Sport.Running);

@@ -89,7 +89,7 @@ namespace TrainingLog.Entries
         public TrainingEntry()
             : base(Common.EntryType.Training)
         {
-            // private constructor for parsing (when duration is not yet parsed)
+
         }
 
         public TrainingEntry(TimeSpan duration)
