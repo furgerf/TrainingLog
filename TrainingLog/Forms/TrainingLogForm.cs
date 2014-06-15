@@ -40,7 +40,7 @@ namespace TrainingLog.Forms
                            {
                                "", "", "Date", "Sleep", "Rest HR", "OwnIndex", "Weight", "Feeling", "Niggles", "Notes"
                            };
-        private static readonly int[] BiodataWidths = new[] { EntryListControl.ButtonColumnWidth, EntryListControl.ButtonColumnWidth, 160, 100, 60, 60, 50, 70, 110, 150 };
+        private static readonly int[] BiodataWidths = new[] { EntryListControl.ButtonColumnWidth, EntryListControl.ButtonColumnWidth, 160, 105, 60, 60, 50, 70, 110, 150 };
         private static readonly bool[] BiodataFixed = new[] { true, true, true, true, true, true, true, true, false, false };
 
         private readonly static string[] RaceHeader = new[]

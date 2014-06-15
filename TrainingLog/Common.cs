@@ -3,17 +3,13 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using GlacialComponents.Controls;
+using TrainingLog.Entries;
 using TrainingLog.Properties;
 
 namespace TrainingLog
 {
     public class Common
     {
-        public delegate void MarkItem(GLItem item, bool visible);
-
-        public delegate void ApplyItemVisibility();
-
         #region Enums
 
         public enum Index
@@ -21,11 +17,28 @@ namespace TrainingLog
             Terrible, Bad, Okay, Good, Fantastic, Count, None
         }
 
-        public static readonly Sport[] EnduranceSports = new[] {Sport.Running, Sport.Cycling};
         public enum Sport
         {
             Running, Cycling, Squash, Other, Count
         }
+
+        public enum TrainingType
+        {
+            None = 0,
+            Easy = 10, Interval, Fartlek, Base, Long, Tempo, Mountain, Other,
+            Solo = 20, Training, Club, Match, Count
+        }
+
+        public enum EntryType
+        {
+            Training, Race, BioData, NonSport, Count
+        }
+
+        #endregion
+
+        #region Enum Categories
+
+        public static readonly Sport[] EnduranceSports = new[] { Sport.Running, Sport.Cycling };
 
         public static readonly TrainingType[] EnduranceTypes =
             new[]
@@ -42,22 +55,10 @@ namespace TrainingLog
 
         public static readonly TrainingType[] AllTypes = EnduranceTypes.Concat(SquashTypes).ToArray();
 
-        public static Color[] EnduranceTypeColors = new []
+        public static Color[] EnduranceTypeColors = new[]
                                                         {
                                                             Color.LightGray, Color.Red, Color.DarkOliveGreen, Color.SteelBlue, Color.Goldenrod, Color.MediumPurple, Color.SaddleBrown, Color.LightGreen
                                                         };
-
-        public enum TrainingType
-        {
-            None = 0,
-            Easy = 10, Interval, Fartlek, Base, Long, Tempo, Mountain, Other,
-            Solo = 20, Training, Club, Match, Count
-        }
-
-        public enum EntryType
-        {
-            Training, Race, BioData, NonSport, Count
-        }
 
         #endregion
 
@@ -68,6 +69,33 @@ namespace TrainingLog
         public static readonly Icon IconDelete;
 
         public static readonly Icon IconEdit;
+
+        public const char DotChar = '\u25CF';
+
+        public static readonly string ThreeDots = DotChar + " " + DotChar + " " + DotChar;
+
+        public readonly static Func<Entry[], NonSportEntry[]> NonSportEntries = entries =>
+        {
+            var firstDate = entries.First().Date;
+            var lastDate = entries.Last().Date;
+
+            var nse = Model.Instance.NonSportEntries.Where(e => e.Date <= lastDate && e.GetEndDate >= firstDate).ToArray();
+
+            for (var i = 0; i < nse.Length; i++)
+                if (nse[i].GetEndDate > lastDate)
+                {
+                    nse[i] = nse[i].Clone();
+                    nse[i].EndDate = lastDate;
+                    nse[i].Note += " " + ThreeDots;
+                }
+                else if (nse[i].Date < firstDate)
+                {
+                    nse[i] = nse[i].Clone();
+                    nse[i].Date = firstDate;
+                    nse[i].Note = ThreeDots + " " + nse[i].Note;
+                }
+            return nse;
+        };
 
         #endregion
 
@@ -111,18 +139,6 @@ namespace TrainingLog
                     return res;
                 default:
                     throw new ArgumentOutOfRangeException("sport");
-            }
-        }
-
-        public static T DeepClone<T>(T obj)
-        {
-            using (var ms = new MemoryStream())
-            {
-                var formatter = new BinaryFormatter();
-                formatter.Serialize(ms, obj);
-                ms.Position = 0;
-
-                return (T)formatter.Deserialize(ms);
             }
         }
 
