@@ -1,6 +1,8 @@
 using System;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace TrainingLog.Entries
@@ -21,7 +23,7 @@ namespace TrainingLog.Entries
         public Color? DrawColor { get; set; }
 
         [XmlElement("Color")]
-        public string DrawColorString { get { return DrawColor == null ? "" : DrawColor.Value.ToString(); }  set { DrawColor = Color.FromName(value); } }
+        public string DrawColorString { get { return DrawColor == null ? "" : DrawColor.Value.Name; }  set { DrawColor = Color.FromName(value); } }
         public bool DrawColorStringSpecified { get { return !string.IsNullOrEmpty(DrawColorString); } }
 
         #endregion
@@ -55,13 +57,13 @@ namespace TrainingLog.Entries
 
         #region Main Methods
 
-        public void AddEntryToChart(ChartArea area, Series series, AnnotationCollection annotations)
+        public void AddEntryToChart(ChartArea area, Series series, AnnotationCollection annotations, double y = 0)
         {
             if (Date == null)
                 throw new Exception();
 
-            var p1 = new DataPoint(Date.Value.ToOADate(), 0);
-            var p2 = new DataPoint(GetEndDate.ToOADate(), 0);
+            var p1 = new DataPoint(Date.Value.ToOADate(), y);
+            var p2 = new DataPoint(GetEndDate.AddDays(1).ToOADate(), y);
 
             series.Points.Add(p1);
             series.Points.Add(p2);
@@ -82,11 +84,45 @@ namespace TrainingLog.Entries
                 CalloutStyle = CalloutStyle.RoundedRectangle,
                 ForeColor = DrawColor ?? Color.Red,
                 LineColor = DrawColor ?? Color.Red,
-                LineWidth = 2
+                BackColor = Color.Transparent,
+                Font = new Font(FontFamily.GenericSansSerif, 8, FontStyle.Bold),
+                SmartLabelStyle = { MovingDirection = LabelAlignmentStyles.Top, IsMarkerOverlappingAllowed = true, AllowOutsidePlotArea = LabelOutsidePlotAreaStyle.Yes, MaxMovingDistance = 100 },
+                AnchorAlignment = ContentAlignment.BottomCenter,
+                ToolTip = (Note ?? "ERROR: NOT SET")  + "\n(" + Date.Value.ToShortDateString() + " - " + GetEndDate.ToShortDateString() + ")",
+                Alignment = ContentAlignment.MiddleCenter
             };
 
             annotations.Add(line);
             annotations.Add(callout);
+        }
+
+        public NonSportEntry Clone()
+        {
+            string xmlString;
+            NonSportEntry result;
+
+            // serialize
+            using (var ms = new MemoryStream())
+            {
+                new XmlSerializer(typeof(NonSportEntry)).Serialize(ms, this);
+                ms.Position = 0;
+                using (var sr = new StreamReader(ms))
+                {
+                    xmlString = sr.ReadToEnd();
+                }
+            }
+
+            // deserialize
+            using (var sr = new StringReader(xmlString))
+            {
+                using (var tr = new XmlTextReader(sr))
+                {
+                    var serializer = new XmlSerializer(typeof(NonSportEntry));
+                    result = (NonSportEntry)serializer.Deserialize(tr);
+                }
+            }
+
+            return result;
         }
 
         #endregion

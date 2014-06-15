@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -138,11 +137,11 @@ namespace TrainingLog.Forms
             comGrouping.SelectedIndexChanged += (s, e) => { UpdateData(); comGrouping.Focus(); };
 
             // prepare filters and update graphs when values change
-            var orderedEntries = Model.Instance.Entries.OrderBy(e => e.Date);
-            ((DateTimePicker)dfcFrom.GetControl()).Value = orderedEntries.First().Date ?? DateTime.MinValue;
-            ((DateTimePicker)dfcTo.GetControl()).Value = orderedEntries.Last().Date ?? DateTime.MaxValue;
-            ((DateTimePicker)dfcFrom.GetControl()).ValueChanged += (s, e) => { UpdateData(); dfcFrom.Focus(); };
-            ((DateTimePicker)dfcTo.GetControl()).ValueChanged += (s, e) => { UpdateData(); dfcTo.Focus(); };
+            var entries = Model.Instance.TrainingEntries.Cast<Entry>().Concat(Model.Instance.BiodataEntries).OrderBy(e => e.Date);
+            ((DateTimePicker) dfcFrom.GetControl()).Value = entries.First().Date ?? DateTime.MaxValue;
+            ((DateTimePicker) dfcTo.GetControl()).Value = entries.Last().Date ?? DateTime.MinValue;
+            ((DateTimePicker) dfcFrom.GetControl()).ValueChanged += (s, e) => { UpdateData(); dfcFrom.Focus(); };
+            ((DateTimePicker) dfcTo.GetControl()).ValueChanged += (s, e) => { UpdateData(); dfcTo.Focus(); };
 
             efcTrainingType.LabelText = "Training";
             efcTrainingType.DataFromEntry = e => ((TrainingEntry)e).TrainingType.ToString();
@@ -170,21 +169,25 @@ namespace TrainingLog.Forms
             return new IStatisticsPage[]{
                 new Graph(Graph.GraphType.BiodataFigures, 
                     () => Model.Instance.BiodataEntries.Except((from te in Model.Instance.BiodataEntries from f in _filters where !f.IsEntryVisible(te) select te)).OrderBy(te => te.Date).Cast<Entry>().ToArray(),
+                    Common.NonSportEntries,
                     () => new Tuple<DateInterval, int>(DateInterval.Day, 1))
                     { Title = "Resting Heart Rate per day" }, 
 
                 new Graph(Graph.GraphType.Distance,
                     () => Model.Instance.TrainingEntries.Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te)).Where(te => te.DistanceMSpecified).OrderBy(te => te.Date).Cast<Entry>().ToArray(),
+                    Common.NonSportEntries,
                     () => GroupingInterval)
                     { Title = "Distance" },
             
                 new Graph(Graph.GraphType.ZoneData, 
                     () => Model.Instance.TrainingEntries.Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te)).Where(te => te.HrZoneStringSpecified).OrderBy(te => te.Date).Cast<Entry>().ToArray(),   
+                    Common.NonSportEntries,
                     () => new Tuple<DateInterval, int>(DateInterval.Day, 1))
                     { Title = "Zone Data per training" },
 
                 new Graph(Graph.GraphType.ZoneDataArea, 
                     () => Model.Instance.TrainingEntries.Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te)).Where(te => te.HrZoneStringSpecified).OrderBy(te => te.Date).Cast<Entry>().ToArray(),   
+                    Common.NonSportEntries,
                     () => GroupingInterval)
                     { Title = "Zone Data area" }
             };

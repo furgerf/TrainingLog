@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using GlacialComponents.Controls;
 using TrainingLog.Entries;
 
 namespace TrainingLog.Controls
@@ -42,7 +41,7 @@ namespace TrainingLog.Controls
 
         #region Private Fields
 
-        private Action _onFilterChanged;
+        //private Action _onFilterChanged;
         
         private string _labelText;
 
@@ -64,48 +63,48 @@ namespace TrainingLog.Controls
 
         #region Main Methods
 
-        public void Initialize(GLItemCollection list, Common.MarkItem markItem,
-                               Common.ApplyItemVisibility applyItemVisibility, int enumColumnIndex,
-                               object defaultValue = null)
-        {
-            throw new NotImplementedException();
-            //if (!(defaultValue is Type))
-            //    throw new Exception();
+        //public void Initialize(GLItemCollection list, Common.MarkItem markItem,
+        //                       Common.ApplyItemVisibility applyItemVisibility, int enumColumnIndex,
+        //                       object defaultValue = null)
+        //{
+        //    throw new NotImplementedException();
+        //    //if (!(defaultValue is Type))
+        //    //    throw new Exception();
 
-            //_onFilterChanged = () =>
-            //{
-            //    if (!_initialized)
-            //        return;
+        //    //_onFilterChanged = () =>
+        //    //{
+        //    //    if (!_initialized)
+        //    //        return;
 
-            //    foreach (GLItem o in list)
-            //        markItem(o, IsItemVisible(o));
+        //    //    foreach (GLItem o in list)
+        //    //        markItem(o, IsItemVisible(o));
 
-            //    applyItemVisibility();
-            //};
+        //    //    applyItemVisibility();
+        //    //};
 
-            //foreach (var s in Enum.GetNames((Type)defaultValue))
-            //    comData.Items.Add(s);
+        //    //foreach (var s in Enum.GetNames((Type)defaultValue))
+        //    //    comData.Items.Add(s);
 
-            //EnumColumnIndex = enumColumnIndex;
-            //_initialized = true;
-        }
+        //    //EnumColumnIndex = enumColumnIndex;
+        //    //_initialized = true;
+        //}
 
-        public bool IsItemVisible(GLItem item)
-        {
-            throw new NotImplementedException();
-            //DateTime? date = null;
+        //public bool IsItemVisible(GLItem item)
+        //{
+        //    throw new NotImplementedException();
+        //    //DateTime? date = null;
 
-            //if (item.SubItems[EnumColumnIndex].Control is DateTimePicker)
-            //    date = (item.SubItems[EnumColumnIndex].Control as DateTimePicker).Value;
+        //    //if (item.SubItems[EnumColumnIndex].Control is DateTimePicker)
+        //    //    date = (item.SubItems[EnumColumnIndex].Control as DateTimePicker).Value;
 
-            //if (item.SubItems[EnumColumnIndex].Control is ColorDatePicker)
-            //    date = (item.SubItems[EnumColumnIndex].Control as ColorDatePicker).Value;
+        //    //if (item.SubItems[EnumColumnIndex].Control is ColorDatePicker)
+        //    //    date = (item.SubItems[EnumColumnIndex].Control as ColorDatePicker).Value;
 
-            //if (date == null)
-            //    throw new Exception("Don\'t know where the date control is!");
+        //    //if (date == null)
+        //    //    throw new Exception("Don\'t know where the date control is!");
 
-            //return (dtpDate.Value.CompareTo(date) == 0) || (dtpDate.Value.CompareTo(date) < 0 ^ !LabelText);
-        }
+        //    //return (dtpDate.Value.CompareTo(date) == 0) || (dtpDate.Value.CompareTo(date) < 0 ^ !LabelText);
+        //}
 
         public bool IsEntryVisible(Entry entry)
         {
@@ -118,11 +117,11 @@ namespace TrainingLog.Controls
             return comData.Text.Equals(All) || comData.Text.Equals(DataFromEntry(entry));
         }
 
-        public void ApplyFilter()
-        {
-            if (_onFilterChanged != null)
-                _onFilterChanged();
-        }
+        //public void ApplyFilter()
+        //{
+        //    //if (_onFilterChanged != null)
+        //    //    _onFilterChanged();
+        //}
 
         public Control GetControl()
         {

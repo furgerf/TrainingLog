@@ -181,10 +181,7 @@ namespace TrainingLog.Controls
 
                                                                  if (form is TrainingEntryForm)
                                                                      controls = TrainingLogForm.GetInstance.ControlsForTrainingEntry(newEntry as TrainingEntry);
-                                                                 else if (form is BiodataEntryForm)
-                                                                     controls = TrainingLogForm.GetInstance.ControlsForBiodataEntry(newEntry as BiodataEntry);
-                                                                 else
-                                                                     throw new Exception();
+                                                                 else controls = TrainingLogForm.GetInstance.ControlsForBiodataEntry(newEntry as BiodataEntry);
 
                                                                  Model.Instance.RemoveEntry(entry);
                                                                  AddEntry(controls, newEntry);

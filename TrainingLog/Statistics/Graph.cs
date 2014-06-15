@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Windows.Forms.DataVisualization.Charting;
 using Microsoft.VisualBasic;
 using TrainingLog.Entries;
@@ -46,21 +47,26 @@ namespace TrainingLog.Statistics
 
         private AbstractSeriesCollection _series;
 
+        private readonly Series _nonSportSeries = new Series("Non-Sport Entries") { IsVisibleInLegend = false };
+
         private readonly GraphType _type;
 
         private readonly Func<Tuple<DateInterval, int>> _getGrouping;
 
         private readonly Func<Entry[]> _getEntries;
 
+        private readonly Func<Entry[], NonSportEntry[]> _nonSportEntries;
+
         #endregion
 
         #region Constructor
 
-        public Graph(GraphType type, Func<Entry[]> entries, Func<Tuple<DateInterval, int>> grouping)
+        public Graph(GraphType type, Func<Entry[]> entries, Func<Entry[], NonSportEntry[]> nonSportEntries, Func<Tuple<DateInterval, int>> grouping)
         {
             _getGrouping = grouping;
             _type = type;
             _getEntries = entries;
+            _nonSportEntries = nonSportEntries;
 
             Chart.ChartAreas.Add(_area);
             Chart.Legends.Add(_legend);
@@ -110,6 +116,8 @@ namespace TrainingLog.Statistics
                 x.IntervalAutoMode = IntervalAutoMode.VariableCount;
 
             // y
+            y.Minimum = _series.MinimumY;
+            y.Maximum = _series.MaximumY; 
             switch (_type)
             {
                 case GraphType.ZoneData:
@@ -117,27 +125,20 @@ namespace TrainingLog.Statistics
                     y.IntervalAutoMode = IntervalAutoMode.VariableCount;
                     y.LabelStyle.Format = "HH:mm";
                     y.Title = "Duration";
-                    y.Minimum = _series.MinimumY;
-                    y.Maximum = _series.MaximumY;
                     break;
                 case GraphType.ZoneDataArea:
                     y.IntervalType = DateTimeIntervalType.Seconds;
                     y.IntervalAutoMode = IntervalAutoMode.VariableCount;
                     y.LabelStyle.Format = "HH:mm";
                     y.Title = "Duration";
-                    y.Minimum = _series.MinimumY;
-                    y.Maximum = _series.MaximumY;
                     break;
                 case GraphType.BiodataFigures:
                     y.Interval = 5;
-                    y.Minimum = _series.MinimumY;
-                    y.Maximum = _series.MaximumY;
                     break;
                 case GraphType.Distance:
                     y.IntervalAutoMode = IntervalAutoMode.FixedCount;
                     y.Interval = 2;
                     y.Title = "Distance";
-                    y.Maximum = _series.MaximumY;
                     y.LabelStyle.Format = "{0} km";
                     break;
                 default:
@@ -166,14 +167,19 @@ namespace TrainingLog.Statistics
 
             foreach (var s in _series.Series)
                 Chart.Series.Add(s);
+            Chart.Series.Add(_nonSportSeries);
         }
 
         private void InitializeData(Entry[] entries, Tuple<DateInterval, int> grouping)
         {
             foreach (var s in _series.Series)
                 s.Points.Clear();
-
             _series.AddPoints(entries, grouping);
+
+            _nonSportSeries.Points.Clear();
+            Chart.Annotations.Clear();
+            foreach (var e in _nonSportEntries(entries))
+                e.AddEntryToChart(_area, _nonSportSeries, Chart.Annotations, _series.MinimumY);
         }
 
         public void UpdateStatistics()

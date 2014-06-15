@@ -19,7 +19,7 @@ namespace TrainingLog.Statistics
 
         public override double MinimumY
         {
-            get { throw new Exception(); }
+            get { return 0; }
         }
 
         public override double MaximumY

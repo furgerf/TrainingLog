@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using GlacialComponents.Controls;
 using TrainingLog.Entries;
 
 namespace TrainingLog.Controls
@@ -29,17 +28,19 @@ namespace TrainingLog.Controls
             }
         }
 
+        public DateTime Date { get { return dtpDate.Value; } }
+
         public int DateColumnIndex { get; set; }
 
         #endregion
 
         #region Private Fields
 
-        private Action _onFilterChanged;
+        //private Action _onFilterChanged;
         
         private bool _isMinDate;
 
-        private bool _initialized;
+        //private bool _initialized;
 
         #endregion
 
@@ -54,52 +55,49 @@ namespace TrainingLog.Controls
 
         #region Main Methods
 
-        public void Initialize(GLItemCollection list, Common.MarkItem markItem, Common.ApplyItemVisibility applyItemVisibility, int enumColumnIndex, object date = null)
-        {
-            if (date != null)
-                dtpDate.Value = (DateTime)date;
+        //public void Initialize(GLItemCollection list, Common.MarkItem markItem, Common.ApplyItemVisibility applyItemVisibility, int enumColumnIndex, object date = null)
+        //{
+        //    if (date != null)
+        //        dtpDate.Value = (DateTime)date;
 
-            _onFilterChanged = () =>
-            {
-                if (!_initialized)
-                    return;
+        //    _onFilterChanged = () =>
+        //    {
+        //        if (!_initialized)
+        //            return;
 
-                foreach (GLItem o in list)
-                    markItem(o, IsItemVisible(o));
+        //        foreach (GLItem o in list)
+        //            markItem(o, IsItemVisible(o));
                 
-                applyItemVisibility();
-            };
+        //        applyItemVisibility();
+        //    };
 
-            DateColumnIndex = enumColumnIndex;
-            _initialized = true;
-        }
+        //    DateColumnIndex = enumColumnIndex;
+        //    _initialized = true;
+        //}
 
-        public bool IsItemVisible(GLItem item)
-        {
-            DateTime? date = null;
+        //public bool IsItemVisible(GLItem item)
+        //{
+        //    DateTime? date = null;
 
-            if (item.SubItems[DateColumnIndex].Control is DateTimePicker)
-                date = (item.SubItems[DateColumnIndex].Control as DateTimePicker).Value;
+        //    if (item.SubItems[DateColumnIndex].Control is DateTimePicker)
+        //        date = (item.SubItems[DateColumnIndex].Control as DateTimePicker).Value;
 
-            //if (item.SubItems[DateColumnIndex].Control is ColorDatePicker)
-            //    date = (item.SubItems[DateColumnIndex].Control as ColorDatePicker).Value;
+        //    if (date == null)
+        //        throw new Exception("Don\'t know where the date control is!");
 
-            if (date == null)
-                throw new Exception("Don\'t know where the date control is!");
-
-            return (dtpDate.Value.CompareTo(date) == 0) || (dtpDate.Value.CompareTo(date) < 0 ^ !IsMinDate);
-        }
+        //    return (dtpDate.Value.CompareTo(date) == 0) || (dtpDate.Value.CompareTo(date) < 0 ^ !IsMinDate);
+        //}
 
         public bool IsEntryVisible(Entry entry)
         {
             return (dtpDate.Value.CompareTo(entry.Date) == 0) || (dtpDate.Value.CompareTo(entry.Date) < 0 ^ !IsMinDate);
         }
 
-        public void ApplyFilter()
-        {
-            if (_onFilterChanged != null)
-                _onFilterChanged();
-        }
+        //public void ApplyFilter()
+        //{
+        //    if (_onFilterChanged != null)
+        //        _onFilterChanged();
+        //}
 
         public Control GetControl()
         {

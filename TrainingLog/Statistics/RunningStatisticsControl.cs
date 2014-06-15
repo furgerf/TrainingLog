@@ -55,10 +55,7 @@ namespace TrainingLog.Statistics
                 YAxisType = AxisType.Secondary,
                 Color = Color.Blue
             });
-            chaTotals.Series.Add(new Series("Non-Sport")
-            {
-                XValueType = ChartValueType.Date,
-            });
+            chaTotals.Series.Add(new Series("Non-Sport"));
             chaTotals.ChartAreas[0].AxisX = new Axis(chaTotals.ChartAreas[0], AxisName.X)
                                                 {
                                                     Title = "Date",
@@ -150,7 +147,7 @@ namespace TrainingLog.Statistics
                 throw new Exception();
 
             var entries = GetEntries();
-            var nonSportEntries = Model.Instance.NonSportEntries;
+            var nonSportEntries = Common.NonSportEntries(entries.Cast<Entry>().ToArray());
 
             // cleanup
             foreach (var s in chaTotals.Series)
