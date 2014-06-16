@@ -62,8 +62,8 @@ namespace TrainingLog.Entries
             if (Date == null)
                 throw new Exception();
 
-            var p1 = new DataPoint(Date.Value.ToOADate(), y);
-            var p2 = new DataPoint(GetEndDate.AddDays(1).ToOADate(), y);
+            var p1 = new DataPoint(Date.Value.AddDays(-1).ToOADate(), y);
+            var p2 = new DataPoint(GetEndDate.ToOADate(), y);
 
             series.Points.Add(p1);
             series.Points.Add(p2);
@@ -84,10 +84,10 @@ namespace TrainingLog.Entries
                 CalloutStyle = CalloutStyle.RoundedRectangle,
                 ForeColor = DrawColor ?? Color.Red,
                 LineColor = DrawColor ?? Color.Red,
-                BackColor = Color.Transparent,
+                //BackColor = Color.Transparent,
                 Font = new Font(FontFamily.GenericSansSerif, 8, FontStyle.Bold),
-                SmartLabelStyle = { MovingDirection = LabelAlignmentStyles.Top, IsMarkerOverlappingAllowed = true, AllowOutsidePlotArea = LabelOutsidePlotAreaStyle.Yes, MaxMovingDistance = 100 },
-                AnchorAlignment = ContentAlignment.BottomCenter,
+                SmartLabelStyle = { IsMarkerOverlappingAllowed = true, AllowOutsidePlotArea = LabelOutsidePlotAreaStyle.Yes, MaxMovingDistance = 100, IsOverlappedHidden = false, MovingDirection = LabelAlignmentStyles.Bottom | LabelAlignmentStyles.BottomLeft | LabelAlignmentStyles.BottomRight },
+                AnchorAlignment = ContentAlignment.TopCenter,
                 ToolTip = (Note ?? "ERROR: NOT SET")  + "\n(" + Date.Value.ToShortDateString() + " - " + GetEndDate.ToShortDateString() + ")",
                 Alignment = ContentAlignment.MiddleCenter
             };

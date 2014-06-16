@@ -172,24 +172,27 @@ namespace TrainingLog.Forms
                     Common.NonSportEntries,
                     () => new Tuple<DateInterval, int>(DateInterval.Day, 1))
                     { Title = "Resting Heart Rate per day" }, 
-
                 new Graph(Graph.GraphType.Distance,
                     () => Model.Instance.TrainingEntries.Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te)).Where(te => te.DistanceMSpecified).OrderBy(te => te.Date).Cast<Entry>().ToArray(),
                     Common.NonSportEntries,
                     () => GroupingInterval)
                     { Title = "Distance" },
-            
                 new Graph(Graph.GraphType.ZoneData, 
                     () => Model.Instance.TrainingEntries.Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te)).Where(te => te.HrZoneStringSpecified).OrderBy(te => te.Date).Cast<Entry>().ToArray(),   
                     Common.NonSportEntries,
                     () => new Tuple<DateInterval, int>(DateInterval.Day, 1))
                     { Title = "Zone Data per training" },
-
                 new Graph(Graph.GraphType.ZoneDataArea, 
                     () => Model.Instance.TrainingEntries.Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te)).Where(te => te.HrZoneStringSpecified).OrderBy(te => te.Date).Cast<Entry>().ToArray(),   
                     Common.NonSportEntries,
                     () => GroupingInterval)
-                    { Title = "Zone Data area" }
+                    { Title = "Zone Data area" },
+                new Graph(Graph.GraphType.Feeling, 
+                    () => Model.Instance.BiodataEntries.Except((from te in Model.Instance.BiodataEntries from f in _filters where !f.IsEntryVisible(te) select te)).Cast<Entry>().Concat(
+                        Model.Instance.TrainingEntries.Where(e => e.Date >= Model.Instance.BiodataEntries.First().Date).Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te))).OrderBy(te => te.Date).ToArray(),
+                    Common.NonSportEntries,
+                    () => new Tuple<DateInterval, int>(DateInterval.Day, 1))
+                    { Title = "Feeling" },
             };
         }
 

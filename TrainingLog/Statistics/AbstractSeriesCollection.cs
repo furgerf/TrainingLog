@@ -33,6 +33,8 @@ namespace TrainingLog.Statistics
                     return new BiodataFiguresSeriesCollection();
                 case Graph.GraphType.Distance:
                     return new DistanceSeriesCollection();
+                case Graph.GraphType.Feeling:
+                    return new FeelingSeriesCollection();
                 default:
                     throw new ArgumentOutOfRangeException("type");
             }

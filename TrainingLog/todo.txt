@@ -9,5 +9,10 @@
 	2			2		Get the TrainingLogForm to load faster
 	4			2		Add events to model and update forms with events
 	3			2		Add form to manage non-sport entries
+	2			1		Determine min/max in SeriesCollection depending on the interval, possibly in AbstractSeriesCollection
+	2			3		Add zooming/scrolling functionality to charts
+	1			1		Running Stats: Merge different charts into one, with multiple chartareas
+	1			3		Add tooltips to the charts
+
 
 

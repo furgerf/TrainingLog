@@ -101,6 +101,7 @@
     <Compile Include="Controls\TimeSpanTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Statistics\FeelingSeriesCollection.cs" />
     <Compile Include="Statistics\DistanceSeriesCollection.cs" />
     <Compile Include="Statistics\IStatisticsPage.cs" />
     <Compile Include="Statistics\RunningStatisticsControl.cs">

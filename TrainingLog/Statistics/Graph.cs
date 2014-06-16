@@ -15,7 +15,8 @@ namespace TrainingLog.Statistics
             ZoneData,
             ZoneDataArea,
             BiodataFigures,
-            Distance
+            Distance,
+            Feeling
         }
 
         #endregion
@@ -28,8 +29,8 @@ namespace TrainingLog.Statistics
             set
             {
                 _title = value;
-                if (Chart.Titles.Count > 0) Chart.Titles.RemoveAt(0);
-                Chart.Titles.Add(_title);
+                //if (Chart.Titles.Count > 0) Chart.Titles.RemoveAt(0);
+                //Chart.Titles.Add(_title);
             }
         }
 
@@ -134,12 +135,39 @@ namespace TrainingLog.Statistics
                     break;
                 case GraphType.BiodataFigures:
                     y.Interval = 5;
+                    Chart.Legends[0].LegendStyle = LegendStyle.Row;
+                    Chart.Legends[0].Alignment = StringAlignment.Center;
+                    Chart.Legends[0].Docking = Docking.Top;
+                    break;
+                case GraphType.Feeling:
+                    y.IntervalAutoMode = IntervalAutoMode.FixedCount;
+                    y.Interval = 1;
+                    y.Title = "Time";
+                    y.LabelStyle.Format = "{0} hr";
+                    y.TitleForeColor = Color.Red;
+                    y.MajorGrid.LineColor = Color.Red;
+                    y.IntervalAutoMode = IntervalAutoMode.FixedCount;
+
+                    Chart.ChartAreas[0].AxisY2 = new Axis(Chart.ChartAreas[0], AxisName.Y2)
+                    {
+                        Title = "Heart Rate",
+                        IntervalType = DateTimeIntervalType.Number,
+                        TitleForeColor = Color.Blue,
+                        MajorGrid = { LineColor = Color.Blue },
+                        IntervalAutoMode = IntervalAutoMode.FixedCount,
+                        Interval = 5,
+                        IntervalOffset = 40,
+                        Maximum = 65
+                    };
                     break;
                 case GraphType.Distance:
                     y.IntervalAutoMode = IntervalAutoMode.FixedCount;
                     y.Interval = 2;
                     y.Title = "Distance";
                     y.LabelStyle.Format = "{0} km";
+                    Chart.Legends[0].LegendStyle = LegendStyle.Row;
+                    Chart.Legends[0].Alignment = StringAlignment.Center;
+                    Chart.Legends[0].Docking = Docking.Top;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("grouping");
