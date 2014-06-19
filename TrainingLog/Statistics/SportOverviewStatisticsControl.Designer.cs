@@ -1,6 +1,6 @@
 ﻿namespace TrainingLog.Statistics
 {
-    partial class RunningStatisticsControl
+    partial class SportOverviewStatisticsControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -160,7 +160,7 @@
             this.chaMonthlyHeartZones.TabIndex = 0;
             this.chaMonthlyHeartZones.Text = "chart2";
             // 
-            // RunningStatisticsControl
+            // SportOverviewStatisticsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -169,9 +169,9 @@
             this.Controls.Add(this.grpHeartZones);
             this.Controls.Add(this.grpTrainingTypes);
             this.Controls.Add(this.grpTotals);
-            this.Name = "RunningStatisticsControl";
+            this.Name = "SportOverviewStatisticsControl";
             this.Size = new System.Drawing.Size(872, 497);
-            this.Resize += new System.EventHandler(this.RunningStatisticsControlResize);
+            this.Resize += new System.EventHandler(this.SportOverviewStatisticsControlResize);
             this.grpTotals.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.chaTotals)).EndInit();
             this.grpTrainingTypes.ResumeLayout(false);

@@ -200,7 +200,9 @@ namespace TrainingLog.Forms
         {
             return new IStatisticsPage[]
                        {
-                           new RunningStatisticsControl { GetEntries = () => Model.Instance.TrainingEntries.Where(e => e.Sport == Common.Sport.Running).OrderBy(e => e.Date).ToArray()}
+                           new SportOverviewStatisticsControl { GetEntries = () => Model.Instance.TrainingEntries.Where(e => e.Sport == Common.Sport.Running).OrderBy(e => e.Date).ToArray(), Sport = Common.Sport.Running},
+                           new SportOverviewStatisticsControl { GetEntries = () => Model.Instance.TrainingEntries.Where(e => e.Sport == Common.Sport.Cycling).OrderBy(e => e.Date).ToArray(), Sport = Common.Sport.Cycling},
+                           new SportOverviewStatisticsControl { GetEntries = () => Model.Instance.TrainingEntries.Where(e => e.Sport == Common.Sport.Squash).OrderBy(e => e.Date).ToArray(), Sport = Common.Sport.Squash}
                        };
         }
 

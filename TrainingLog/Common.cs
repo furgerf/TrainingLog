@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -55,11 +56,8 @@ namespace TrainingLog
 
         public static readonly TrainingType[] AllTypes = EnduranceTypes.Concat(SquashTypes).ToArray();
 
-        public static Color[] EnduranceTypeColors = new[]
-                                                        {
-                                                            Color.LightGray, Color.Red, Color.DarkOliveGreen, Color.SteelBlue, Color.Goldenrod, Color.MediumPurple, Color.SaddleBrown, Color.LightGreen
-                                                        };
-
+        private static readonly Dictionary<TrainingType, Color> TrainingTypeColors = new Dictionary<TrainingType, Color> { { TrainingType.Easy, Color.LightGray }, { TrainingType.Interval, Color.Red }, { TrainingType.Fartlek, Color.DarkOliveGreen }, { TrainingType.Base, Color.SteelBlue }, { TrainingType.Long, Color.Goldenrod }, { TrainingType.Tempo, Color.MediumPurple }, { TrainingType.Mountain, Color.SaddleBrown }, { TrainingType.Other, Color.LightGreen }, { TrainingType.Solo, Color.RoyalBlue }, { TrainingType.Training, Color.DarkOrange }, { TrainingType.Club, Color.Green }, { TrainingType.Match, Color.MediumVioletRed } }; 
+            
         #endregion
 
         #region Constants
@@ -129,17 +127,12 @@ namespace TrainingLog
 
         public static Color[] GetTrainingTypeColors(Sport sport)
         {
-            switch (sport)
-            {
-                case Sport.Running:
-                case Sport.Cycling:
-                    var res = EnduranceTypeColors;
-                    if (res.Length != EnduranceTypes.Length)
-                        throw new Exception();
-                    return res;
-                default:
-                    throw new ArgumentOutOfRangeException("sport");
-            }
+            var tt = GetTrainingTypes(sport);
+            var res = new Color[tt.Length];
+            for (var i = 0; i < tt.Length; i++)
+                res[i] = TrainingTypeColors[tt[i]];
+
+            return res;
         }
 
         #endregion

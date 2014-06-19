@@ -104,11 +104,11 @@
     <Compile Include="Statistics\FeelingSeriesCollection.cs" />
     <Compile Include="Statistics\DistanceSeriesCollection.cs" />
     <Compile Include="Statistics\IStatisticsPage.cs" />
-    <Compile Include="Statistics\RunningStatisticsControl.cs">
+    <Compile Include="Statistics\SportOverviewStatisticsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Statistics\RunningStatisticsControl.Designer.cs">
-      <DependentUpon>RunningStatisticsControl.cs</DependentUpon>
+    <Compile Include="Statistics\SportOverviewStatisticsControl.Designer.cs">
+      <DependentUpon>SportOverviewStatisticsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Statistics\ZoneDataAreaSeriesCollection.cs" />
     <Compile Include="Statistics\Graph.cs" />
@@ -188,8 +188,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Statistics\RunningStatisticsControl.resx">
-      <DependentUpon>RunningStatisticsControl.cs</DependentUpon>
+    <EmbeddedResource Include="Statistics\SportOverviewStatisticsControl.resx">
+      <DependentUpon>SportOverviewStatisticsControl.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

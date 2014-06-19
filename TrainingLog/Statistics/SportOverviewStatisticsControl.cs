@@ -8,7 +8,7 @@ using TrainingLog.Entries;
 
 namespace TrainingLog.Statistics
 {
-    public partial class RunningStatisticsControl : UserControl, IStatisticsPage
+    public partial class SportOverviewStatisticsControl : UserControl, IStatisticsPage
     {
         #region Fields
 
@@ -26,15 +26,13 @@ namespace TrainingLog.Statistics
 
         private const int SeriesHeartZones = 0;
 
-        #endregion
-
-        #region Constructor
-
-        public RunningStatisticsControl()
+        public Common.Sport Sport { get { return _sport; } set
         {
-            InitializeComponent();
+            if (_sport != Common.Sport.Count)
+                throw new Exception("Only set sport once");
+            _sport = value;
 
-            Name = "Running Overview";
+            Name = _sport.ToString() + " Overview";
 
             // totals
             chaTotals.Series.Add(new Series("Distance")
@@ -57,45 +55,45 @@ namespace TrainingLog.Statistics
             });
             chaTotals.Series.Add(new Series("Non-Sport"));
             chaTotals.ChartAreas[0].AxisX = new Axis(chaTotals.ChartAreas[0], AxisName.X)
-                                                {
-                                                    Title = "Date",
-                                                    IntervalAutoMode = IntervalAutoMode.FixedCount,
-                                                    IntervalType = DateTimeIntervalType.Weeks,
-                                                    Interval = 2
-                                                };
+            {
+                Title = "Date",
+                IntervalAutoMode = IntervalAutoMode.FixedCount,
+                IntervalType = DateTimeIntervalType.Weeks,
+                Interval = 2
+            };
             chaTotals.ChartAreas[0].AxisY = new Axis(chaTotals.ChartAreas[0], AxisName.Y)
-                                                {
-                                                    Title = "Distance",
-                                                    TitleForeColor = Color.Red,
-                                                    IntervalAutoMode = IntervalAutoMode.FixedCount,
-                                                    Interval = 100,
-                                                    MajorGrid = { LineColor = Color.Red },
-                                                    LabelStyle = { Format = "{0} km" }
-                                                };
+            {
+                Title = "Distance",
+                TitleForeColor = Color.Red,
+                IntervalAutoMode = IntervalAutoMode.FixedCount,
+                Interval = 100,
+                MajorGrid = { LineColor = Color.Red },
+                LabelStyle = { Format = "{0} km" }
+            };
             chaTotals.ChartAreas[0].AxisY2 = new Axis(chaTotals.ChartAreas[0], AxisName.Y2)
-                                                 {
-                                                     Title = "Time",
-                                                     IntervalType = DateTimeIntervalType.Number,
-                                                     TitleForeColor = Color.Blue,
-                                                     MajorGrid = { LineColor = Color.Blue },
-                                                     IntervalAutoMode = IntervalAutoMode.FixedCount,
-                                                     Interval = 12,
-                                                     LabelStyle = { Format = "{0} h" }
-                                                 };
+            {
+                Title = "Time",
+                IntervalType = DateTimeIntervalType.Number,
+                TitleForeColor = Color.Blue,
+                MajorGrid = { LineColor = Color.Blue },
+                IntervalAutoMode = IntervalAutoMode.FixedCount,
+                Interval = 12,
+                LabelStyle = { Format = "{0} h" }
+            };
 
             // training types
             chaTrainingTypes.Series.Add(new Series("Training Types") { ChartType = SeriesChartType.Pie });
             chaTrainingTypes.Series[SeriesTrainingTypes]["PieLabelStyle"] = "Inside";
-            
+
             // hr zones
             chaHeartZones.Series.Add(new Series("Heart Rate Zones") { ChartType = SeriesChartType.Pie });
             chaHeartZones.Series[SeriesHeartZones]["PieLabelStyle"] = "Inside";
 
             // monthly training types
-            var trainingTypeColors = Common.GetTrainingTypeColors(Common.Sport.Running);
-            for (var i = 0; i < Common.GetTrainingTypes(Common.Sport.Running).Length; i++)
+            var trainingTypeColors = Common.GetTrainingTypeColors(_sport);
+            for (var i = 0; i < Common.GetTrainingTypes(_sport).Length; i++)
                 chaMonthlyTrainingTypes.Series.Add(
-                    new Series(Common.GetTrainingTypes(Common.Sport.Running)[i].ToString())
+                    new Series(Common.GetTrainingTypes(_sport)[i].ToString())
                     {
                         XValueType = ChartValueType.Date,
                         YValueType = ChartValueType.Int32,
@@ -117,12 +115,12 @@ namespace TrainingLog.Statistics
             // monthly hr zones
             for (var i = 0; i < 5; i++)
                 chaMonthlyHeartZones.Series.Add(new Series("Zone " + (i + 1))
-                        {
-                            XValueType = ChartValueType.Date,
-                            YValueType = ChartValueType.Double,
-                            ChartType = SeriesChartType.StackedColumn,
-                            Color = ZoneDataBox.ZoneColors[i]
-                        });
+                {
+                    XValueType = ChartValueType.Date,
+                    YValueType = ChartValueType.Double,
+                    ChartType = SeriesChartType.StackedColumn,
+                    Color = ZoneDataBox.ZoneColors[i]
+                });
             chaMonthlyHeartZones.ChartAreas[0].AxisX = new Axis(chaMonthlyHeartZones.ChartAreas[0], AxisName.X)
             {
                 IntervalAutoMode = IntervalAutoMode.FixedCount,
@@ -132,9 +130,21 @@ namespace TrainingLog.Statistics
             chaMonthlyHeartZones.ChartAreas[0].AxisY = new Axis(chaMonthlyHeartZones.ChartAreas[0], AxisName.Y)
             {
                 IntervalAutoMode = IntervalAutoMode.FixedCount,
-                LabelStyle = { Format = "{0} h"},
+                LabelStyle = { Format = "{0} h" },
                 Interval = 5
             };
+
+        } }
+
+        private Common.Sport _sport = Common.Sport.Count;
+
+        #endregion
+
+        #region Constructor
+
+        public SportOverviewStatisticsControl()
+        {
+            InitializeComponent();
         }
 
         #endregion
@@ -143,7 +153,7 @@ namespace TrainingLog.Statistics
 
         public void UpdateStatistics()
         {
-            if (GetEntries == null)
+            if (GetEntries == null || _sport == Common.Sport.Count)
                 throw new Exception();
 
             var entries = GetEntries();
@@ -180,14 +190,15 @@ namespace TrainingLog.Statistics
                 e.AddEntryToChart(chaTotals.ChartAreas[0], chaTotals.Series[SeriesTotalsNonSport], chaTotals.Annotations);
 
             // training types
-            var types = Common.GetTrainingTypes(Common.Sport.Running);
-            var trainingTypeColors = Common.GetTrainingTypeColors(Common.Sport.Running);
+            var types = Common.GetTrainingTypes(_sport);
+            var trainingTypeColors = Common.GetTrainingTypeColors(_sport);
             var count = new int[types.Length];
             foreach (var e in entries)
                 count[Array.IndexOf(types, e.TrainingType)]++;
 
             for (var i = 0; i < types.Length; i++)
-                chaTrainingTypes.Series[SeriesTrainingTypes].Points.Add(new DataPoint(0, count[i]) { Label = Enum.GetName(typeof(Common.TrainingType), types[i]) + ": " + count[i] + " (" + Math.Round((double)count[i]/count.Sum()*100, 1) + "%)", Color = trainingTypeColors[i] });
+                if (count[i] > 0)
+                    chaTrainingTypes.Series[SeriesTrainingTypes].Points.Add(new DataPoint(0, count[i]) { Label = Enum.GetName(typeof(Common.TrainingType), types[i]) + ": " + count[i] + " (" + Math.Round((double)count[i]/count.Sum()*100, 1) + "%)", Color = trainingTypeColors[i] });
 
             // heart rate zones
             var zd = ZoneData.Empty();
@@ -247,7 +258,7 @@ namespace TrainingLog.Statistics
 
         #region Event Handling
 
-        private void RunningStatisticsControlResize(object sender, EventArgs e)
+        private void SportOverviewStatisticsControlResize(object sender, EventArgs e)
         {
             grpTotals.Location = new Point(Padding, Padding);
             grpTotals.Size = new Size(Size.Width/2 - grpTotals.Location.X - Padding,
