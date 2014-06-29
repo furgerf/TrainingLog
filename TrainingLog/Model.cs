@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,8 @@ namespace TrainingLog
     public class Model
     {
         #region Public Fields
+
+        public event EventHandler<EntryChangedEventArgs> EntriesChanged;
 
         public static Model Instance { get { return _instance ?? (_instance = new Model()); } }
 
@@ -51,6 +54,9 @@ namespace TrainingLog
             _entries.Remove(entry);
 
             WriteEntries();
+
+            if (EntriesChanged != null)
+                EntriesChanged(this, new EntryChangedEventArgs(false, entry));
         }
 
         public void AddEntry(Entry entry)
@@ -58,11 +64,14 @@ namespace TrainingLog
             _entries.Add(entry);
 
             WriteEntries();
+
+            if (EntriesChanged != null)
+                EntriesChanged(this, new EntryChangedEventArgs(true, entry));
         }
 
         public void WriteEntries(string path = null)
         {
-            using (var tw = new StreamWriter(path ?? MainForm.GetInstance.Settings.DataPath))
+            using (var tw = new StreamWriter(path ?? MainForm.Instance.Settings.DataPath))
             {
                 var ser = new XmlSerializer(typeof(EntryList));
                 ser.Serialize(tw, new EntryList(TrainingEntries, BiodataEntries, NonSportEntries));
@@ -74,7 +83,7 @@ namespace TrainingLog
             _entries.Clear();
 
             var serializer = new XmlSerializer(typeof (EntryList));
-            using (var stringReader = new StringReader(File.ReadAllText(MainForm.GetInstance.Settings.DataPath)))
+            using (var stringReader = new StringReader(File.ReadAllText(MainForm.Instance.Settings.DataPath)))
             using (var reader = XmlReader.Create(stringReader))
             {
                 _entries.AddRange(((EntryList) serializer.Deserialize(reader)).AllEntries);

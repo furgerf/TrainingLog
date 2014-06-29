@@ -180,8 +180,8 @@ namespace TrainingLog.Controls
                                                                      return;
 
                                                                  if (form is TrainingEntryForm)
-                                                                     controls = TrainingLogForm.GetInstance.ControlsForTrainingEntry(newEntry as TrainingEntry);
-                                                                 else controls = TrainingLogForm.GetInstance.ControlsForBiodataEntry(newEntry as BiodataEntry);
+                                                                     controls = TrainingLogForm.Instance.ControlsForTrainingEntry(newEntry as TrainingEntry);
+                                                                 else controls = TrainingLogForm.Instance.ControlsForBiodataEntry(newEntry as BiodataEntry);
 
                                                                  Model.Instance.RemoveEntry(entry);
                                                                  AddEntry(controls, newEntry);
@@ -222,6 +222,9 @@ namespace TrainingLog.Controls
 
         private void EntryListControlSizeChanged(object sender, EventArgs e)
         {
+            if (Columns == null)
+                return;
+
             grpEntries.Location = new Point(grpEntries.Location.X, false ? grpFilter.Height : 0);
 
             var listHeight = Height - grpEntries.Location.X - grpEntries.Location.X;

@@ -13,7 +13,7 @@ namespace TrainingLog.Forms
     {
         #region Public Fields
 
-        public static StatisticsForm GetInstance
+        public static StatisticsForm Instance
         {
             get { return _instance ?? (_instance = new StatisticsForm()); }
         }
@@ -58,7 +58,7 @@ namespace TrainingLog.Forms
 
         #region Constructor
        
-        public StatisticsForm()
+        private StatisticsForm()
         {
             // forms
             InitializeComponent();
@@ -84,13 +84,31 @@ namespace TrainingLog.Forms
                                                         _pages[tabTabs.SelectedIndex].UpdateStatistics();
                                                         _dirtyPages[tabTabs.SelectedIndex] = false;
                                                 };
+
+            // TODO: make updating more fine-grained using the event args
+            Model.Instance.EntriesChanged += (s, e) =>
+            {
+                if (Visible)
+                    UpdateData();
+                else
+                {
+                    EventHandler updateData = null;
+
+                    updateData = (ss, ee) =>
+                    {
+                        UpdateData();
+                        VisibleChanged -= updateData;
+                    };
+                    VisibleChanged += (ss, ee) => updateData(ss, ee);
+                }
+            };
         }
 
         #endregion
 
         #region Main Methods
 
-        public void UpdateData(object sender = null, EventArgs e = null)
+        private void UpdateData(object sender = null, EventArgs e = null)
         {
             if (tabTabs.Controls.Count == 0)
                 return;
@@ -214,10 +232,10 @@ namespace TrainingLog.Forms
         {
             Hide();
 
-            MainForm.GetInstance.Show();
-            MainForm.GetInstance.BringToFront();
+            MainForm.Instance.Show();
+            MainForm.Instance.BringToFront();
 
-            e.Cancel = !MainForm.GetInstance.CloseForms;
+            e.Cancel = !MainForm.Instance.CloseForms;
         }
 
         private void StatisticsFormKeyDown(object sender, KeyEventArgs e)

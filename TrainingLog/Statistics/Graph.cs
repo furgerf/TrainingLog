@@ -196,6 +196,40 @@ namespace TrainingLog.Statistics
             foreach (var s in _series.Series)
                 Chart.Series.Add(s);
             Chart.Series.Add(_nonSportSeries);
+
+
+
+            Chart.DoubleClick += (s, e) => _area.AxisX.ScaleView.ZoomReset(0);
+
+            _area.AxisX.ScrollBar.Enabled = false;
+            _area.AxisX.ScaleView.Zoomable = true;
+            _area.AxisY.ScaleView.Zoomable = false;
+
+
+            _area.CursorX.AutoScroll = true;
+            _area.CursorY.AutoScroll = false;
+
+            _area.CursorX.IsUserEnabled = true;
+            _area.CursorY.IsUserEnabled = true;
+            _area.CursorX.IsUserSelectionEnabled = true;
+
+            _area.CursorX.LineWidth = 3;
+            _area.CursorY.LineWidth = 3;
+
+            _area.CursorX.LineColor = Color.DarkRed;
+            _area.CursorY.LineColor = Color.DarkRed;
+
+            _area.CursorX.SelectionColor = Color.LightYellow;
+
+            _area.CursorX.Interval = _area.AxisX.Interval;
+            _area.CursorY.Interval = _area.AxisY.Interval;
+
+            Chart.MouseMove += (s, e) =>
+                                   {
+                                       var p = new Point(e.X, e.Y);
+                                       _area.CursorX.SetCursorPixelPosition(p, true);
+                                       _area.CursorY.SetCursorPixelPosition(p, true);
+                                   };
         }
 
         private void InitializeData(Entry[] entries, Tuple<DateInterval, int> grouping)

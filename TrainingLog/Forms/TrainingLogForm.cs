@@ -13,7 +13,7 @@ namespace TrainingLog.Forms
     {
         #region Public Fields
 
-        public static TrainingLogForm GetInstance
+        public static TrainingLogForm Instance
         {
             get { return _instance ?? (_instance = new TrainingLogForm()); }
         }
@@ -75,7 +75,7 @@ namespace TrainingLog.Forms
 
         #region Constructor
 
-        public TrainingLogForm()
+        private TrainingLogForm()
         {
             InitializeComponent();
 
@@ -95,6 +95,24 @@ namespace TrainingLog.Forms
 
             //_elcTraining.AddFilter(new DateFilterControl { Location = new Point(3, 16), IsMinDate = true }, 0, DateTime.Today.Subtract(new TimeSpan(10, 0, 0, 0)));
             //_elcTraining.AddFilter(new DateFilterControl { Location = new Point(140, 16), IsMinDate = false }, 0);
+
+            // TODO: make updating more fine-grained using the event args
+            Model.Instance.EntriesChanged += (s, e) =>
+                                                 {
+                                                     if (Visible)
+                                                         UpdateData();
+                                                     else
+                                                     {
+                                                         EventHandler updateData = null;
+
+                                                         updateData = (ss, ee) =>
+                                                                          {
+                                                                              UpdateData();
+                                                                              VisibleChanged -= updateData;
+                                                                          };
+                                                         VisibleChanged += (ss, ee) => updateData(ss, ee);
+                                                     }
+                                                 };
         }
 
         #endregion
@@ -281,7 +299,7 @@ namespace TrainingLog.Forms
             throw new NotImplementedException();
         }
 
-        public void UpdateData()
+        private void UpdateData()
         {
             _trainingdataAdded = false;
             _biodataAdded = false;
@@ -299,10 +317,10 @@ namespace TrainingLog.Forms
         {
             Hide();
 
-            MainForm.GetInstance.Show();
-            MainForm.GetInstance.BringToFront();
+            MainForm.Instance.Show();
+            MainForm.Instance.BringToFront();
 
-            e.Cancel = !MainForm.GetInstance.CloseForms;
+            e.Cancel = !MainForm.Instance.CloseForms;
         }
 
         private void TrainingLogFormKeyDown(object sender, KeyEventArgs e)

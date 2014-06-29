@@ -85,6 +85,8 @@ namespace TrainingLog.Statistics
 
         public override void AddPoints(Entry[] entries, Tuple<DateInterval, int> grouping)
         {
+            var trainingDates = new Dictionary<DateTime, double>();
+
             foreach (var e in entries)
             {
                 if (e is BiodataEntry)
@@ -95,7 +97,7 @@ namespace TrainingLog.Statistics
                         var rhr = be.RestingHeartRate ?? int.MaxValue;
                         _series[RestingHrSeries].Points.Add(new DataPoint((be.Date ?? DateTime.MaxValue).ToOADate(), rhr)
                                                                 {
-                                                                    Color = TrainingLogForm.GetColor((double)(be.Feeling ?? Common.Index.Count) / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green),
+                                                                    Color = be.Feeling == Common.Index.None ? Color.Gray : TrainingLogForm.GetColor((double)(be.Feeling ?? Common.Index.Count) / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green),
                                                                     Label = be.Note ?? "",
                                                                     LabelAngle = 90
                                                                 });
@@ -119,15 +121,15 @@ namespace TrainingLog.Statistics
                     if (te.Duration == null)
                         throw new Exception();
 
-                    var sameX = _series[TrainingSeries].Points.LastOrDefault(tee => tee.XValue == (te.Date ?? DateTime.MaxValue).ToOADate());
+                    var offset = trainingDates.ContainsKey((te.Date ?? DateTime.MaxValue).Date) ? trainingDates[(te.Date ?? DateTime.MaxValue).Date] : 0;
 
-                    _series[TrainingSeries].Points.Add(new DataPoint((te.Date ?? DateTime.MaxValue).ToOADate(), te.Duration.Value.TotalHours + (sameX == null ? 0 : sameX.YValues[0])) { Color = te.Feeling == Common.Index.None ? Color.Gray : TrainingLogForm.GetColor((double)(te.Feeling ?? Common.Index.Count) / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) });
+                    // insert instead of add so that earlier (shorter) DPs aren't hidden
+                    _series[TrainingSeries].Points.Insert(0, new DataPoint((te.Date ?? DateTime.MaxValue).Date.ToOADate(), te.Duration.Value.TotalHours + offset) { Color = te.Feeling == Common.Index.None ? Color.Gray : TrainingLogForm.GetColor((double)(te.Feeling ?? Common.Index.Count) / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green) });
 
-                    if (sameX != null)
-                    {
-                        _series[TrainingSeries].Points.Remove(sameX);
-                        _series[TrainingSeries].Points.Add(sameX);
-                    }
+                    if (offset > 0)
+                        trainingDates[(te.Date ?? DateTime.MaxValue).Date] += te.Duration.Value.TotalHours;
+                    else
+                        trainingDates.Add((te.Date ?? DateTime.MaxValue).Date, te.Duration.Value.TotalHours);
                 }
                 else throw new Exception();
             }

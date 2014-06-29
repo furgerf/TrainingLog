@@ -9,7 +9,7 @@ namespace TrainingLog.Forms
     {
         #region Static Access
 
-        public static SettingsForm GetInstance
+        public static SettingsForm Instance
         {
             get { return _instance ?? (_instance = new SettingsForm()); }
         }
@@ -18,11 +18,11 @@ namespace TrainingLog.Forms
 
         #endregion
 
-        private Settings _settings { get { return MainForm.GetInstance.Settings; } }
+        private Settings _settings { get { return MainForm.Instance.Settings; } }
 
         #region Constructor
 
-        public SettingsForm()
+        private SettingsForm()
         {
             InitializeComponent();
 
@@ -37,10 +37,10 @@ namespace TrainingLog.Forms
         {
             Hide();
 
-            MainForm.GetInstance.Show();
-            MainForm.GetInstance.BringToFront();
+            MainForm.Instance.Show();
+            MainForm.Instance.BringToFront();
 
-            e.Cancel = !MainForm.GetInstance.CloseForms;
+            e.Cancel = !MainForm.Instance.CloseForms;
         }
 
         private void SettingsFormKeyDown(object sender, KeyEventArgs e)

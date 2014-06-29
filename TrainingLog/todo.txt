@@ -1,18 +1,26 @@
 ﻿Urgency		Workload	What?
 --------------------------------------------------------------------------------------------------------------------------------------------------
-	1			4		Add more statistics
-	1			2		Move some settings to settings form
-	2			3		Implement race entries
-	3			4		Re-check filter concept
-	1			2		Import data-over-time from PPT
-	1			1		Add a few icons...
-	2			2		Get the TrainingLogForm to load faster
-	4			2		Add events to model and update forms with events
-	3			2		Add form to manage non-sport entries
-	2			1		Determine min/max in SeriesCollection depending on the interval, possibly in AbstractSeriesCollection
-	2			3		Add zooming/scrolling functionality to charts
+Statistics
+	1			4		Add more statistics	
 	1			1		Running Stats: Merge different charts into one, with multiple chartareas
 	1			3		Add tooltips to the charts
 	2			4		Make axis intervals/max/min dynamic everywhere
+	1			4		Overview stats: Make one really big graph and enlarge other graphs when clicked
 
+Settings
+	1			2		Move some settings to settings form
+
+Race Entries
+	2			3		Implement race entries
+
+General
+	3			4		Re-check filter concept
+	1			2		Import data-over-time from PPT (?)
+	1			1		Add a few icons...
+
+TrainingLogForm
+	2			2		Get the TrainingLogForm to load faster
+
+NonSportEntries
+	3			2		Add form to manage non-sport entries
 

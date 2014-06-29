@@ -162,22 +162,23 @@ namespace TrainingLog.Statistics
                 }
 
                 if (be.NigglesSpecified)
-                    _series[NiggleSeries].Points.Add(new DataPoint((be.Date ?? DateTime.MaxValue).ToOADate(), lastNiggleSpecified--) { Label = be.Niggles });
+                    _series[NiggleSeries].Points.Add(new DataPoint((be.Date ?? DateTime.MaxValue).ToOADate(), lastNiggleSpecified++) { Label = be.Niggles });
                 else
                     lastNiggleSpecified = 0;
-
+                lastNiggleSpecified %= 4;
 
                 if (be.NoteSpecified)
-                    _series[NoteSeries].Points.Add(new DataPoint((be.Date ?? DateTime.MaxValue).ToOADate(), lastNoteSpecified--) { Label = be.Note });
+                    _series[NoteSeries].Points.Add(new DataPoint((be.Date ?? DateTime.MaxValue).ToOADate(), lastNoteSpecified++) { Label = be.Note });
                 else
                     lastNoteSpecified = 0;
+                lastNoteSpecified %= 5;
             }
 
             foreach (var p in _series[NiggleSeries].Points)
-                p.YValues[0] = p.YValues[0] * 2.5 + MinimumY + 8.5;
+                p.YValues[0] = -p.YValues[0] * 2.5 + MinimumY + 8.5;
 
             foreach (var p in _series[NoteSeries].Points)
-                p.YValues[0] = p.YValues[0] * 2.5 + MaximumY - 1.5;
+                p.YValues[0] = -p.YValues[0] * 2.5 + MaximumY - 1.5;
 
             // ensure every (line-)series has at least 2 points
             foreach (var s in _series.Where(s => s.ChartType == SeriesChartType.Spline && s.Points.Count == 1))

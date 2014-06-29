@@ -9,7 +9,7 @@ namespace TrainingLog.Forms
     {
         #region Fields
 
-        public static BiodataEntryForm GetInstance
+        public static BiodataEntryForm Instance
         {
             get { return _instance ?? (_instance = new BiodataEntryForm()); }
         }
@@ -49,7 +49,7 @@ namespace TrainingLog.Forms
                 numWeight.Value = entry.Weight ?? decimal.MinValue;
         }
 
-        public BiodataEntryForm()
+        private BiodataEntryForm()
         {
             InitializeComponent();
 
@@ -89,10 +89,10 @@ namespace TrainingLog.Forms
         {
             Hide();
 
-            MainForm.GetInstance.Show();
-            MainForm.GetInstance.BringToFront();
+            MainForm.Instance.Show();
+            MainForm.Instance.BringToFront();
 
-            e.Cancel = !MainForm.GetInstance.CloseForms;
+            e.Cancel = !MainForm.Instance.CloseForms;
         }
 
         private void ButOkClick(object sender, EventArgs e)

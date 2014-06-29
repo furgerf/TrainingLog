@@ -55,6 +55,8 @@
       <DependentUpon>EnumFilterControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Entries\NonSportEntry.cs" />
+    <Compile Include="EntryChangedEventArgs.cs" />
+    <Compile Include="PolarData.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Statistics\BiodataFiguresSeriesCollection.cs" />
     <Compile Include="Entries\BiodataEntry.cs" />

@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 using Microsoft.Win32;
 using TrainingLog.Entries;
 
@@ -12,7 +15,7 @@ namespace TrainingLog.Forms
     {
         #region Public Fields
 
-        public static TrainingEntryForm GetInstance
+        public static TrainingEntryForm Instance
         {
             get { return _instance ?? (_instance = new TrainingEntryForm()); }
         }
@@ -49,39 +52,14 @@ namespace TrainingLog.Forms
         public TrainingEntryForm(TrainingEntry entry)
             : this()
         {
-            if (entry.AverageHrSpecified)
-                txtAvgHR.Text = entry.AverageHr.ToString();
-            if (entry.CaloriesSpecified)
-                txtCalories.Text = entry.Calories.ToString();
-            if (entry.DateSpecified)
-                datDate.Value = entry.Date ?? DateTime.MinValue;
-            if (entry.DistanceMSpecified)
-                txtDistance.Text = entry.DistanceKm.ToString(CultureInfo.InvariantCulture);
-            if (entry.DurationStringSpecified)
-                txtDuration.Text = entry.DurationString;
-            if (entry.FeelingSpecified)
-                comFeeling.Text = Enum.GetName(typeof(Common.Index), entry.Feeling ?? Common.Index.Count);
-            if (entry.HrZoneStringSpecified)
-            {
-                txtZone1.Text = (entry.HrZones ?? ZoneData.Empty()).Zone1.ToString();
-                txtZone2.Text = (entry.HrZones ?? ZoneData.Empty()).Zone2.ToString();
-                txtZone3.Text = (entry.HrZones ?? ZoneData.Empty()).Zone3.ToString();
-                txtZone4.Text = (entry.HrZones ?? ZoneData.Empty()).Zone4.ToString();
-                txtZone5.Text = (entry.HrZones ?? ZoneData.Empty()).Zone5.ToString();
-            }
-            if (entry.NoteSpecified)
-                txtNotes.Text = entry.Note;
-            if (entry.SportSpecified)
-                comSport.Text = Enum.GetName(typeof (Common.Sport), entry.Sport ?? Common.Sport.Count);
-            if (entry.TrainingTypeSpecified)
-                comTrainingType.Text = Enum.GetName(typeof (Common.TrainingType), entry.TrainingType);
-
-            DistanceTimeChanged();
+            FillEntryData(entry);
         }
 
-        public TrainingEntryForm()
+        private TrainingEntryForm()
         {
             InitializeComponent();
+
+            datDate.CustomFormat = "dd.MM.yyyy HH:mm:ss";
 
             // fill combobox list
             foreach (var foo in Enum.GetNames(typeof (Common.Sport)))
@@ -218,6 +196,40 @@ namespace TrainingLog.Forms
             return true;
         }
 
+        private void FillEntryData(TrainingEntry entry)
+        {
+            ResetForm();
+
+            if (entry.AverageHrSpecified)
+                txtAvgHR.Text = entry.AverageHr.ToString();
+            if (entry.CaloriesSpecified)
+                txtCalories.Text = entry.Calories.ToString();
+            if (entry.DateSpecified)
+                datDate.Value = entry.Date ?? DateTime.MinValue;
+            if (entry.DistanceMSpecified)
+                txtDistance.Text = entry.DistanceKm.ToString(CultureInfo.InvariantCulture);
+            if (entry.DurationStringSpecified)
+                txtDuration.Text = entry.DurationString;
+            if (entry.FeelingSpecified)
+                comFeeling.Text = Enum.GetName(typeof(Common.Index), entry.Feeling ?? Common.Index.Count);
+            if (entry.HrZoneStringSpecified)
+            {
+                txtZone1.Text = (entry.HrZones ?? ZoneData.Empty()).Zone1.ToString();
+                txtZone2.Text = (entry.HrZones ?? ZoneData.Empty()).Zone2.ToString();
+                txtZone3.Text = (entry.HrZones ?? ZoneData.Empty()).Zone3.ToString();
+                txtZone4.Text = (entry.HrZones ?? ZoneData.Empty()).Zone4.ToString();
+                txtZone5.Text = (entry.HrZones ?? ZoneData.Empty()).Zone5.ToString();
+            }
+            if (entry.NoteSpecified)
+                txtNotes.Text = entry.Note;
+            if (entry.SportSpecified)
+                comSport.Text = Enum.GetName(typeof(Common.Sport), entry.Sport ?? Common.Sport.Count);
+            if (entry.TrainingTypeSpecified)
+                comTrainingType.Text = Enum.GetName(typeof(Common.TrainingType), entry.TrainingType);
+
+            DistanceTimeChanged();
+        }
+
         #endregion
 
         #region Event Handling
@@ -270,7 +282,7 @@ namespace TrainingLog.Forms
             if (txtDistance.Text == "" || txtDuration.Text == "")
                 return;
 
-            var split = txtDuration.Text.Split('.');
+            var split = txtDuration.Text.Split(':');
             TimeSpan ts;
             try
             {
@@ -405,12 +417,13 @@ namespace TrainingLog.Forms
 
         private void TrainingEntryFormFormClosing(object sender, FormClosingEventArgs e)
         {
+            // already cancelled?
+            if (e.Cancel)
+                return;
+
             Hide();
 
-            MainForm.GetInstance.Show();
-            MainForm.GetInstance.BringToFront();
-
-            e.Cancel = !MainForm.GetInstance.CloseForms;
+            e.Cancel = !MainForm.Instance.CloseForms;
         }
 
         private void ButOkClick(object sender, EventArgs e)
@@ -422,7 +435,7 @@ namespace TrainingLog.Forms
 
             var entry = new TrainingEntry(duration)
             {
-                Date = datDate.Value.Date,
+                Date = datDate.Value,
                 Sport = (Common.Sport)comSport.SelectedIndex,
                 TrainingType = comTrainingType.Text.Equals("") ? Common.TrainingType.None : (Common.TrainingType)Enum.Parse(typeof(Common.TrainingType), comTrainingType.Text),
                 Calories = txtCalories.Text == "" ? 0 : int.Parse(txtCalories.Text),
@@ -459,7 +472,139 @@ namespace TrainingLog.Forms
 
         private void ButParseXmlClick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            var dlg = new OpenFileDialog { InitialDirectory = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders", "{374DE290-123F-4565-9164-39C4925E467B}", string.Empty).ToString(), Filter = "XML-Files|*.xml" };
+            if (dlg.ShowDialog() != DialogResult.OK)
+                return;
+
+            var ser = new XmlSerializer(typeof(polarexercisedata));
+            calendaritem[] foo;
+            using (var fs = new FileStream(dlg.FileName, FileMode.Open))
+                foo = ((polarexercisedata) ser.Deserialize(fs)).calendaritems.Items;
+            var exercises = new List<exercisedata>();
+            var invalidCount = 0;
+            foreach (var f in foo)
+                if (f is exercisedata)
+                    exercises.Add((exercisedata) f);
+                else
+                    invalidCount++;
+
+            if (exercises.Count == 1 && invalidCount > 0)
+                MessageBox.Show("Ignoring " + invalidCount + " invalid entries", "Invalid data",
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            var res = DialogResult.Yes;
+            if (exercises.Count > 1)
+                res = MessageBox.Show(exercises.Count + " exercises found" + (invalidCount > 0 ? " as well as " + invalidCount + " other entries which will be skipped. " : ".") + " Entry forms for each exercise will be opened sequentially. Do you want to continue?", exercises.Count + " exercises found", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (res == DialogResult.No)
+                return;
+
+            Action openTef = null;
+            CancelEventHandler preventClosing = (ss, ee) =>
+                               {
+                                   ee.Cancel = true;
+                                   openTef();
+                               };
+
+            openTef = () =>
+                          {
+                              FillEntryData(new TrainingEntry
+                                                {
+                                                    AverageHr = exercises[0].result.heartrate.average,
+                                                    Calories = int.Parse(exercises[0].result.calories),
+                                                    Date = DateTime.Parse(exercises[0].time),
+                                                    DistanceM = (int) exercises[0].result.distance,
+                                                    Duration =
+                                                        TimeSpan.Parse(
+                                                            exercises[0].result.duration.Remove(
+                                                                exercises[0].result.duration.IndexOf('.'))),
+                                                    HrZones =
+                                                        ZoneData.Parse(exercises[0].result.zones[4].inzone + "_" +
+                                                                       exercises[0].result.zones[3].inzone +
+                                                                       "_" + exercises[0].result.zones[2].inzone +
+                                                                       "_" +
+                                                                       exercises[0].result.zones[1].inzone + "_" +
+                                                                       exercises[0].result.zones[0].inzone),
+                                                    Note = exercises[0].note,
+                                                    Sport =
+                                                        (Common.Sport)
+                                                        Enum.Parse(typeof (Common.Sport), exercises[0].sport)
+                                                });
+                              exercises.RemoveAt(0);
+
+                              if (exercises.Count == 0)
+                                  Closing -= preventClosing;
+                          };
+
+            if (exercises.Count > 1)
+                Closing += preventClosing;
+
+            openTef();
+
+
+
+
+            //    if (exercises.Count == 1)
+            //    {
+            //        txtDuration.Text = exercises[0].result.duration.Remove(exercises[0].result.duration.IndexOf('.'));
+            //        txtAvgHR.Text = exercises[0].result.heartrate.average.ToString(CultureInfo.InvariantCulture);
+            //        txtCalories.Text = exercises[0].result.calories;
+            //        txtDistance.Text = (exercises[0].result.distance / 1000).ToString(CultureInfo.InvariantCulture);
+            //        datDate.Value = DateTime.Parse(exercises[0].time);
+            //        comSport.Text = exercises[0].sport.Equals("Other sport") ? "Other" : exercises[0].sport;
+            //        txtNotes.Text = exercises[0].note;
+            //        txtZone5.Text = exercises[0].result.zones[4].inzone;
+            //        txtZone4.Text = exercises[0].result.zones[3].inzone;
+            //        txtZone3.Text = exercises[0].result.zones[2].inzone;
+            //        txtZone2.Text = exercises[0].result.zones[1].inzone;
+            //        txtZone1.Text = exercises[0].result.zones[0].inzone;
+            //        Show();
+            //    }
+            //    else
+            //    {
+            //        var tef = new TrainingEntryForm(new TrainingEntry
+            //            {
+            //                AverageHr = exercises[0].result.heartrate.average,
+            //                Calories = int.Parse(exercises[0].result.calories),
+            //                Date = DateTime.Parse(exercises[0].time),
+            //                DistanceM = (int)exercises[0].result.distance,
+            //                Duration = TimeSpan.Parse(exercises[0].result.duration.Remove(exercises[0].result.duration.IndexOf('.'))),
+            //                HrZones =
+            //                    ZoneData.Parse(exercises[0].result.zones[4].inzone + "_" +
+            //                                    exercises[0].result.zones[3].inzone +
+            //                                    "_" + exercises[0].result.zones[2].inzone +
+            //                                    "_" +
+            //                                    exercises[0].result.zones[1].inzone + "_" +
+            //                                    exercises[0].result.zones[0].inzone),
+            //                Note = exercises[0].note,
+            //                Sport =
+            //                    (Common.Sport)
+            //                    Enum.Parse(typeof(Common.Sport), exercises[0].sport)
+            //            });
+
+            //        tef.Closing += (ss, ee) => openTef();
+
+            //        tef.Show();
+            //    }
+            //    exercises.RemoveAt(0);
+            //};
+
+            //openTef();
+
+            //    var te = new TrainingEntry
+            //{
+            //    AverageHr = bar.result.heartrate.average,
+            //    Calories = int.Parse(bar.result.calories),
+            //    Date = DateTime.Parse(bar.time),
+            //    DistanceM = (int)bar.result.distance,
+            //    Duration = TimeSpan.Parse(bar.result.duration),
+            //    HrZones =
+            //        ZoneData.Parse(bar.result.zones[4].inzone + "_" + bar.result.zones[3].inzone +
+            //                       "_" + bar.result.zones[2].inzone + "_" +
+            //                       bar.result.zones[1].inzone + "_" + bar.result.zones[0].inzone),
+            //    Note = bar.note,
+            //    Sport = (Common.Sport)Enum.Parse(typeof(Common.Sport), bar.sport)
+            //};
         }
 
         #endregion

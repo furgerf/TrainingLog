@@ -23,7 +23,7 @@ namespace TrainingLog.Entries
         public bool DistanceMSpecified { get { return DistanceM != null && DistanceM != 0; } }
 
         [XmlIgnore]
-        public TimeSpan Pace { get { return new TimeSpan(0, (int)((Duration ?? TimeSpan.MinValue).TotalMinutes / DistanceKm), 0); } }
+        public TimeSpan Pace { get { return TimeSpan.FromSeconds((Duration ?? TimeSpan.MinValue).TotalSeconds/DistanceKm); } }
 
         [XmlIgnore]
         public double Speed { get { return DistanceKm / (Duration ?? TimeSpan.MinValue).TotalHours; } }

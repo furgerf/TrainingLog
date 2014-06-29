@@ -70,6 +70,15 @@ namespace TrainingLog
             return Zone5.ToString() + '_' + Zone4 + '_' + Zone3 + '_' + Zone2 + '_' + Zone1;
         }
 
+        public static ZoneData Parse(string s)
+        {
+            ZoneData res;
+            if (!TryParse(s, out res))
+                throw new Exception();
+
+            return res;
+        }
+
         public static bool TryParse(string s, out ZoneData result)
         {
             result = new ZoneData();

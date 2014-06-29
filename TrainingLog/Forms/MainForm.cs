@@ -7,7 +7,7 @@ namespace TrainingLog.Forms
     {
         #region Public Fields
 
-        public static MainForm GetInstance { get; private set; }
+        public static MainForm Instance { get; private set; }
 
         public bool CloseForms { get; private set; }
 
@@ -17,18 +17,33 @@ namespace TrainingLog.Forms
 
         #region Constructor
 
-        public MainForm()
+        private MainForm()
         {
-            if (GetInstance != null)
+            if (Instance != null)
                 throw new Exception("Shouldn\'t have been initialized before!");
 
             InitializeComponent();
 
-            GetInstance = this;
+            Instance = this;
 
             Settings = Settings.LoadSettings();
 
-            Model.Initialize();
+            //Model.Initialize();
+
+            EventHandler onFormHide = (s, e) =>
+                                          {
+                                              if (((Form) s).Visible) return;
+                                              Instance.Show();
+                                              Instance.BringToFront();
+                                          };
+
+            TrainingEntryForm.Instance.VisibleChanged += onFormHide;
+            BiodataEntryForm.Instance.VisibleChanged += onFormHide;
+            TrainingLogForm.Instance.VisibleChanged += onFormHide;
+            StatisticsForm.Instance.VisibleChanged += onFormHide;
+            SettingsForm.Instance.VisibleChanged += onFormHide;
+
+            Closed += (s, e) => Application.Exit();
 
             ButShowStatisticsClick();
             //ButShowLogClick();
@@ -36,55 +51,62 @@ namespace TrainingLog.Forms
         }
 
         #endregion
+        
+        #region Methods
 
+        public static void Initialize()
+        {
+            new MainForm();
+        }
+
+        #endregion
+        
         #region Event Handling
 
         private void ButAddTrainingClick(object sender = null, EventArgs e = null)
         {
             Hide();
-            TrainingEntryForm.GetInstance.Show();
-            TrainingEntryForm.GetInstance.BringToFront();
+            TrainingEntryForm.Instance.Show();
+            TrainingEntryForm.Instance.BringToFront();
         }
 
         private void ButAddBiodataClick(object sender = null, EventArgs e = null)
         {
             Hide();
-            BiodataEntryForm.GetInstance.Show();
-            BiodataEntryForm.GetInstance.BringToFront();
+            BiodataEntryForm.Instance.Show();
+            BiodataEntryForm.Instance.BringToFront();
         }
 
         private void ButShowLogClick(object sender = null, EventArgs e = null)
         {
             Hide();
-            TrainingLogForm.GetInstance.UpdateData();
-            TrainingLogForm.GetInstance.Show();
-            TrainingLogForm.GetInstance.BringToFront();
+            TrainingLogForm.Instance.Show();
+            TrainingLogForm.Instance.BringToFront();
         }
 
         private void ButShowStatisticsClick(object sender = null, EventArgs e = null)
         {
             Hide();
-            StatisticsForm.GetInstance.UpdateData();
-            StatisticsForm.GetInstance.Show();
-            StatisticsForm.GetInstance.BringToFront();
+            StatisticsForm.Instance.Show();
+            StatisticsForm.Instance.BringToFront();
         }
 
         private void ButSettingsClick(object sender = null, EventArgs e = null)
         {
             Hide();
-            SettingsForm.GetInstance.Show();
-            SettingsForm.GetInstance.BringToFront();
+            SettingsForm.Instance.Show();
+            SettingsForm.Instance.BringToFront();
         }
 
         private void MainFormFormClosing(object sender, FormClosingEventArgs e)
         {
             CloseForms = true;
 
-            TrainingEntryForm.GetInstance.Close();
-            BiodataEntryForm.GetInstance.Close();
-            TrainingLogForm.GetInstance.Close();
-            StatisticsForm.GetInstance.Close();
-            SettingsForm.GetInstance.Close();
+            TrainingEntryForm.Instance.Close();
+            BiodataEntryForm.Instance.Close();
+            TrainingLogForm.Instance.Close();
+            StatisticsForm.Instance.Close();
+            SettingsForm.Instance.Close();
         }
 
         private void ButExitClick(object sender, EventArgs e)
