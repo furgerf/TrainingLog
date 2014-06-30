@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using TrainingLog.Charts;
 using TrainingLog.Controls;
 using TrainingLog.Entries;
-using TrainingLog.Statistics;
 
 namespace TrainingLog.Forms
 {
@@ -65,7 +65,7 @@ namespace TrainingLog.Forms
 
         private readonly IFilter[] _filters;
 
-        private readonly IStatisticsPage[] _pages;
+        //private readonly IStatisticsPage[] _pages;
         private readonly AbstractChart[] _charts;
 
         private readonly bool[] _dirtyPages;
@@ -83,40 +83,25 @@ namespace TrainingLog.Forms
             InitializeFilters();
             _filters = new IFilter[] { dfcFrom, dfcTo, efcSport, efcTrainingType };
 
-
-            var page = new TabPage { Text = "foo" };
-            var chart = new BiodataChart(
-                () => Model.Instance.BiodataEntries.Except((from te in Model.Instance.BiodataEntries from f in _filters where !f.IsEntryVisible(te) select te)).OrderBy(te => te.Date).ToArray(),
-                    Common.NonSportEntries,
-                    () => AbstractChart.GroupingType.OneDay);
-            // location/size
-            chart.Location = new Point(0, 0);
-            chart.Size = page.Size;
-            page.SizeChanged += (s, e) =>
-                                    {
-                                        chart.Size = page.Size;
-                                    };
-            // add controls
-            page.Controls.Add(chart);
-            tabTabs.Controls.Add(page);
-           
+            _charts = GetCharts();
+            AddCharts(_charts);
 
 
-            // pages
-            var graphs = GetGraphs();
-            var pages = GetPages();
-            foreach (var g in graphs)
-                AddGraph(g as Graph);
-            foreach (var p in pages)
-                AddPage(p as Control);
+            //// pages
+            //var graphs = GetGraphs();
+            //var pages = GetPages();
+            //foreach (var g in graphs)
+            //    AddGraph(g as Graph);
+            //foreach (var p in pages)
+            //    AddPage(p as Control);
 
-            _pages = graphs.Concat(pages).ToArray();
-            _dirtyPages = new bool[_pages.Length];
+            //_pages = graphs.Concat(pages).ToArray();
+            _dirtyPages = new bool[_charts.Length];
 
             tabTabs.SelectedIndexChanged += (s, e) =>
                                                 {
                                                         if (!_dirtyPages[tabTabs.SelectedIndex]) return;
-                                                        _pages[tabTabs.SelectedIndex].UpdateStatistics();
+                                                        _charts[tabTabs.SelectedIndex].UpdateStatistics();
                                                         _dirtyPages[tabTabs.SelectedIndex] = false;
                                                 };
 
@@ -143,45 +128,90 @@ namespace TrainingLog.Forms
 
         #region Main Methods
 
-        private void UpdateData(object sender = null, EventArgs e = null)
+        private void AddCharts(IEnumerable<AbstractChart> charts)
+        {
+            foreach (var chart in charts)
+            {
+                var page = new TabPage { Text = chart.Titles[0].Text };
+
+                // location/size
+                chart.Location = new Point(0, 0);
+                chart.Size = page.Size;
+                var chart1 = chart;
+                page.SizeChanged += (s, e) =>
+                                        {
+                                            chart1.Size = page.Size;
+                                        };
+                // add controls
+                page.Controls.Add(chart);
+                tabTabs.Controls.Add(page);
+            }
+        }
+
+        private AbstractChart[] GetCharts()
+        {
+            return new AbstractChart[]
+                       {
+                           new BiodataChart(
+                               () =>
+                               Model.Instance.BiodataEntries.Except(
+                                   (from te in Model.Instance.BiodataEntries
+                                    from f in _filters
+                                    where !f.IsEntryVisible(te)
+                                    select te)).OrderBy(te => te.Date).ToArray(),
+                               Common.NonSportEntries,
+                               () => AbstractChart.GroupingType.OneDay),
+                           new DistanceChart(
+                               () =>
+                               Model.Instance.TrainingEntries.Except(
+                                   (from te in Model.Instance.TrainingEntries
+                                    from f in _filters
+                                    where !f.IsEntryVisible(te)
+                                    select te)).Where(te => te.DistanceMSpecified).OrderBy(te => te.Date).ToArray(),
+                               Common.NonSportEntries,
+                               () => GroupingInterval)
+                       };
+        }
+
+        private void UpdateData()
         {
             if (tabTabs.Controls.Count == 0)
                 return;
 
             // active tab is a graph
             // visible page: update graph
-            _pages[tabTabs.SelectedIndex].UpdateStatistics();
+            _charts[tabTabs.SelectedIndex].UpdateStatistics();
 
             // all other pages: mark as dirty
             foreach (var p in from Control p in tabTabs.Controls where tabTabs.Controls.IndexOf(p) != tabTabs.SelectedIndex select p)
                 _dirtyPages[tabTabs.Controls.IndexOf(p)] = true;
         }
 
-        private void AddGraph(Graph graph)
-        {
-            var page = new TabPage { Text = graph.Title };
+        //private void AddGraph(Graph graph)
+        //{
+        //    var page = new TabPage { Text = graph.Title };
 
-            // location/size
-            graph.Chart.Location = new Point(0, 0);
-            graph.Chart.Size = page.Size;
-            page.SizeChanged += (s, e) => graph.Chart.Size = page.Size;
-            // add controls
-            page.Controls.Add(graph.Chart);
-            tabTabs.Controls.Add(page);
-        }
+        //    // location/size
+        //    graph.Chart.Location = new Point(0, 0);
+        //    graph.Chart.Size = page.Size;
+        //    page.SizeChanged += (s, e) => graph.Chart.Size = page.Size;
+        //    // add controls
+        //    page.Controls.Add(graph.Chart);
+        //    tabTabs.Controls.Add(page);
+        //}
 
-        private void AddPage(Control page)
-        {
-            var tabPage = new TabPage(page.Name);
+        //private void AddPage(Control page)
+        //{
+        //    var tabPage = new TabPage(page.Name);
 
-            // location/size
-            page.Location = new Point(0, 0);
-            page.Size = tabPage.Size;
-            tabPage.SizeChanged += (s, e) => page.Size = tabPage.Size;
-            // add controls
-            tabPage.Controls.Add(page);
-            tabTabs.Controls.Add(tabPage);
-        }
+        //    // location/size
+        //    page.Location = new Point(0, 0);
+        //    page.Size = tabPage.Size;
+        //    tabPage.SizeChanged += (s, e) => page.Size = tabPage.Size;
+        //    // add controls
+        //    tabPage.Controls.Add(page);
+        //    tabTabs.Controls.Add(tabPage);
+        //}
 
         private void InitializeFilters()
         {
@@ -217,47 +247,47 @@ namespace TrainingLog.Forms
             ((ComboBox)efcSport.GetControl()).SelectedValueChanged += (s, e) => { UpdateData(); efcSport.Focus(); };
         }
 
-        private IStatisticsPage[] GetGraphs()
-        {
-            return new IStatisticsPage[0];//{
-            //    new Graph(Graph.GraphType.BiodataFigures, 
-            //        () => Model.Instance.BiodataEntries.Except((from te in Model.Instance.BiodataEntries from f in _filters where !f.IsEntryVisible(te) select te)).OrderBy(te => te.Date).Cast<Entry>().ToArray(),
-            //        Common.NonSportEntries,
-            //        () => new Tuple<DateInterval, int>(DateInterval.Day, 1))
-            //        { Title = "Resting Heart Rate per day" }, 
-            //    new Graph(Graph.GraphType.Distance,
-            //        () => Model.Instance.TrainingEntries.Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te)).Where(te => te.DistanceMSpecified).OrderBy(te => te.Date).Cast<Entry>().ToArray(),
-            //        Common.NonSportEntries,
-            //        () => GroupingInterval)
-            //        { Title = "Distance" },
-            //    new Graph(Graph.GraphType.ZoneData, 
-            //        () => Model.Instance.TrainingEntries.Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te)).Where(te => te.HrZoneStringSpecified).OrderBy(te => te.Date).Cast<Entry>().ToArray(),   
-            //        Common.NonSportEntries,
-            //        () => new Tuple<DateInterval, int>(DateInterval.Day, 1))
-            //        { Title = "Zone Data per training" },
-            //    new Graph(Graph.GraphType.ZoneDataArea, 
-            //        () => Model.Instance.TrainingEntries.Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te)).Where(te => te.HrZoneStringSpecified).OrderBy(te => te.Date).Cast<Entry>().ToArray(),   
-            //        Common.NonSportEntries,
-            //        () => GroupingInterval)
-            //        { Title = "Zone Data area" },
-            //    new Graph(Graph.GraphType.Feeling, 
-            //        () => Model.Instance.BiodataEntries.Except((from te in Model.Instance.BiodataEntries from f in _filters where !f.IsEntryVisible(te) select te)).Cast<Entry>().Concat(
-            //            Model.Instance.TrainingEntries.Where(e => e.Date >= Model.Instance.BiodataEntries.First().Date).Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te))).OrderBy(te => te.Date).ToArray(),
-            //        Common.NonSportEntries,
-            //        () => new Tuple<DateInterval, int>(DateInterval.Day, 1))
-            //        { Title = "Feeling" },
-            //};
-        }
+        //private IStatisticsPage[] GetGraphs()
+        //{
+        //    return new IStatisticsPage[0];//{
+        //    //    new Graph(Graph.GraphType.BiodataFigures, 
+        //    //        () => Model.Instance.BiodataEntries.Except((from te in Model.Instance.BiodataEntries from f in _filters where !f.IsEntryVisible(te) select te)).OrderBy(te => te.Date).Cast<Entry>().ToArray(),
+        //    //        Common.NonSportEntries,
+        //    //        () => new Tuple<DateInterval, int>(DateInterval.Day, 1))
+        //    //        { Title = "Resting Heart Rate per day" }, 
+        //    //    new Graph(Graph.GraphType.Distance,
+        //    //        () => Model.Instance.TrainingEntries.Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te)).Where(te => te.DistanceMSpecified).OrderBy(te => te.Date).Cast<Entry>().ToArray(),
+        //    //        Common.NonSportEntries,
+        //    //        () => GroupingInterval)
+        //    //        { Title = "Distance" },
+        //    //    new Graph(Graph.GraphType.ZoneData, 
+        //    //        () => Model.Instance.TrainingEntries.Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te)).Where(te => te.HrZoneStringSpecified).OrderBy(te => te.Date).Cast<Entry>().ToArray(),   
+        //    //        Common.NonSportEntries,
+        //    //        () => new Tuple<DateInterval, int>(DateInterval.Day, 1))
+        //    //        { Title = "Zone Data per training" },
+        //    //    new Graph(Graph.GraphType.ZoneDataArea, 
+        //    //        () => Model.Instance.TrainingEntries.Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te)).Where(te => te.HrZoneStringSpecified).OrderBy(te => te.Date).Cast<Entry>().ToArray(),   
+        //    //        Common.NonSportEntries,
+        //    //        () => GroupingInterval)
+        //    //        { Title = "Zone Data area" },
+        //    //    new Graph(Graph.GraphType.Feeling, 
+        //    //        () => Model.Instance.BiodataEntries.Except((from te in Model.Instance.BiodataEntries from f in _filters where !f.IsEntryVisible(te) select te)).Cast<Entry>().Concat(
+        //    //            Model.Instance.TrainingEntries.Where(e => e.Date >= Model.Instance.BiodataEntries.First().Date).Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te))).OrderBy(te => te.Date).ToArray(),
+        //    //        Common.NonSportEntries,
+        //    //        () => new Tuple<DateInterval, int>(DateInterval.Day, 1))
+        //    //        { Title = "Feeling" },
+        //    //};
+        //}
 
-        private IStatisticsPage[] GetPages()
-        {
-            return new IStatisticsPage[]
-                       {
-                           new SportOverviewStatisticsControl { GetEntries = () => Model.Instance.TrainingEntries.Where(e => e.Sport == Common.Sport.Running).OrderBy(e => e.Date).ToArray(), Sport = Common.Sport.Running},
-                           new SportOverviewStatisticsControl { GetEntries = () => Model.Instance.TrainingEntries.Where(e => e.Sport == Common.Sport.Cycling).OrderBy(e => e.Date).ToArray(), Sport = Common.Sport.Cycling},
-                           new SportOverviewStatisticsControl { GetEntries = () => Model.Instance.TrainingEntries.Where(e => e.Sport == Common.Sport.Squash).OrderBy(e => e.Date).ToArray(), Sport = Common.Sport.Squash}
-                       };
-        }
+        //private IStatisticsPage[] GetPages()
+        //{
+        //    return new IStatisticsPage[]
+        //               {
+        //                   new SportOverviewStatisticsControl { GetEntries = () => Model.Instance.TrainingEntries.Where(e => e.Sport == Common.Sport.Running).OrderBy(e => e.Date).ToArray(), Sport = Common.Sport.Running},
+        //                   new SportOverviewStatisticsControl { GetEntries = () => Model.Instance.TrainingEntries.Where(e => e.Sport == Common.Sport.Cycling).OrderBy(e => e.Date).ToArray(), Sport = Common.Sport.Cycling},
+        //                   new SportOverviewStatisticsControl { GetEntries = () => Model.Instance.TrainingEntries.Where(e => e.Sport == Common.Sport.Squash).OrderBy(e => e.Date).ToArray(), Sport = Common.Sport.Squash}
+        //               };
+        //}
 
         #endregion
 

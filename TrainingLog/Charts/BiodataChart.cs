@@ -34,9 +34,9 @@ namespace TrainingLog.Charts
 
         #region Constructor
 
-        public BiodataChart(Func<BiodataEntry[]> getEntries, Func<DateTime, DateTime, NonSportEntry[]> getNonSportEntries, Func<GroupingType> grouping) : base(() => getEntries().Cast<Entry>().ToArray(), getNonSportEntries, grouping)
+        public BiodataChart(Func<BiodataEntry[]> getEntries, Func<DateTime, DateTime, NonSportEntry[]> getNonSportEntries, Func<GroupingType> grouping) : base(() => getEntries().Cast<Entry>().ToArray(), getNonSportEntries, grouping, true)
         {
-            Initialize();
+            Titles.Add("Biodata");
 
             //Paint += (s, e) =>
             //             {
@@ -59,9 +59,8 @@ namespace TrainingLog.Charts
 
         #region Main Methods
 
-        private void Initialize()
+        protected override void Initialize()
         {
-            var entries = GetEntries();
             if (GetGrouping() != GroupingType.OneDay)
                 throw new Exception("unexpected grouping: " + GetGrouping());
 
@@ -127,7 +126,7 @@ namespace TrainingLog.Charts
                                MarkerStyle = MarkerStyle.Square,
                                Color = Color.Yellow
                            });
-            Series.Add(new Series("Non-Sport Entries")
+            Series.Add(new Series(NonSportSeriesString)
                            {
                                IsVisibleInLegend = false
                            });
@@ -147,18 +146,17 @@ namespace TrainingLog.Charts
             y.IntervalType = DateTimeIntervalType.Number;
             y.Interval = 5;
 
-            AllowScrollZoomCursor();
-
             // fill points
             AddEntries();
-
-            // fill annotations
-            foreach (var e in NonSportEntries(entries.First().Date ?? DateTime.MaxValue, entries.Last().Date ?? DateTime.MinValue))
-                e.AddEntryToChart(ChartAreas[0], Series["Non-Sport Entries"], Annotations);
+            AddNonSportEntries();
         }
 
         protected override void AddEntries()
         {
+            // clear old data
+            foreach (var s in Series)
+                s.Points.Clear();
+
             var entries = GetEntries();
             if (GetGrouping() != GroupingType.OneDay)
                 throw new Exception("unexpected grouping: " + GetGrouping());
@@ -225,12 +223,25 @@ namespace TrainingLog.Charts
             Series["Average Resting Heart Rate"].Points.Add(maxAvg);
         }
 
-        protected override void AddNonSportEntries()
-        {
-            var entries = GetEntries();
-            foreach (var e in NonSportEntries(entries.First().Date ?? DateTime.MaxValue, entries.Last().Date ?? DateTime.MinValue))
-                e.AddEntryToChart(ChartAreas[0], Series["Non-Sport Entries"], Annotations);
-        }
+        //protected override void AddNonSportEntries()
+        //{
+        //    //var entries = GetEntries();
+        //    //foreach (var e in NonSportEntries(entries.First().Date ?? DateTime.MaxValue, entries.Last().Date ?? DateTime.MinValue))
+        //    //    e.AddEntryToChart(ChartAreas[0], Series["Non-Sport Entries"], Annotations);
+
+        //    var minX = double.MaxValue;
+        //    var maxX = double.MinValue;
+        //    foreach (var s in Series.Where(s => s.Points.Count > 0))
+        //    {
+        //        if (s.Points[0].XValue < minX)
+        //            minX = s.Points[0].XValue;
+        //        if (s.Points[0].XValue > maxX)
+        //            maxX = s.Points[0].XValue;
+        //    }
+
+        //    foreach (var e in NonSportEntries(DateTime.FromOADate(minX), DateTime.FromOADate(maxX)))
+        //        e.AddEntryToChart(ChartAreas[0], Series["Non-Sport Entries"], Annotations);
+        //}
 
         #endregion
     }
