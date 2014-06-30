@@ -1,5 +1,10 @@
 ﻿Urgency		Workload	What?
---------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------
+General
+	3			4		Re-check filter concept
+	1			2		Import data-over-time from PPT (?)
+	1			1		Add a few icons...
+
 Statistics
 	1			4		Add more statistics	
 	1			1		Running Stats: Merge different charts into one, with multiple chartareas
@@ -12,11 +17,6 @@ Settings
 
 Race Entries
 	2			3		Implement race entries
-
-General
-	3			4		Re-check filter concept
-	1			2		Import data-over-time from PPT (?)
-	1			1		Add a few icons...
 
 TrainingLogForm
 	2			2		Get the TrainingLogForm to load faster

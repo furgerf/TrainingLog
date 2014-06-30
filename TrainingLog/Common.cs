@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 using TrainingLog.Entries;
 using TrainingLog.Properties;
 
@@ -34,7 +32,7 @@ namespace TrainingLog
         {
             Training, Race, BioData, NonSport, Count
         }
-
+        
         #endregion
 
         #region Enum Categories
@@ -72,11 +70,8 @@ namespace TrainingLog
 
         public static readonly string ThreeDots = DotChar + " " + DotChar + " " + DotChar;
 
-        public readonly static Func<Entry[], NonSportEntry[]> NonSportEntries = entries =>
+        public readonly static Func<DateTime, DateTime, NonSportEntry[]> NonSportEntries = (firstDate, lastDate) =>
         {
-            var firstDate = entries.First().Date;
-            var lastDate = entries.Last().Date;
-
             var nse = Model.Instance.NonSportEntries.Where(e => e.Date <= lastDate && e.GetEndDate >= firstDate).ToArray();
 
             for (var i = 0; i < nse.Length; i++)

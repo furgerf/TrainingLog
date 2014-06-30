@@ -42,6 +42,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Charts\AbstractChart.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Charts\BiodataChart.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\ControlList.cs">
       <SubType>UserControl</SubType>
     </Compile>

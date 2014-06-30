@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using Microsoft.VisualBasic;
+using TrainingLog.Charts;
 using TrainingLog.Controls;
 using TrainingLog.Entries;
 using TrainingLog.Statistics;
@@ -18,18 +18,33 @@ namespace TrainingLog.Forms
             get { return _instance ?? (_instance = new StatisticsForm()); }
         }
 
-        public Tuple<DateInterval,int> GroupingInterval
+        public AbstractChart.GroupingType GroupingInterval
         {
             get
             {
-                if (comGrouping.Text.Contains("day"))
-                    return new Tuple<DateInterval, int>(DateInterval.Day, int.Parse(comGrouping.Text.Substring(0, comGrouping.Text.IndexOf(' '))));
+                if (comGrouping.Text.Contains("day") && int.Parse(comGrouping.Text.Substring(0, comGrouping.Text.IndexOf(' '))) == 1)
+                    return AbstractChart.GroupingType.OneDay;
                 if (comGrouping.Text.Contains("week"))
-                    return new Tuple<DateInterval, int>(DateInterval.Day, 7 * int.Parse(comGrouping.Text.Substring(0, comGrouping.Text.IndexOf(' '))));
+                    switch (int.Parse(comGrouping.Text.Substring(0, comGrouping.Text.IndexOf(' '))))
+                    {
+                        case 1:
+                            return AbstractChart.GroupingType.OneWeek;
+                        case 2:
+                            return AbstractChart.GroupingType.TwoWeeks;
+                    }
                 if (comGrouping.Text.Contains("month"))
-                    return new Tuple<DateInterval, int>(DateInterval.Month, int.Parse(comGrouping.Text.Substring(0, comGrouping.Text.IndexOf(' '))));
-                if (comGrouping.Text.Contains("year"))
-                    return new Tuple<DateInterval, int>(DateInterval.Year, int.Parse(comGrouping.Text.Substring(0, comGrouping.Text.IndexOf(' '))));
+                    switch (int.Parse(comGrouping.Text.Substring(0, comGrouping.Text.IndexOf(' '))))
+                    {
+                        case 1:
+                            return AbstractChart.GroupingType.OneMonth;
+                        case 3:
+                            return AbstractChart.GroupingType.ThreeMonths;
+                        case 6:
+                            return AbstractChart.GroupingType.SixMonths;
+                    }
+                if (comGrouping.Text.Contains("year") && int.Parse(comGrouping.Text.Substring(0, comGrouping.Text.IndexOf(' '))) == 1)
+                    return AbstractChart.GroupingType.OneYear;
+
                 throw new Exception("invalid text: " + comGrouping.Text);
             }
         }
@@ -51,6 +66,7 @@ namespace TrainingLog.Forms
         private readonly IFilter[] _filters;
 
         private readonly IStatisticsPage[] _pages;
+        private readonly AbstractChart[] _charts;
 
         private readonly bool[] _dirtyPages;
 
@@ -66,6 +82,25 @@ namespace TrainingLog.Forms
             // filters
             InitializeFilters();
             _filters = new IFilter[] { dfcFrom, dfcTo, efcSport, efcTrainingType };
+
+
+            var page = new TabPage { Text = "foo" };
+            var chart = new BiodataChart(
+                () => Model.Instance.BiodataEntries.Except((from te in Model.Instance.BiodataEntries from f in _filters where !f.IsEntryVisible(te) select te)).OrderBy(te => te.Date).ToArray(),
+                    Common.NonSportEntries,
+                    () => AbstractChart.GroupingType.OneDay);
+            // location/size
+            chart.Location = new Point(0, 0);
+            chart.Size = page.Size;
+            page.SizeChanged += (s, e) =>
+                                    {
+                                        chart.Size = page.Size;
+                                    };
+            // add controls
+            page.Controls.Add(chart);
+            tabTabs.Controls.Add(page);
+           
+
 
             // pages
             var graphs = GetGraphs();
@@ -184,34 +219,34 @@ namespace TrainingLog.Forms
 
         private IStatisticsPage[] GetGraphs()
         {
-            return new IStatisticsPage[]{
-                new Graph(Graph.GraphType.BiodataFigures, 
-                    () => Model.Instance.BiodataEntries.Except((from te in Model.Instance.BiodataEntries from f in _filters where !f.IsEntryVisible(te) select te)).OrderBy(te => te.Date).Cast<Entry>().ToArray(),
-                    Common.NonSportEntries,
-                    () => new Tuple<DateInterval, int>(DateInterval.Day, 1))
-                    { Title = "Resting Heart Rate per day" }, 
-                new Graph(Graph.GraphType.Distance,
-                    () => Model.Instance.TrainingEntries.Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te)).Where(te => te.DistanceMSpecified).OrderBy(te => te.Date).Cast<Entry>().ToArray(),
-                    Common.NonSportEntries,
-                    () => GroupingInterval)
-                    { Title = "Distance" },
-                new Graph(Graph.GraphType.ZoneData, 
-                    () => Model.Instance.TrainingEntries.Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te)).Where(te => te.HrZoneStringSpecified).OrderBy(te => te.Date).Cast<Entry>().ToArray(),   
-                    Common.NonSportEntries,
-                    () => new Tuple<DateInterval, int>(DateInterval.Day, 1))
-                    { Title = "Zone Data per training" },
-                new Graph(Graph.GraphType.ZoneDataArea, 
-                    () => Model.Instance.TrainingEntries.Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te)).Where(te => te.HrZoneStringSpecified).OrderBy(te => te.Date).Cast<Entry>().ToArray(),   
-                    Common.NonSportEntries,
-                    () => GroupingInterval)
-                    { Title = "Zone Data area" },
-                new Graph(Graph.GraphType.Feeling, 
-                    () => Model.Instance.BiodataEntries.Except((from te in Model.Instance.BiodataEntries from f in _filters where !f.IsEntryVisible(te) select te)).Cast<Entry>().Concat(
-                        Model.Instance.TrainingEntries.Where(e => e.Date >= Model.Instance.BiodataEntries.First().Date).Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te))).OrderBy(te => te.Date).ToArray(),
-                    Common.NonSportEntries,
-                    () => new Tuple<DateInterval, int>(DateInterval.Day, 1))
-                    { Title = "Feeling" },
-            };
+            return new IStatisticsPage[0];//{
+            //    new Graph(Graph.GraphType.BiodataFigures, 
+            //        () => Model.Instance.BiodataEntries.Except((from te in Model.Instance.BiodataEntries from f in _filters where !f.IsEntryVisible(te) select te)).OrderBy(te => te.Date).Cast<Entry>().ToArray(),
+            //        Common.NonSportEntries,
+            //        () => new Tuple<DateInterval, int>(DateInterval.Day, 1))
+            //        { Title = "Resting Heart Rate per day" }, 
+            //    new Graph(Graph.GraphType.Distance,
+            //        () => Model.Instance.TrainingEntries.Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te)).Where(te => te.DistanceMSpecified).OrderBy(te => te.Date).Cast<Entry>().ToArray(),
+            //        Common.NonSportEntries,
+            //        () => GroupingInterval)
+            //        { Title = "Distance" },
+            //    new Graph(Graph.GraphType.ZoneData, 
+            //        () => Model.Instance.TrainingEntries.Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te)).Where(te => te.HrZoneStringSpecified).OrderBy(te => te.Date).Cast<Entry>().ToArray(),   
+            //        Common.NonSportEntries,
+            //        () => new Tuple<DateInterval, int>(DateInterval.Day, 1))
+            //        { Title = "Zone Data per training" },
+            //    new Graph(Graph.GraphType.ZoneDataArea, 
+            //        () => Model.Instance.TrainingEntries.Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te)).Where(te => te.HrZoneStringSpecified).OrderBy(te => te.Date).Cast<Entry>().ToArray(),   
+            //        Common.NonSportEntries,
+            //        () => GroupingInterval)
+            //        { Title = "Zone Data area" },
+            //    new Graph(Graph.GraphType.Feeling, 
+            //        () => Model.Instance.BiodataEntries.Except((from te in Model.Instance.BiodataEntries from f in _filters where !f.IsEntryVisible(te) select te)).Cast<Entry>().Concat(
+            //            Model.Instance.TrainingEntries.Where(e => e.Date >= Model.Instance.BiodataEntries.First().Date).Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te))).OrderBy(te => te.Date).ToArray(),
+            //        Common.NonSportEntries,
+            //        () => new Tuple<DateInterval, int>(DateInterval.Day, 1))
+            //        { Title = "Feeling" },
+            //};
         }
 
         private IStatisticsPage[] GetPages()

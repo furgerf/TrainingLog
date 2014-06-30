@@ -5,7 +5,6 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
 using TrainingLog.Entries;
-using TrainingLog.Forms;
 
 namespace TrainingLog
 {
@@ -15,7 +14,7 @@ namespace TrainingLog
 
         public event EventHandler<EntryChangedEventArgs> EntriesChanged;
 
-        public static Model Instance { get { return _instance ?? (_instance = new Model()); } }
+        public static Model Instance { get { if (_instance == null) throw new Exception(); return _instance; } }
 
         public Entry[] Entries { get { return _entries.ToArray(); } }
         public RaceEntry[] RaceEntries { get { return _entries.Where(e => e is RaceEntry).OrderBy(e => e.Date).Cast<RaceEntry>().ToArray(); } }
@@ -31,12 +30,15 @@ namespace TrainingLog
 
         private readonly List<Entry> _entries = new List<Entry>();
 
+        private readonly string _logPath;
+
         #endregion
 
         #region Constructor
 
-        private Model()
+        private Model(string path)
         {
+            _logPath = path;
             ReadEntries();
         }
 
@@ -44,9 +46,9 @@ namespace TrainingLog
 
         #region Main Methods
 
-        public static void Initialize()
+        public static void Initialize(string path)
         {
-            _instance = new Model();
+            _instance = new Model(path);
         }
 
         public void RemoveEntry(Entry entry)
@@ -71,7 +73,7 @@ namespace TrainingLog
 
         public void WriteEntries(string path = null)
         {
-            using (var tw = new StreamWriter(path ?? MainForm.Instance.Settings.DataPath))
+            using (var tw = new StreamWriter(path ?? _logPath))
             {
                 var ser = new XmlSerializer(typeof(EntryList));
                 ser.Serialize(tw, new EntryList(TrainingEntries, BiodataEntries, NonSportEntries));
@@ -83,7 +85,7 @@ namespace TrainingLog
             _entries.Clear();
 
             var serializer = new XmlSerializer(typeof (EntryList));
-            using (var stringReader = new StringReader(File.ReadAllText(MainForm.Instance.Settings.DataPath)))
+            using (var stringReader = new StringReader(File.ReadAllText(_logPath)))
             using (var reader = XmlReader.Create(stringReader))
             {
                 _entries.AddRange(((EntryList) serializer.Deserialize(reader)).AllEntries);

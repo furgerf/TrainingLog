@@ -119,18 +119,10 @@
             this.comGrouping.FormattingEnabled = true;
             this.comGrouping.Items.AddRange(new object[] {
             "1 day",
-            "2 days",
-            "3 days",
-            "4 days",
-            "5 days",
             "1 week",
             "2 weeks",
-            "3 weeks",
             "1 month",
-            "2 months",
             "3 months",
-            "4 months",
-            "5 months",
             "6 months",
             "1 year"});
             this.comGrouping.Location = new System.Drawing.Point(6, 18);

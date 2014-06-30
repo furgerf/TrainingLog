@@ -157,7 +157,7 @@ namespace TrainingLog.Statistics
                 throw new Exception();
 
             var entries = GetEntries();
-            var nonSportEntries = Common.NonSportEntries(entries.Cast<Entry>().ToArray());
+            var nonSportEntries = Common.NonSportEntries(entries.First().Date ?? DateTime.MaxValue, entries.Last().Date ?? DateTime.MinValue);
 
             // cleanup
             foreach (var s in chaTotals.Series)

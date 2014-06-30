@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Forms;
+using Microsoft.Win32;
 
 namespace TrainingLog.Forms
 {
@@ -28,7 +30,27 @@ namespace TrainingLog.Forms
 
             Settings = Settings.LoadSettings();
 
-            //Model.Initialize();
+            if (File.Exists(Settings.DataPath))
+                Model.Initialize(Settings.DataPath);
+            else
+            {
+                var dlg = new OpenFileDialog
+                              { InitialDirectory = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders", "{374DE290-123F-4565-9164-39C4925E467B}", string.Empty).ToString(), Filter = "XML-Files|*.xml" };
+
+                if (dlg.ShowDialog() != DialogResult.OK)
+                {
+                    MessageBox.Show("Closing application...", "Exit", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    ButExitClick();
+                    return;
+                }
+
+                if (
+                    MessageBox.Show("Do you want to load the new log file from now on?", "Change settings",
+                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    Settings.DataPath = dlg.FileName;
+
+                Model.Initialize(dlg.FileName);
+            }
 
             EventHandler onFormHide = (s, e) =>
                                           {
@@ -109,7 +131,7 @@ namespace TrainingLog.Forms
             SettingsForm.Instance.Close();
         }
 
-        private void ButExitClick(object sender, EventArgs e)
+        private void ButExitClick(object sender = null, EventArgs e = null)
         {
             Close();
         }
