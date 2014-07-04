@@ -40,7 +40,14 @@ namespace TrainingLog.Charts
             GetEntries = getEntries;
             NonSportEntries = nonSportEntries;
 
+            // initialization
+            Series.Add(new Series(NonSportSeriesString)
+            {
+                IsVisibleInLegend = false
+            });
             Initialize();
+            AddEntries();
+            AddNonSportEntries();
 
             if (allowScrollZoomCursor)
                 AllowScrollZoomCursor();
@@ -50,12 +57,17 @@ namespace TrainingLog.Charts
 
         #region Main Methods
 
+        protected abstract void Initialize();
+
         protected abstract void AddEntries();
 
         protected void AddNonSportEntries()
         {
             Annotations.Clear();
             Series[NonSportSeriesString].Points.Clear();
+
+            var min = ChartAreas[0].AxisX.ScaleView.ViewMinimum;
+            var max = ChartAreas[0].AxisX.ScaleView.ViewMaximum;
 
             var minX = double.MaxValue;
             var maxX = double.MinValue;
@@ -66,12 +78,13 @@ namespace TrainingLog.Charts
                 if (s.Points[s.Points.Count - 1].XValue > maxX)
                     maxX = s.Points[s.Points.Count - 1].XValue;
             }
-            // TODO: ONLY COUNT POINTS TOWARDS MIN/MAX THAT ARE ACTUALLY VISIBLE WITH CURRENT ZOOM
 
-            foreach (var e in NonSportEntries(DateTime.FromOADate(minX), DateTime.FromOADate(maxX)))
+            var minDate = double.IsNaN(min) ? DateTime.FromOADate(minX) : DateTime.FromOADate(min).AddDays(1);
+            var maxDate = double.IsNaN(max) ? DateTime.FromOADate(maxX) : DateTime.FromOADate(max).AddDays(-1);
+
+            foreach (var e in NonSportEntries(minDate, maxDate))
                 e.AddEntryToChart(ChartAreas[0], Series[NonSportSeriesString], Annotations);
         }
-        protected abstract void Initialize();
 
         public void UpdateStatistics()
         {

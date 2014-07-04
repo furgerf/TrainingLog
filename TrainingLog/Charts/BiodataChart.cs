@@ -126,17 +126,12 @@ namespace TrainingLog.Charts
                                MarkerStyle = MarkerStyle.Square,
                                Color = Color.Yellow
                            });
-            Series.Add(new Series(NonSportSeriesString)
-                           {
-                               IsVisibleInLegend = false
-                           });
 
             // prepare axes
             var x = ChartAreas[0].AxisX;
             var y = ChartAreas[0].AxisY;
 
             // x
-            x.Title = "Date";
             x.IntervalAutoMode = IntervalAutoMode.FixedCount;
             x.IntervalType = DateTimeIntervalType.Days;
             x.Interval = 1;
@@ -145,10 +140,6 @@ namespace TrainingLog.Charts
             y.IntervalAutoMode = IntervalAutoMode.FixedCount;
             y.IntervalType = DateTimeIntervalType.Number;
             y.Interval = 5;
-
-            // fill points
-            AddEntries();
-            AddNonSportEntries();
         }
 
         protected override void AddEntries()

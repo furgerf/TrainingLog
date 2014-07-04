@@ -169,7 +169,16 @@ namespace TrainingLog.Forms
                                     where !f.IsEntryVisible(te)
                                     select te)).Where(te => te.DistanceMSpecified).OrderBy(te => te.Date).ToArray(),
                                Common.NonSportEntries,
-                               () => GroupingInterval)
+                               () => GroupingInterval),
+                           new FeelingChart(
+                               () => Model.Instance.BiodataEntries.Except((from te in Model.Instance.BiodataEntries from f in _filters where !f.IsEntryVisible(te) select te)).Cast<Entry>().Concat(
+                        Model.Instance.TrainingEntries.Where(e => e.Date >= Model.Instance.BiodataEntries.First().Date).Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te))).OrderBy(te => te.Date).ToArray(),
+                               Common.NonSportEntries,
+                               () => AbstractChart.GroupingType.OneDay), 
+                           new ZoneDataChart(
+                               () => Model.Instance.TrainingEntries.Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te)).Where(te => te.HrZoneStringSpecified).OrderBy(te => te.Date).ToArray(), 
+                               Common.NonSportEntries,
+                               () => GroupingInterval), 
                        };
         }
 

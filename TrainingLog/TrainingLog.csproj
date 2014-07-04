@@ -51,6 +51,12 @@
     <Compile Include="Charts\DistanceChart.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Charts\FeelingChart.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Charts\ZoneDataChart.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\ControlList.cs">
       <SubType>UserControl</SubType>
     </Compile>

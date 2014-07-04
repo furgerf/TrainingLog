@@ -51,17 +51,12 @@ namespace TrainingLog.Charts
                                ChartType = SeriesChartType.StackedColumn,
                                Color = Color.Green,
                            });
-            Series.Add(new Series(NonSportSeriesString)
-                           {
-                               IsVisibleInLegend = false
-                           });
 
             // prepare axes
             var x = ChartAreas[0].AxisX;
             var y = ChartAreas[0].AxisY;
 
             // x
-            x.Title = "Date";
             x.IntervalAutoMode = IntervalAutoMode.FixedCount;
             switch (GetGrouping())
             {
@@ -110,12 +105,7 @@ namespace TrainingLog.Charts
 
             // y
             y.IntervalAutoMode = IntervalAutoMode.VariableCount;
-            y.Title = "Distance";
             y.LabelStyle.Format = "{0} km";
-
-            // fill points
-            AddEntries();
-            AddNonSportEntries();
         }
 
         protected override void AddEntries()
