@@ -18,6 +18,9 @@ Settings
 Race Entries
 	2			3		Implement race entries
 
+Training Entries
+	2			2		Add equipment-attribute
+
 TrainingLogForm
 	2			2		Get the TrainingLogForm to load faster
 

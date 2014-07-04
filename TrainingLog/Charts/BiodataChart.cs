@@ -34,7 +34,7 @@ namespace TrainingLog.Charts
 
         #region Constructor
 
-        public BiodataChart(Func<BiodataEntry[]> getEntries, Func<DateTime, DateTime, NonSportEntry[]> getNonSportEntries, Func<GroupingType> grouping) : base(() => getEntries().Cast<Entry>().ToArray(), getNonSportEntries, grouping, true)
+        public BiodataChart(Func<BiodataEntry[]> getEntries) : base(() => getEntries().Cast<Entry>().ToArray(), true)
         {
             Titles.Add("Biodata");
 
@@ -61,9 +61,6 @@ namespace TrainingLog.Charts
 
         protected override void Initialize()
         {
-            if (GetGrouping() != GroupingType.OneDay)
-                throw new Exception("unexpected grouping: " + GetGrouping());
-
             ChartAreas.Add(new ChartArea("Biodata"));
             Legends.Add(new Legend
                             {
@@ -149,8 +146,6 @@ namespace TrainingLog.Charts
                 s.Points.Clear();
 
             var entries = GetEntries();
-            if (GetGrouping() != GroupingType.OneDay)
-                throw new Exception("unexpected grouping: " + GetGrouping());
 
             var hrAvg = 0.0;
 

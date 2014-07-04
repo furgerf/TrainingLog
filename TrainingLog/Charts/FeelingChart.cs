@@ -17,8 +17,8 @@ namespace TrainingLog.Charts
 
         #region Constructor
 
-        public FeelingChart(Func<Entry[]> getEntries, Func<DateTime, DateTime, NonSportEntry[]> getNonSportEntries, Func<GroupingType> grouping)
-            : base(() => getEntries(), getNonSportEntries, grouping, true)
+        public FeelingChart(Func<Entry[]> getEntries)
+            : base(() => getEntries(), true)
         {
             Titles.Add("Feeling");
         }
@@ -34,8 +34,6 @@ namespace TrainingLog.Charts
                 s.Points.Clear();
 
             var entries = GetEntries();
-            if (GetGrouping() != GroupingType.OneDay)
-                throw new Exception("unexpected grouping: " + GetGrouping());
 
             var trainingDates = new Dictionary<DateTime, double>();
 
@@ -89,9 +87,6 @@ namespace TrainingLog.Charts
 
         protected override void Initialize()
         {
-            if (GetGrouping() != GroupingType.OneDay)
-                throw new Exception("unexpected grouping: " + GetGrouping());
-
             ChartAreas.Add(new ChartArea("Feeling"));
 
             // prepare series
@@ -148,7 +143,7 @@ namespace TrainingLog.Charts
                 MajorGrid = { LineColor = Color.Blue },
                 IntervalAutoMode = IntervalAutoMode.FixedCount,
                 Interval = 5,
-                IntervalOffset = 40,
+                IntervalOffset = 50,
                 Maximum = 65
             };
         }

@@ -48,6 +48,12 @@
     <Compile Include="Charts\BiodataChart.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Charts\SportOverviewChart.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Charts\ZoneDataAreaChart.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Charts\DistanceChart.cs">
       <SubType>Component</SubType>
     </Compile>

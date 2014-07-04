@@ -17,9 +17,11 @@ namespace TrainingLog.Charts
 
         #region Constructor
         
-        public DistanceChart(Func<TrainingEntry[]> getEntries, Func<DateTime, DateTime, NonSportEntry[]> getNonSportEntries, Func<GroupingType> grouping) : base(() => getEntries().Cast<Entry>().ToArray(), getNonSportEntries, grouping, true)
+        public DistanceChart(Func<TrainingEntry[]> getEntries) : base(() => getEntries().Cast<Entry>().ToArray(), true)
         {
             Titles.Add("Distance");
+
+            GetGroupingChanged += AddEntries;
         }
 
         #endregion
@@ -58,6 +60,26 @@ namespace TrainingLog.Charts
 
             // x
             x.IntervalAutoMode = IntervalAutoMode.FixedCount;
+            x.IntervalOffsetType = DateTimeIntervalType.Days;
+
+            // y
+            y.IntervalAutoMode = IntervalAutoMode.VariableCount;
+            y.LabelStyle.Format = "{0} km";
+        }
+
+        protected override void AddEntries()
+        {
+            if (GetGrouping == null)
+                return;
+
+            // clear old data
+            foreach (var s in Series)
+                s.Points.Clear();
+
+            // set axis
+            var x = ChartAreas[0].AxisX;
+            x.IntervalOffset = 0;
+
             switch (GetGrouping())
             {
                 case GroupingType.OneDay:
@@ -66,10 +88,12 @@ namespace TrainingLog.Charts
                     break;
                 case GroupingType.OneWeek:
                     x.IntervalType = DateTimeIntervalType.Weeks;
+                    x.IntervalOffset = -6;
                     x.Interval = 1;
                     break;
                 case GroupingType.TwoWeeks:
                     x.IntervalType = DateTimeIntervalType.Weeks;
+                    x.IntervalOffset = -6;
                     x.Interval = 2;
                     break;
                 case GroupingType.OneMonth:
@@ -93,27 +117,17 @@ namespace TrainingLog.Charts
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-                //x.Interval = grouping.Item2;
+            //x.Interval = grouping.Item2;
 
-                //if (grouping.Item1 == DateInterval.Day)
-                //    if (grouping.Item2 == 5 || grouping.Item2 == 7)
-                //        x.IntervalOffset = -1;
-                //    else if (grouping.Item2 == 14)
-                //        x.IntervalOffset = -9;
-                //    else if (grouping.Item2 == 21)
-                //        x.IntervalOffset = -12;
+            //if (grouping.Item1 == DateInterval.Day)
+            //    if (grouping.Item2 == 5 || grouping.Item2 == 7)
+            //        x.IntervalOffset = -1;
+            //    else if (grouping.Item2 == 14)
+            //        x.IntervalOffset = -9;
+            //    else if (grouping.Item2 == 21)
+            //        x.IntervalOffset = -12;
 
-            // y
-            y.IntervalAutoMode = IntervalAutoMode.VariableCount;
-            y.LabelStyle.Format = "{0} km";
-        }
-
-        protected override void AddEntries()
-        {
-            // clear old data
-            foreach (var s in Series)
-                s.Points.Clear();
-
+            // add entries
             var entries = GetEntries();
             if (entries.Length == 0)
                 return;

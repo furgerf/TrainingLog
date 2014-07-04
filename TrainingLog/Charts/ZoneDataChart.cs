@@ -11,8 +11,8 @@ namespace TrainingLog.Charts
     {
         #region Constructor
 
-        public ZoneDataChart(Func<TrainingEntry[]> getEntries, Func<DateTime, DateTime, NonSportEntry[]> getNonSportEntries, Func<GroupingType> grouping)
-            : base(() => getEntries().Cast<Entry>().ToArray(), getNonSportEntries, grouping, true)
+        public ZoneDataChart(Func<TrainingEntry[]> getEntries)
+            : base(() => getEntries().Cast<Entry>().ToArray(), true)
         {
             Titles.Add("Zone Data");
         }
@@ -31,8 +31,6 @@ namespace TrainingLog.Charts
 
             var data = new List<TrainingEntry[]>();
             var index = 0;
-
-            // TODO: implement grouping
 
             foreach (var e in entries)
             {
@@ -103,7 +101,7 @@ namespace TrainingLog.Charts
             x.Interval = 1;
 
             // y
-            y.IntervalType = DateTimeIntervalType.Minutes;
+            y.IntervalType = DateTimeIntervalType.Seconds;
             y.IntervalAutoMode = IntervalAutoMode.VariableCount;
             y.LabelStyle.Format = "HH:mm";
         }

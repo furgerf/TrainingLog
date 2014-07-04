@@ -100,9 +100,13 @@ namespace TrainingLog.Forms
 
             tabTabs.SelectedIndexChanged += (s, e) =>
                                                 {
-                                                        if (!_dirtyPages[tabTabs.SelectedIndex]) return;
-                                                        _charts[tabTabs.SelectedIndex].UpdateStatistics();
-                                                        _dirtyPages[tabTabs.SelectedIndex] = false;
+                                                    // set grouping (dis/en)abled
+                                                    comGrouping.Enabled = ((AbstractChart)tabTabs.TabPages[tabTabs.SelectedIndex].Controls[0]).GetGrouping != null;
+
+                                                    // update page if necessary
+                                                    if (!_dirtyPages[tabTabs.SelectedIndex]) return;
+                                                    _charts[tabTabs.SelectedIndex].UpdateStatistics();
+                                                    _dirtyPages[tabTabs.SelectedIndex] = false;
                                                 };
 
             // TODO: make updating more fine-grained using the event args
@@ -122,6 +126,8 @@ namespace TrainingLog.Forms
                     VisibleChanged += (ss, ee) => updateData(ss, ee);
                 }
             };
+
+            comGrouping.Enabled = ((AbstractChart)tabTabs.TabPages[tabTabs.SelectedIndex].Controls[0]).GetGrouping != null;
         }
 
         #endregion
@@ -152,33 +158,56 @@ namespace TrainingLog.Forms
         {
             return new AbstractChart[]
                        {
+                           new SportOverviewChart(() => Model.Instance.TrainingEntries.Where(e => e.Sport == Common.Sport.Running).OrderBy(e => e.Date).ToArray(), Common.Sport.Running),
                            new BiodataChart(
                                () =>
                                Model.Instance.BiodataEntries.Except(
                                    (from te in Model.Instance.BiodataEntries
                                     from f in _filters
                                     where !f.IsEntryVisible(te)
-                                    select te)).OrderBy(te => te.Date).ToArray(),
-                               Common.NonSportEntries,
-                               () => AbstractChart.GroupingType.OneDay),
+                                    select te)).OrderBy(te => te.Date).ToArray())
+                               {NonSportEntries = Common.NonSportEntries},
                            new DistanceChart(
                                () =>
                                Model.Instance.TrainingEntries.Except(
                                    (from te in Model.Instance.TrainingEntries
                                     from f in _filters
                                     where !f.IsEntryVisible(te)
-                                    select te)).Where(te => te.DistanceMSpecified).OrderBy(te => te.Date).ToArray(),
-                               Common.NonSportEntries,
-                               () => GroupingInterval),
+                                    select te)).Where(te => te.DistanceMSpecified).OrderBy(te => te.Date).ToArray())
+                               {NonSportEntries = Common.NonSportEntries, GetGrouping = () => GroupingInterval},
                            new FeelingChart(
-                               () => Model.Instance.BiodataEntries.Except((from te in Model.Instance.BiodataEntries from f in _filters where !f.IsEntryVisible(te) select te)).Cast<Entry>().Concat(
-                        Model.Instance.TrainingEntries.Where(e => e.Date >= Model.Instance.BiodataEntries.First().Date).Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te))).OrderBy(te => te.Date).ToArray(),
-                               Common.NonSportEntries,
-                               () => AbstractChart.GroupingType.OneDay), 
+                               () =>
+                               Model.Instance.BiodataEntries.Except(
+                                   (from te in Model.Instance.BiodataEntries
+                                    from f in _filters
+                                    where !f.IsEntryVisible(te)
+                                    select te)).Cast<Entry>().Concat(
+                                        Model.Instance.TrainingEntries.Where(
+                                            e => e.Date >= Model.Instance.BiodataEntries.First().Date)
+                                             .Except(
+                                                 (from te in Model.Instance.TrainingEntries
+                                                  from f in _filters
+                                                  where !f.IsEntryVisible(te)
+                                                  select te))).OrderBy(te => te.Date).ToArray())
+                               {
+                                   NonSportEntries = Common.NonSportEntries
+                               },
                            new ZoneDataChart(
-                               () => Model.Instance.TrainingEntries.Except((from te in Model.Instance.TrainingEntries from f in _filters where !f.IsEntryVisible(te) select te)).Where(te => te.HrZoneStringSpecified).OrderBy(te => te.Date).ToArray(), 
-                               Common.NonSportEntries,
-                               () => GroupingInterval), 
+                               () =>
+                               Model.Instance.TrainingEntries.Except(
+                                   (from te in Model.Instance.TrainingEntries
+                                    from f in _filters
+                                    where !f.IsEntryVisible(te)
+                                    select te)).Where(te => te.HrZoneStringSpecified).OrderBy(te => te.Date).ToArray())
+                               {NonSportEntries = Common.NonSportEntries},
+                           new ZoneDataAreaChart(
+                               () =>
+                               Model.Instance.TrainingEntries.Except(
+                                   (from te in Model.Instance.TrainingEntries
+                                    from f in _filters
+                                    where !f.IsEntryVisible(te)
+                                    select te)).Where(te => te.HrZoneStringSpecified).OrderBy(te => te.Date).ToArray())
+                               {NonSportEntries = Common.NonSportEntries, GetGrouping = () => GroupingInterval}
                        };
         }
 

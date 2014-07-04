@@ -15,30 +15,46 @@ namespace TrainingLog.Charts
             OneDay, OneWeek, TwoWeeks, OneMonth, ThreeMonths, SixMonths, OneYear, Count
         }
 
+        public Func<DateTime, DateTime, NonSportEntry[]> NonSportEntries
+        {
+            get { return _nonSportEntries; }
+            set { _nonSportEntries = value; AddNonSportEntries(); }
+        }
+
+        public Func<GroupingType> GetGrouping
+        {
+            get { return _getGrouping; }
+            set
+            {
+                _getGrouping = value;
+                if (GetGroupingChanged != null) GetGroupingChanged();
+            }
+        }
+
         #endregion
 
         #region Protected Fields
 
-        protected readonly Func<GroupingType> GetGrouping;
+        protected delegate void OnGetGroupingChanged();
+
+        protected event OnGetGroupingChanged GetGroupingChanged;
 
         protected readonly Func<Entry[]> GetEntries;
-
-        protected readonly Func<DateTime, DateTime, NonSportEntry[]> NonSportEntries;
 
         protected const string NonSportSeriesString = "Non-Sport Entries";
         
         private double _oldSelStart = -1;
         private double _oldSelEnd = -1;
-        
+        private Func<DateTime, DateTime, NonSportEntry[]> _nonSportEntries;
+        private Func<GroupingType> _getGrouping;
+
         #endregion
 
         #region Constructor
 
-        protected AbstractChart(Func<Entry[]> getEntries, Func<DateTime, DateTime, NonSportEntry[]> nonSportEntries, Func<GroupingType> getGrouping, bool allowScrollZoomCursor)
+        protected AbstractChart(Func<Entry[]> getEntries, bool allowScrollZoomCursor = false)
         {
-            GetGrouping = getGrouping;
             GetEntries = getEntries;
-            NonSportEntries = nonSportEntries;
 
             // initialization
             Series.Add(new Series(NonSportSeriesString)
@@ -47,7 +63,6 @@ namespace TrainingLog.Charts
             });
             Initialize();
             AddEntries();
-            AddNonSportEntries();
 
             if (allowScrollZoomCursor)
                 AllowScrollZoomCursor();
@@ -61,38 +76,45 @@ namespace TrainingLog.Charts
 
         protected abstract void AddEntries();
 
-        protected void AddNonSportEntries()
+        protected void AddNonSportEntries(string areaName = "")
         {
+            var index = areaName.Equals("") ? 0  : ChartAreas.IndexOf(areaName);
+            if (double.IsNaN(ChartAreas[index].AxisX.ScaleView.ViewMinimum) &&
+                double.IsNaN(ChartAreas[index].AxisX.ScaleView.ViewMaximum) &&
+                Series.First(s => s.Name != NonSportSeriesString).Points.Count == 0)
+                return;
+
             Annotations.Clear();
             Series[NonSportSeriesString].Points.Clear();
 
-            var min = ChartAreas[0].AxisX.ScaleView.ViewMinimum;
-            var max = ChartAreas[0].AxisX.ScaleView.ViewMaximum;
+            var min = ChartAreas[index].AxisX.ScaleView.ViewMinimum;
+            var max = ChartAreas[index].AxisX.ScaleView.ViewMaximum;
 
             var minX = double.MaxValue;
             var maxX = double.MinValue;
+            var pointSet = false;
             foreach (var s in Series.Where(s => s.Points.Count > 0 && s.Name != NonSportSeriesString))
             {
-                if (s.Points[0].XValue < minX)
-                    minX = s.Points[0].XValue;
+                pointSet = true;
+                if (s.Points[index].XValue < minX)
+                    minX = s.Points[index].XValue;
                 if (s.Points[s.Points.Count - 1].XValue > maxX)
                     maxX = s.Points[s.Points.Count - 1].XValue;
             }
 
-            var minDate = double.IsNaN(min) ? DateTime.FromOADate(minX) : DateTime.FromOADate(min).AddDays(1);
-            var maxDate = double.IsNaN(max) ? DateTime.FromOADate(maxX) : DateTime.FromOADate(max).AddDays(-1);
+            // "prefer" values from datapoints
+            var minDate = pointSet ? DateTime.FromOADate(minX) : DateTime.FromOADate(min).AddDays(1);
+            var maxDate = pointSet ? DateTime.FromOADate(maxX) : DateTime.FromOADate(max).AddDays(-1);
+
+            //var minDate = double.IsNaN(min) ? DateTime.FromOADate(minX) : DateTime.FromOADate(min).AddDays(1);
+            //var maxDate = double.IsNaN(max) ? DateTime.FromOADate(maxX) : DateTime.FromOADate(max).AddDays(-1);
 
             foreach (var e in NonSportEntries(minDate, maxDate))
-                e.AddEntryToChart(ChartAreas[0], Series[NonSportSeriesString], Annotations);
+                e.AddEntryToChart(ChartAreas[index], Series[NonSportSeriesString], Annotations);
         }
 
         public void UpdateStatistics()
         {
-            // clear old data
-            foreach (var s in Series)
-                s.Points.Clear();
-
-            // add new data
             AddEntries();
             AddNonSportEntries();
         }
