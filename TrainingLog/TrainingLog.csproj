@@ -78,6 +78,12 @@
     </Compile>
     <Compile Include="Entries\NonSportEntry.cs" />
     <Compile Include="EntryChangedEventArgs.cs" />
+    <Compile Include="Forms\NewNonSportEntryForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\NewNonSportEntryForm.Designer.cs">
+      <DependentUpon>NewNonSportEntryForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\NonSportEntryForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -181,6 +187,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\NewNonSportEntryForm.resx">
+      <DependentUpon>NewNonSportEntryForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\NonSportEntryForm.resx">
       <DependentUpon>NonSportEntryForm.cs</DependentUpon>

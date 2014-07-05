@@ -62,7 +62,7 @@
             this.butShowLog.Location = new System.Drawing.Point(12, 99);
             this.butShowLog.Name = "butShowLog";
             this.butShowLog.Size = new System.Drawing.Size(200, 23);
-            this.butShowLog.TabIndex = 2;
+            this.butShowLog.TabIndex = 3;
             this.butShowLog.Text = "Show Training Log";
             this.butShowLog.UseVisualStyleBackColor = true;
             this.butShowLog.Click += new System.EventHandler(this.ButShowLogClick);
@@ -72,7 +72,7 @@
             this.butShowStatistics.Location = new System.Drawing.Point(12, 128);
             this.butShowStatistics.Name = "butShowStatistics";
             this.butShowStatistics.Size = new System.Drawing.Size(200, 23);
-            this.butShowStatistics.TabIndex = 3;
+            this.butShowStatistics.TabIndex = 4;
             this.butShowStatistics.Text = "Show Statistics";
             this.butShowStatistics.UseVisualStyleBackColor = true;
             this.butShowStatistics.Click += new System.EventHandler(this.ButShowStatisticsClick);
@@ -82,7 +82,7 @@
             this.butSettings.Location = new System.Drawing.Point(12, 157);
             this.butSettings.Name = "butSettings";
             this.butSettings.Size = new System.Drawing.Size(200, 23);
-            this.butSettings.TabIndex = 4;
+            this.butSettings.TabIndex = 5;
             this.butSettings.Text = "Settings";
             this.butSettings.UseVisualStyleBackColor = true;
             this.butSettings.Click += new System.EventHandler(this.ButSettingsClick);
@@ -92,7 +92,7 @@
             this.butExit.Location = new System.Drawing.Point(12, 186);
             this.butExit.Name = "butExit";
             this.butExit.Size = new System.Drawing.Size(200, 23);
-            this.butExit.TabIndex = 5;
+            this.butExit.TabIndex = 6;
             this.butExit.Text = "Exit";
             this.butExit.UseVisualStyleBackColor = true;
             this.butExit.Click += new System.EventHandler(this.ButExitClick);
@@ -102,7 +102,7 @@
             this.butManageNonsport.Location = new System.Drawing.Point(12, 70);
             this.butManageNonsport.Name = "butManageNonsport";
             this.butManageNonsport.Size = new System.Drawing.Size(200, 23);
-            this.butManageNonsport.TabIndex = 6;
+            this.butManageNonsport.TabIndex = 2;
             this.butManageNonsport.Text = "Manage Non-Sport Entries";
             this.butManageNonsport.UseVisualStyleBackColor = true;
             this.butManageNonsport.Click += new System.EventHandler(this.ButManageNonsportClick);

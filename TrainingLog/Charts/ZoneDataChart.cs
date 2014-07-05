@@ -90,9 +90,10 @@ namespace TrainingLog.Charts
             x.Interval = 1;
 
             // y
-            //y.IntervalAutoMode = IntervalAutoMode.VariableCount;
-            y.IntervalType = DateTimeIntervalType.Hours;
-            y.Interval = 100;
+            y.IntervalAutoMode = IntervalAutoMode.FixedCount;
+            y.IntervalType = DateTimeIntervalType.Minutes;
+            y.Interval = 15;
+            y.Minimum = new DateTime(1, 1, 1, 0, 0, 0).ToOADate();
             y.LabelStyle.Format = "HH:mm";
         }
 
@@ -140,21 +141,33 @@ namespace TrainingLog.Charts
                 data[index][0] = (TrainingEntry)e;
             }
 
+            var max = double.MinValue;
             foreach (var tes in data)
             {
                 for (var i = 0; i < tes.Length; i++)
                 {
+                    var sum = 0.0;
                     for (var j = 0; j < 5; j++)
                     {
                         var zd = tes[i] == null ? TimeSpan.Zero : (tes[i].HrZones ?? ZoneData.Empty()).Zones[j];
 
-                        Series["Zone " + (j + 1) + " (" + i + ")"].Points.Add(
-                            new DataPoint((tes[0].Date ?? DateTime.MinValue).ToOADate(),
-                                          new DateTime(1, 1, 1, zd.Hours, zd.Minutes, zd.Seconds).ToOADate()));
-                                          //zd.TotalSeconds));
+                        var dp = new DataPoint((tes[0].Date ?? DateTime.MinValue).ToOADate(),
+                                          new DateTime(1, 1, 1, zd.Hours, zd.Minutes, zd.Seconds).ToOADate());
+                                          //zd.TotalSeconds);
+                        Series["Zone " + (j + 1) + " (" + i + ")"].Points.Add(dp);
+
+                        sum += dp.YValues[0];
+                        if (sum > max)
+                            max = sum;
                     }
                 }
             }
+            var dt = DateTime.FromOADate(max);
+            if (dt.Minute > 30)
+                dt = dt.AddHours(1);
+            dt = dt.AddMinutes(30 - dt.Minute);
+            dt = dt.AddSeconds(-dt.Second);
+            ChartAreas[0].AxisY.Maximum = dt.ToOADate();
         }
 
         #endregion

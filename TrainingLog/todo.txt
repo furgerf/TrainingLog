@@ -4,6 +4,7 @@ General
 	3			4		Re-check filter concept
 	1			2		Import data-over-time from PPT (?)
 	1			1		Add a few icons...
+	1			1		Make all forms resize properly
 
 Statistics
 	1			4		Add more statistics	
@@ -24,6 +25,5 @@ Training Entries
 TrainingLogForm
 	2			2		Get the TrainingLogForm to load faster
 
-NonSportEntries
-	3			2		Add form to manage non-sport entries
+
 
