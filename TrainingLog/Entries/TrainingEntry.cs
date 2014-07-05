@@ -108,7 +108,12 @@ namespace TrainingLog.Entries
 
         #endregion
 
-        #region Main Methods
+        #region Methods
+
+        public override string ToString()
+        {
+            return Sport.Value + " (" + TrainingType + "): " + Duration.Value + (DistanceMSpecified ? " (" + DistanceKm + "km)" : "");
+        }
 
         #endregion
     }

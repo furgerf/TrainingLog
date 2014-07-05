@@ -225,7 +225,7 @@ namespace TrainingLog.Controls
             if (Columns == null)
                 return;
 
-            grpEntries.Location = new Point(grpEntries.Location.X, false ? grpFilter.Height : 0);
+            grpEntries.Location = new Point(grpEntries.Location.X, 0);
 
             var listHeight = Height - grpEntries.Location.X - grpEntries.Location.X;
             cliEntries.Height = listHeight > 0 ? listHeight : 0;

@@ -7,10 +7,8 @@ General
 	1			1		Make all forms resize properly
 
 Statistics
-	1			4		Add more statistics	
-	1			1		Running Stats: Merge different charts into one, with multiple chartareas
+	1			4		Add more statistics
 	1			3		Add tooltips to the charts
-	2			4		Make axis intervals/max/min dynamic everywhere
 	1			4		Overview stats: Make one really big graph and enlarge other graphs when clicked
 
 Settings

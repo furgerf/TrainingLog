@@ -153,9 +153,9 @@ namespace TrainingLog.Charts
             var intervalEnd = GetEndOfInterval(intervalStart);
             var previousIntervalStart = intervalStart.AddSeconds(-1);
 
-            var points = new List<Tuple<DateTime, DateTime, DateTime, DateTime, DateTime, DateTime>>
+            var points = new List<Tuple<DateTime, DateTime, DateTime, DateTime, DateTime, DateTime, string>>
                              {
-                                 new Tuple<DateTime, DateTime, DateTime, DateTime, DateTime, DateTime>(intervalStart, DateTime.MinValue, DateTime.MinValue, DateTime.MinValue, DateTime.MinValue, DateTime.MinValue)
+                                 new Tuple<DateTime, DateTime, DateTime, DateTime, DateTime, DateTime, string>(intervalStart, DateTime.MinValue, DateTime.MinValue, DateTime.MinValue, DateTime.MinValue, DateTime.MinValue, "")
                              };
 
             foreach (var e in entries.Cast<TrainingEntry>())
@@ -171,12 +171,13 @@ namespace TrainingLog.Charts
                 if (last != null && e.Date < intervalEnd)
                 {
                     // add to last tuple
-                    points[points.Count - 1] = new Tuple<DateTime, DateTime, DateTime, DateTime, DateTime, DateTime>(last.Item1,
+                    points[points.Count - 1] = new Tuple<DateTime, DateTime, DateTime, DateTime, DateTime, DateTime, string>(last.Item1,
                         last.Item2.Add(e.HrZones.Value.Zone1),
                         last.Item3.Add(e.HrZones.Value.Zone2),
                         last.Item4.Add(e.HrZones.Value.Zone3),
                         last.Item5.Add(e.HrZones.Value.Zone4),
-                        last.Item6.Add(e.HrZones.Value.Zone5));
+                        last.Item6.Add(e.HrZones.Value.Zone5),
+                        last.Item7 + (last.Item7 != "" ? "\n" : "") + e);
                 }
                 else
                 {
@@ -187,19 +188,20 @@ namespace TrainingLog.Charts
                     while (e.Date >= intervalEnd)
                     {
                         // add empty tuple
-                        points.Add(new Tuple<DateTime, DateTime, DateTime, DateTime, DateTime, DateTime>(intervalStart, DateTime.MinValue, DateTime.MinValue, DateTime.MinValue, DateTime.MinValue, DateTime.MinValue));
+                        points.Add(new Tuple<DateTime, DateTime, DateTime, DateTime, DateTime, DateTime, string>(intervalStart, DateTime.MinValue, DateTime.MinValue, DateTime.MinValue, DateTime.MinValue, DateTime.MinValue, ""));
 
                         intervalStart = intervalEnd;
                         intervalEnd = GetEndOfInterval(intervalEnd);
                     }
 
                     // add new tuple
-                    points.Add(new Tuple<DateTime, DateTime, DateTime, DateTime, DateTime, DateTime>(intervalStart,
+                    points.Add(new Tuple<DateTime, DateTime, DateTime, DateTime, DateTime, DateTime, string>(intervalStart,
                             DateTime.MinValue.Add(e.HrZones.Value.Zone1),
                             DateTime.MinValue.Add(e.HrZones.Value.Zone2),
                             DateTime.MinValue.Add(e.HrZones.Value.Zone3),
                             DateTime.MinValue.Add(e.HrZones.Value.Zone4),
-                            DateTime.MinValue.Add(e.HrZones.Value.Zone5)));
+                            DateTime.MinValue.Add(e.HrZones.Value.Zone5),
+                            e.ToString()));
                 }
             }
 
@@ -222,7 +224,7 @@ namespace TrainingLog.Charts
                         ts[i] = ts[i].AddDays(-ts[i].DayOfYear + 1);
                     }
                     sum += ts[i].ToOADate();
-                    Series["Zone " + (i + 1)].Points.Add(new DataPoint(t.Item1.ToOADate(), sum));
+                    Series["Zone " + (i + 1)].Points.Add(new DataPoint(t.Item1.ToOADate(), sum) { ToolTip = t.Item7 });
                 }
                 if (sum > max)
                     max = sum;

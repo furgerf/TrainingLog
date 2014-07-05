@@ -139,8 +139,8 @@ namespace TrainingLog.Charts
             curX.AutoScroll = true;
             curY.AutoScroll = false;
 
-            curX.LineWidth = 3;
-            curY.LineWidth = 3;
+            curX.LineWidth = 2;
+            curY.LineWidth = 2;
 
             curX.LineColor = Color.DarkRed;
             curY.LineColor = Color.DarkRed;

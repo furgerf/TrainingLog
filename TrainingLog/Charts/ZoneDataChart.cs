@@ -152,8 +152,7 @@ namespace TrainingLog.Charts
                         var zd = tes[i] == null ? TimeSpan.Zero : (tes[i].HrZones ?? ZoneData.Empty()).Zones[j];
 
                         var dp = new DataPoint((tes[0].Date ?? DateTime.MinValue).ToOADate(),
-                                          new DateTime(1, 1, 1, zd.Hours, zd.Minutes, zd.Seconds).ToOADate());
-                                          //zd.TotalSeconds);
+                                          new DateTime(1, 1, 1, zd.Hours, zd.Minutes, zd.Seconds).ToOADate()){ToolTip = tes[i] == null ? "" : tes[i].ToString()};
                         Series["Zone " + (j + 1) + " (" + i + ")"].Points.Add(dp);
 
                         sum += dp.YValues[0];

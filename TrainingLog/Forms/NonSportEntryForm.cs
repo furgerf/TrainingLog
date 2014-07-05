@@ -77,7 +77,7 @@ namespace TrainingLog.Forms
                     (DateTime.Parse(item.SubItems[2].Text) == e.Date) &&
                     (item.SubItems[3].Text == ""
                         ? e.EndDate.Value == e.Date
-                        : DateTime.Parse(item.SubItems[3].Text) == (e.EndDate ?? DateTime.MinValue))).ToArray();
+                        : item.SubItems[3].Text == e.GetEndDate.ToShortDateString())).ToArray();
             
             if (entries.Count() != 1)
                 throw new Exception("should find exactly one entry");
@@ -120,8 +120,6 @@ namespace TrainingLog.Forms
 
             // add new (edited) entry
             ShowNewEntryDialog(entry);
-
-            lisEntries.Items.Clear();
         }
 
         private void ButDeleteClick(object sender, EventArgs e)

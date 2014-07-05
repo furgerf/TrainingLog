@@ -34,9 +34,9 @@ namespace TrainingLog.Forms
             if (entry.FeelingSpecified)
                 comFeeling.Text = Enum.GetName(typeof (Common.Index), entry.Feeling ?? Common.Index.Count);
             if (entry.NigglesSpecified)
-                txtNiggles.Text = entry.Niggles;
+                comNiggles.Text = entry.Niggles;
             if (entry.NoteSpecified)
-                txtNotes.Text = entry.Note;
+                comNotes.Text = entry.Note;
             if (entry.OwnIndexSpecified)
                 numOwnIndex.Value = entry.OwnIndex ?? decimal.MinValue;
             if (entry.RestingHeartRateSpecified)
@@ -54,6 +54,16 @@ namespace TrainingLog.Forms
             InitializeComponent();
 
             // fill combobox lists
+            foreach (var e in Model.Instance.BiodataEntries)
+            {
+                if (e.NoteSpecified && !comNotes.Items.Contains(e.Note))
+                    comNotes.Items.Add(e.Note);
+                if (e.NigglesSpecified && !comNiggles.Items.Contains(e.Niggles))
+                    comNiggles.Items.Add(e.Niggles);
+            }
+            comNiggles.Sorted = true;
+            comNotes.Sorted = true;
+
             for (var i = Common.Index.Count - 1; i >= 0; i--)
                 comSleepQuality.Items.Add(Enum.GetName(typeof (Common.Index), i) ?? "ENUM NAME NOT FOUND");
             comSleepQuality.SelectedIndex = (int)Common.Index.Okay;
@@ -77,8 +87,8 @@ namespace TrainingLog.Forms
             numOwnIndex.Value = 0;
             numWeight.Value = 0;
             comFeeling.SelectedIndex = 0;
-            txtNiggles.Text = "";
-            txtNotes.Text = "";
+            comNiggles.Text = "";
+            comNotes.Text = "";
         }
 
         #endregion
@@ -105,12 +115,12 @@ namespace TrainingLog.Forms
                                 RestingHeartRate = (int) numRestingHeartRate.Value,
                                 OwnIndex = (int) numOwnIndex.Value,
                                 Weight = numWeight.Value,
-                                Niggles = txtNiggles.Text,
+                                Niggles = comNiggles.Text,
                                 Feeling =
                                     comFeeling.Text != ""
                                         ? (Common.Index) (int) Common.Index.Count - comFeeling.SelectedIndex
                                         : Common.Index.None,
-                                Note = txtNotes.Text
+                                Note = comNotes.Text
                             };
 
             NewEntry = entry;

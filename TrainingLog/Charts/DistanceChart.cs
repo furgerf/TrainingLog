@@ -187,22 +187,6 @@ namespace TrainingLog.Charts
                 Series["Cycling"].Points.Add(Series["Cycling"].Points[0]);
         }
 
-        //protected override void AddNonSportEntries()
-        //{
-        //    var minX = double.MaxValue;
-        //    var maxX = double.MinValue;
-        //    foreach (var s in Series.Where(s => s.Points.Count > 0 && s.Name != "Non-Sport Entries"))
-        //    {
-        //        if (s.Points[0].XValue < minX)
-        //            minX = s.Points[0].XValue;
-        //        if (s.Points[0].XValue > maxX)
-        //            maxX = s.Points[0].XValue;
-        //    }
-
-        //    foreach (var e in NonSportEntries(DateTime.FromOADate(minX), DateTime.FromOADate(maxX)))
-        //        e.AddEntryToChart(ChartAreas[0], Series["Non-Sport Entries"], Annotations);
-        //}
-
         #endregion
     }
 }
