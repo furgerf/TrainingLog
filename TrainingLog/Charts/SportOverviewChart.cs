@@ -11,7 +11,7 @@ namespace TrainingLog.Charts
     {
         #region Private Fields
 
-        private readonly Common.Sport _sport;
+        private readonly Common.Sport _sport = Common.Sport.Count;
 
         private int _maximizedChartArea;
 
@@ -23,7 +23,22 @@ namespace TrainingLog.Charts
             : base(() => getEntries().Cast<Entry>().ToArray())
         {
             _sport = sport;
-            Titles.Add(_sport.ToString() + " Overview");
+            Titles.Add(_sport + " Overview");
+
+            // can't do that in Initialize() because _sport isn't yet set
+            var trainingTypeColors = Common.GetTrainingTypeColors(_sport);
+            for (var i = 0; i < Common.GetTrainingTypes(_sport).Length; i++)
+                Series.Add(
+                    new Series("Training Type " + Common.GetTrainingTypes(_sport)[i].ToString())
+                    {
+                        XValueType = ChartValueType.Date,
+                        YValueType = ChartValueType.Int32,
+                        ChartType = SeriesChartType.StackedColumn,
+                        Color = trainingTypeColors[i],
+                        ChartArea = "Monthly Training Types"
+                    });
+            // must add entries manually for the same reason
+            AddEntries();
 
             // detect whether chartarea is clicked
             MouseClick += (s, e) =>
@@ -128,17 +143,6 @@ namespace TrainingLog.Charts
                            });
             Series["Heart Rate Zones"]["PieLabelStyle"] = "Inside";
 
-            var trainingTypeColors = Common.GetTrainingTypeColors(_sport);
-            for (var i = 0; i < Common.GetTrainingTypes(_sport).Length; i++)
-                Series.Add(
-                    new Series("Training Type " + Common.GetTrainingTypes(_sport)[i].ToString())
-                    {
-                        XValueType = ChartValueType.Date,
-                        YValueType = ChartValueType.Int32,
-                        ChartType = SeriesChartType.StackedColumn,
-                        Color = trainingTypeColors[i],
-                        ChartArea = "Monthly Training Types"
-                    });
             ChartAreas["Monthly Training Types"].AxisX = new Axis(ChartAreas["Monthly Training Types"], AxisName.X)
             {
                 IntervalAutoMode = IntervalAutoMode.FixedCount,
@@ -181,6 +185,10 @@ namespace TrainingLog.Charts
 
         protected override void AddEntries()
         {
+            // must add entries manually once _sport is set
+            if (_sport == Common.Sport.Count)
+                return;
+
             // clear old data
             foreach (var s in Series)
                 s.Points.Clear();
@@ -286,10 +294,11 @@ namespace TrainingLog.Charts
                 ChartAreas[bigIndex].Position = new ElementPosition(0, 0, 75, 100);
                 var index = 0;
                 var smallCount = ChartAreas.Count - 1;
+                var step = 100/smallCount;
 
                 for (var i = 0; i < ChartAreas.Count; i++)
                     if (i != bigIndex)
-                        ChartAreas[i].Position = new ElementPosition(75, index++ * 100 / smallCount, 25, 100 / smallCount);
+                        ChartAreas[i].Position = new ElementPosition(75, index++ * step, 25, step);
             }
         }
 

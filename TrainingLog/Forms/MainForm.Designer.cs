@@ -34,6 +34,7 @@
             this.butShowStatistics = new System.Windows.Forms.Button();
             this.butSettings = new System.Windows.Forms.Button();
             this.butExit = new System.Windows.Forms.Button();
+            this.butManageNonsport = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // butAddTraining
@@ -58,7 +59,7 @@
             // 
             // butShowLog
             // 
-            this.butShowLog.Location = new System.Drawing.Point(12, 70);
+            this.butShowLog.Location = new System.Drawing.Point(12, 99);
             this.butShowLog.Name = "butShowLog";
             this.butShowLog.Size = new System.Drawing.Size(200, 23);
             this.butShowLog.TabIndex = 2;
@@ -68,7 +69,7 @@
             // 
             // butShowStatistics
             // 
-            this.butShowStatistics.Location = new System.Drawing.Point(12, 99);
+            this.butShowStatistics.Location = new System.Drawing.Point(12, 128);
             this.butShowStatistics.Name = "butShowStatistics";
             this.butShowStatistics.Size = new System.Drawing.Size(200, 23);
             this.butShowStatistics.TabIndex = 3;
@@ -78,7 +79,7 @@
             // 
             // butSettings
             // 
-            this.butSettings.Location = new System.Drawing.Point(12, 128);
+            this.butSettings.Location = new System.Drawing.Point(12, 157);
             this.butSettings.Name = "butSettings";
             this.butSettings.Size = new System.Drawing.Size(200, 23);
             this.butSettings.TabIndex = 4;
@@ -88,7 +89,7 @@
             // 
             // butExit
             // 
-            this.butExit.Location = new System.Drawing.Point(12, 157);
+            this.butExit.Location = new System.Drawing.Point(12, 186);
             this.butExit.Name = "butExit";
             this.butExit.Size = new System.Drawing.Size(200, 23);
             this.butExit.TabIndex = 5;
@@ -96,11 +97,22 @@
             this.butExit.UseVisualStyleBackColor = true;
             this.butExit.Click += new System.EventHandler(this.ButExitClick);
             // 
+            // butManageNonsport
+            // 
+            this.butManageNonsport.Location = new System.Drawing.Point(12, 70);
+            this.butManageNonsport.Name = "butManageNonsport";
+            this.butManageNonsport.Size = new System.Drawing.Size(200, 23);
+            this.butManageNonsport.TabIndex = 6;
+            this.butManageNonsport.Text = "Manage Non-Sport Entries";
+            this.butManageNonsport.UseVisualStyleBackColor = true;
+            this.butManageNonsport.Click += new System.EventHandler(this.ButManageNonsportClick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(227, 193);
+            this.ClientSize = new System.Drawing.Size(227, 221);
+            this.Controls.Add(this.butManageNonsport);
             this.Controls.Add(this.butExit);
             this.Controls.Add(this.butSettings);
             this.Controls.Add(this.butShowStatistics);
@@ -122,6 +134,7 @@
         private System.Windows.Forms.Button butShowStatistics;
         private System.Windows.Forms.Button butSettings;
         private System.Windows.Forms.Button butExit;
+        private System.Windows.Forms.Button butManageNonsport;
     }
 }
 

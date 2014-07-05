@@ -158,7 +158,6 @@ namespace TrainingLog.Forms
         {
             return new AbstractChart[]
                        {
-                           new SportOverviewChart(() => Model.Instance.TrainingEntries.Where(e => e.Sport == Common.Sport.Running).OrderBy(e => e.Date).ToArray(), Common.Sport.Running),
                            new BiodataChart(
                                () =>
                                Model.Instance.BiodataEntries.Except(
@@ -207,7 +206,10 @@ namespace TrainingLog.Forms
                                     from f in _filters
                                     where !f.IsEntryVisible(te)
                                     select te)).Where(te => te.HrZoneStringSpecified).OrderBy(te => te.Date).ToArray())
-                               {NonSportEntries = Common.NonSportEntries, GetGrouping = () => GroupingInterval}
+                               {NonSportEntries = Common.NonSportEntries, GetGrouping = () => GroupingInterval},
+                           new SportOverviewChart(() => Model.Instance.TrainingEntries.Where(e => e.Sport == Common.Sport.Running).OrderBy(e => e.Date).ToArray(), Common.Sport.Running),
+                           new SportOverviewChart(() => Model.Instance.TrainingEntries.Where(e => e.Sport == Common.Sport.Cycling).OrderBy(e => e.Date).ToArray(), Common.Sport.Cycling),
+                           new SportOverviewChart(() => Model.Instance.TrainingEntries.Where(e => e.Sport == Common.Sport.Squash).OrderBy(e => e.Date).ToArray(), Common.Sport.Squash)
                        };
         }
 

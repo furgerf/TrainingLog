@@ -61,6 +61,7 @@ namespace TrainingLog.Forms
 
             TrainingEntryForm.Instance.VisibleChanged += onFormHide;
             BiodataEntryForm.Instance.VisibleChanged += onFormHide;
+            NonSportEntryForm.Instance.VisibleChanged += onFormHide;
             TrainingLogForm.Instance.VisibleChanged += onFormHide;
             StatisticsForm.Instance.VisibleChanged += onFormHide;
             SettingsForm.Instance.VisibleChanged += onFormHide;
@@ -99,6 +100,13 @@ namespace TrainingLog.Forms
             BiodataEntryForm.Instance.BringToFront();
         }
 
+        private void ButManageNonsportClick(object sender, EventArgs e)
+        {
+            Hide();
+            NonSportEntryForm.Instance.Show();
+            NonSportEntryForm.Instance.BringToFront();
+        }
+
         private void ButShowLogClick(object sender = null, EventArgs e = null)
         {
             Hide();
@@ -126,6 +134,7 @@ namespace TrainingLog.Forms
 
             TrainingEntryForm.Instance.Close();
             BiodataEntryForm.Instance.Close();
+            NonSportEntryForm.Instance.Close();
             TrainingLogForm.Instance.Close();
             StatisticsForm.Instance.Close();
             SettingsForm.Instance.Close();

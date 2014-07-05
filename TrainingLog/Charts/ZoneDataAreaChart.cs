@@ -208,6 +208,7 @@ namespace TrainingLog.Charts
             foreach (var s in Series.Where(s => s.Name.StartsWith("Zone ")))
                 s.Points.Add(zeroPoint);
 
+            var max = double.MinValue;
             foreach (var t in points)
             {
                 var ts = new[] { t.Item2, t.Item3, t.Item4, t.Item5, t.Item6 };
@@ -215,16 +216,23 @@ namespace TrainingLog.Charts
                 var sum = 0.0;
                 for (var i = 0; i < 5; i++)
                 {
-                    while (ts[i].DayOfYear > 1)
+                    if (ts[i].DayOfYear > 1)
                     {
-                        sum++;
-                        ts[i] = ts[i].AddDays(-1);
+                        sum += ts[i].DayOfYear - 1;
+                        ts[i] = ts[i].AddDays(-ts[i].DayOfYear + 1);
                     }
                     sum += ts[i].ToOADate();
-                    var dp = new DataPoint(t.Item1.ToOADate(), sum);
-                    Series["Zone " + (i + 1)].Points.Add(dp);
+                    Series["Zone " + (i + 1)].Points.Add(new DataPoint(t.Item1.ToOADate(), sum));
                 }
+                if (sum > max)
+                    max = sum;
             }
+            var foo = DateTime.FromOADate(max);
+            foo = foo.AddHours(foo.Minute > 30 ? 2 : 1);
+            foo = foo.AddMinutes(-foo.Minute);
+            foo = foo.AddSeconds(-foo.Second);
+
+            ChartAreas[0].AxisY.Maximum = foo.ToOADate();
 
             // add zero-point after
             zeroPoint = new DataPoint(intervalStart.AddSeconds(1).ToOADate(), 0);

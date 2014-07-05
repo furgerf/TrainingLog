@@ -109,8 +109,9 @@ namespace TrainingLog.Charts
             //var minDate = double.IsNaN(min) ? DateTime.FromOADate(minX) : DateTime.FromOADate(min).AddDays(1);
             //var maxDate = double.IsNaN(max) ? DateTime.FromOADate(maxX) : DateTime.FromOADate(max).AddDays(-1);
 
-            foreach (var e in NonSportEntries(minDate, maxDate))
-                e.AddEntryToChart(ChartAreas[index], Series[NonSportSeriesString], Annotations);
+            if (NonSportEntries != null)
+                foreach (var e in NonSportEntries(minDate, maxDate))
+                    e.AddEntryToChart(ChartAreas[index], Series[NonSportSeriesString], Annotations);
         }
 
         public void UpdateStatistics()
