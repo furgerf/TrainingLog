@@ -53,7 +53,7 @@ namespace TrainingLog.Charts
         #region Constructor
 
         protected AbstractChart(Func<Entry[]> getEntries, bool allowScrollZoomCursor = false)
-        {
+        { 
             GetEntries = getEntries;
 
             // initialization
@@ -92,22 +92,27 @@ namespace TrainingLog.Charts
 
             var minX = double.MaxValue;
             var maxX = double.MinValue;
-            var pointSet = false;
             foreach (var s in Series.Where(s => s.Points.Count > 0 && s.Name != NonSportSeriesString))
             {
-                pointSet = true;
                 if (s.Points[index].XValue < minX)
                     minX = s.Points[index].XValue;
                 if (s.Points[s.Points.Count - 1].XValue > maxX)
                     maxX = s.Points[s.Points.Count - 1].XValue;
             }
 
-            // "prefer" values from datapoints
-            var minDate = pointSet ? DateTime.FromOADate(minX) : DateTime.FromOADate(min).AddDays(1);
-            var maxDate = pointSet ? DateTime.FromOADate(maxX) : DateTime.FromOADate(max).AddDays(-1);
-
-            //var minDate = double.IsNaN(min) ? DateTime.FromOADate(minX) : DateTime.FromOADate(min).AddDays(1);
-            //var maxDate = double.IsNaN(max) ? DateTime.FromOADate(maxX) : DateTime.FromOADate(max).AddDays(-1);
+            // "prefer" values from datapoints if the chart is not zoomed in
+            DateTime minDate;
+            DateTime maxDate;
+            if (ChartAreas[index].AxisX.ScaleView.IsZoomed)
+            {
+                minDate = DateTime.FromOADate(min); //.AddDays(1);
+                maxDate = DateTime.FromOADate(max); //.AddDays(-1);
+            }
+            else
+            {
+                minDate = DateTime.FromOADate(minX).AddDays(1);
+                maxDate = DateTime.FromOADate(maxX).AddDays(-1);
+            }
 
             if (NonSportEntries != null)
                 foreach (var e in NonSportEntries(minDate, maxDate))
@@ -149,6 +154,8 @@ namespace TrainingLog.Charts
 
             curX.Interval = x.Interval;
             curY.Interval = y.Interval;
+            curX.IntervalType = x.IntervalType;
+            curY.IntervalType = y.IntervalType;
 
             // reset zoom
             DoubleClick += (s, e) =>

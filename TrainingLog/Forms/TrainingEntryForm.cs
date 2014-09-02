@@ -515,9 +515,9 @@ namespace TrainingLog.Forms
                                                     Date = DateTime.Parse(exercises[0].time),
                                                     DistanceM = (int) exercises[0].result.distance,
                                                     Duration =
-                                                        TimeSpan.Parse(
-                                                            exercises[0].result.duration.Remove(
-                                                                exercises[0].result.duration.IndexOf('.'))),
+                                                        TimeSpan.Parse(exercises[0].result.duration.Contains(".") ? 
+                                                        exercises[0].result.duration.Remove(exercises[0].result.duration.IndexOf('.')) : 
+                                                        exercises[0].result.duration),
                                                     HrZones =
                                                         ZoneData.Parse(exercises[0].result.zones[4].inzone + "_" +
                                                                        exercises[0].result.zones[3].inzone +
@@ -526,9 +526,8 @@ namespace TrainingLog.Forms
                                                                        exercises[0].result.zones[1].inzone + "_" +
                                                                        exercises[0].result.zones[0].inzone),
                                                     Note = exercises[0].note,
-                                                    Sport =
-                                                        (Common.Sport)
-                                                        Enum.Parse(typeof (Common.Sport), exercises[0].sport)
+                                                    Sport = exercises[0].sport == "Other sport" ? Common.Sport.Other : 
+                                                        (Common.Sport) Enum.Parse(typeof (Common.Sport), exercises[0].sport)
                                                 });
                               exercises.RemoveAt(0);
 

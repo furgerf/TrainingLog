@@ -75,18 +75,20 @@ namespace TrainingLog
             var nse = Model.Instance.NonSportEntries.Where(e => e.Date <= lastDate && e.GetEndDate >= firstDate).ToArray();
 
             for (var i = 0; i < nse.Length; i++)
+            {
                 if (nse[i].GetEndDate > lastDate)
                 {
                     nse[i] = nse[i].Clone();
-                    nse[i].EndDate = lastDate;
+                    nse[i].EndDate = lastDate; //.AddDays(1);
                     nse[i].Note += " " + ThreeDots;
                 }
-                else if (nse[i].Date < firstDate)
+                if (nse[i].Date < firstDate)
                 {
                     nse[i] = nse[i].Clone();
-                    nse[i].Date = firstDate;
+                    nse[i].Date = firstDate.AddDays(1);
                     nse[i].Note = ThreeDots + " " + nse[i].Note;
                 }
+            }
             return nse;
         };
 

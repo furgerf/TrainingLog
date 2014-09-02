@@ -117,6 +117,9 @@ namespace TrainingLog.Charts
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+            ChartAreas[0].CursorX.Interval = x.Interval;
+            ChartAreas[0].CursorX.IntervalType = x.IntervalType;
+
             //x.Interval = grouping.Item2;
 
             //if (grouping.Item1 == DateInterval.Day)
