@@ -28,8 +28,8 @@ namespace TrainingLog
         #region Private Fields
 
         [XmlIgnore]
-        private const string SettingsPath = "settings.xml";
-
+        private readonly string SettingsPath = Directory.GetCurrentDirectory() + "\\settings.xml";
+            
         [XmlIgnore]
         private string _dataPath;
 
@@ -48,12 +48,24 @@ namespace TrainingLog
 
         public static Settings LoadSettings()
         {
+            return ActuallyLoadSettings((new Settings()).SettingsPath);
+        }
+
+        private static Settings ActuallyLoadSettings(string path)
+        {
             var serializer = new XmlSerializer(typeof(Settings));
-            using (var stringReader = new StringReader(File.ReadAllText(SettingsPath)))
-            using (var reader = XmlReader.Create(stringReader))
-            {
-                return (Settings)serializer.Deserialize(reader);
-            }
+            //try
+            //{
+                using (var stringReader = new StringReader(File.ReadAllText(path)))
+                using (var reader = XmlReader.Create(stringReader))
+                {
+                    return (Settings)serializer.Deserialize(reader);
+                }
+            //}
+            //catch (FileNotFoundException fe)
+            //{
+            //    //MessageBox.Show("File " + fe.FileName + " not found. Please select settings file");
+            //}
         }
 
         private void SaveSettings()
