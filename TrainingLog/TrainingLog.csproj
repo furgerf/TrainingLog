@@ -76,6 +76,8 @@
     <Compile Include="Controls\EnumFilterControl.Designer.cs">
       <DependentUpon>EnumFilterControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Entries\EntryList.cs" />
+    <Compile Include="Entries\Equipment.cs" />
     <Compile Include="Entries\NonSportEntry.cs" />
     <Compile Include="EntryChangedEventArgs.cs" />
     <Compile Include="Forms\NewNonSportEntryForm.cs">
@@ -113,7 +115,6 @@
       <DependentUpon>ZoneDataBox.cs</DependentUpon>
     </Compile>
     <Compile Include="Entries\Entry.cs" />
-    <Compile Include="Entries\EntryList.cs" />
     <Compile Include="Forms\BioDataEntryForm.cs">
       <SubType>Form</SubType>
     </Compile>

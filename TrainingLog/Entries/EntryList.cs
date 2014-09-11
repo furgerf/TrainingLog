@@ -1,5 +1,5 @@
+using System.Collections.Generic;
 using System.Xml.Serialization;
-using System.Linq;
 
 namespace TrainingLog.Entries
 {
@@ -11,26 +11,48 @@ namespace TrainingLog.Entries
         [XmlArray("TrainingEntryArray")]
         [XmlArrayItem("TrainingEntry")]
         public TrainingEntry[] TrainingEntries { get; set; }
+        public bool TrainingEntriesSpecified { get { return TrainingEntries != null; } }
 
         [XmlArray("BiodataEntryArray")]
-        [XmlArrayItem("BiodataEntryObject")]
+        [XmlArrayItem("BiodataEntry")]
         public BiodataEntry[] BiodataEntries { get; set; }
+        public bool BiodataEntriesSpecified { get { return BiodataEntries != null; } }
 
         [XmlArray("NonSportEntryArray")]
-        [XmlArrayItem("NonSportEntryObject")]
-        public NonSportEntry[] NonSportEntries { get; set; } 
+        [XmlArrayItem("NonSportEntry")]
+        public NonSportEntry[] NonSportEntries { get; set; }
+        public bool NonSportEntriesSpecified { get { return NonSportEntries != null; } }
 
         [XmlIgnore]
-        public Entry[] AllEntries { get { return TrainingEntries.Cast<Entry>().Concat(BiodataEntries).Concat(NonSportEntries).ToArray(); } }
+        public Entry[] AllEntries {
+            get
+            {
+                var entries = new List<Entry>();
+                if (TrainingEntriesSpecified)
+                    entries.AddRange(TrainingEntries);
+                if (BiodataEntriesSpecified)
+                    entries.AddRange(BiodataEntries);
+                if (NonSportEntriesSpecified)
+                    entries.AddRange(NonSportEntries);
+                return entries.ToArray();
+            } }
 
         #endregion
 
         #region Constructor
 
-        public EntryList(TrainingEntry[] trainingEntries, BiodataEntry[] biodataEntries, NonSportEntry[] nonSportEntries)
+        public EntryList(TrainingEntry[] trainingEntries)
         {
             TrainingEntries = trainingEntries;
+        }
+
+        public EntryList(BiodataEntry[] biodataEntries)
+        {
             BiodataEntries = biodataEntries;
+        }
+
+        public EntryList(NonSportEntry[] nonSportEntries)
+        {
             NonSportEntries = nonSportEntries;
         }
 

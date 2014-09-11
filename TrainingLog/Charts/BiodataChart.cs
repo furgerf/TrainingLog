@@ -75,7 +75,7 @@ namespace TrainingLog.Charts
                                XValueType = ChartValueType.Date,
                                YValueType = ChartValueType.Int32,
                                ChartType = SeriesChartType.Spline,
-                               BorderWidth = 10,
+                               BorderWidth = 7,
                                Color = Color.RoyalBlue
                            });
             Series.Add(new Series("Average Resting Heart Rate")
@@ -93,7 +93,7 @@ namespace TrainingLog.Charts
                                YValueType = ChartValueType.Int32,
                                ChartType = SeriesChartType.Spline,
                                IsValueShownAsLabel = true,
-                               BorderWidth = 10,
+                               BorderWidth = 7,
                                Color = Color.Green
                            });
             Series.Add(new Series("Weight")
@@ -101,7 +101,7 @@ namespace TrainingLog.Charts
                                XValueType = ChartValueType.Date,
                                YValueType = ChartValueType.Double,
                                ChartType = SeriesChartType.Spline,
-                               BorderWidth = 10,
+                               BorderWidth = 7,
                                Color = Color.Red,
                                IsValueShownAsLabel = true
                            });
@@ -160,6 +160,13 @@ namespace TrainingLog.Charts
                     Series["Resting Heart Rate"].Points.Add(new DataPoint((be.Date ?? DateTime.MaxValue).ToOADate(), rhr));
 
                     hrAvg += rhr;
+                }
+                else
+                {
+                    Series["Resting Heart Rate"].Points.Add(new DataPoint((be.Date ?? DateTime.MaxValue).ToOADate(), 0)
+                    {
+                        IsEmpty = true
+                    });
                 }
 
                 if (be.OwnIndexSpecified)

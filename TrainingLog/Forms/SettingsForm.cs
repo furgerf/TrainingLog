@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
+using TrainingLog.Entries;
 
 namespace TrainingLog.Forms
 {
@@ -26,7 +27,9 @@ namespace TrainingLog.Forms
         {
             InitializeComponent();
 
-            txtLogPath.Text = _settings.DataPath;
+            txtTrainingPath.Text = _settings.TrainingPath;
+            txtBiodataPath.Text = _settings.BiodataPath;
+            txtNonsportPath.Text = _settings.NonSportPath;
         }
 
         #endregion
@@ -54,34 +57,75 @@ namespace TrainingLog.Forms
             Close();
         }
 
-        private void ButChangeLogPathClick(object sender, EventArgs e)
+        private void ButChangeTrainingPathClick(object sender, EventArgs e)
         {
             var f = new OpenFileDialog
                         {
                             Filter = "XML File (*.xml)|*.xml",
-                            InitialDirectory = new FileInfo(_settings.DataPath).DirectoryName,
+                            InitialDirectory = new FileInfo(_settings.TrainingPath).DirectoryName,
                             Multiselect = false
                         };
             if (f.ShowDialog() != DialogResult.OK) return;
-            
-            _settings.DataPath = f.FileName;
-            txtLogPath.Text = f.FileName;
+
+            _settings.TrainingPath = f.FileName;
+            txtTrainingPath.Text = f.FileName;
         }
 
-        private void ButOpenLogClick(object sender, EventArgs e)
+        private void butChangeBiodataPath_Click(object sender, EventArgs e)
         {
-            Process.Start(_settings.DataPath);
+            var f = new OpenFileDialog
+            {
+                Filter = "XML File (*.xml)|*.xml",
+                InitialDirectory = new FileInfo(_settings.BiodataPath).DirectoryName,
+                Multiselect = false
+            };
+            if (f.ShowDialog() != DialogResult.OK) return;
+
+            _settings.BiodataPath = f.FileName;
+            txtBiodataPath.Text = f.FileName;
+        }
+
+        private void butChangeNonSportPath_Click(object sender, EventArgs e)
+        {
+            var f = new OpenFileDialog
+            {
+                Filter = "XML File (*.xml)|*.xml",
+                InitialDirectory = new FileInfo(_settings.NonSportPath).DirectoryName,
+                Multiselect = false
+            };
+            if (f.ShowDialog() != DialogResult.OK) return;
+
+            _settings.NonSportPath = f.FileName;
+            txtNonsportPath.Text = f.FileName;
+        }
+
+
+        private void ButOpenTrainingLogClick(object sender, EventArgs e)
+        {
+            Process.Start(_settings.TrainingPath);
+        }
+
+        private void butOpenBiodataLog_Click(object sender, EventArgs e)
+        {
+            Process.Start(_settings.BiodataPath);
+        }
+
+        private void butOpenNonSportLog_Click(object sender, EventArgs e)
+        {
+            Process.Start(_settings.NonSportPath);
         }
 
         private void ButBackupClick(object sender, EventArgs e)
         {
-            Model.Instance.WriteEntries(new FileInfo(_settings.DataPath).DirectoryName + "\\backup\\log_" + DateTime.Today.ToString("yyyy_MM_dd") + ".xml");
+            Model.Instance.WriteEntries(typeof(TrainingEntry), new FileInfo(_settings.TrainingPath).DirectoryName + "\\backup\\training_" + DateTime.Today.ToString("yyyy_MM_dd") + ".xml");
+            Model.Instance.WriteEntries(typeof(BiodataEntry), new FileInfo(_settings.BiodataPath).DirectoryName + "\\backup\\biodata_" + DateTime.Today.ToString("yyyy_MM_dd") + ".xml");
+            Model.Instance.WriteEntries(typeof(NonSportEntry), new FileInfo(_settings.NonSportPath).DirectoryName + "\\backup\\nonsport_" + DateTime.Today.ToString("yyyy_MM_dd") + ".xml");
             MessageBox.Show("Backup created successfully!", "Backup created", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void ButOpenFolderClick(object sender, EventArgs e)
         {
-            Process.Start(new FileInfo(_settings.DataPath).DirectoryName ?? "C:\\");
+            Process.Start(new FileInfo(_settings.TrainingPath).DirectoryName ?? "C:\\");
         }
 
         #endregion

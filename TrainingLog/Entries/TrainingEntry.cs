@@ -32,6 +32,10 @@ namespace TrainingLog.Entries
         public Common.Sport? Sport { get; set; }
         public bool SportSpecified { get { return Sport != null; } }
 
+        //[XmlElement("Equipment")]
+        //public Equipment? Equipment { get; set; }
+        //public bool EquipmentSpecified { get { return Equipment != null; } }
+
         [XmlElement("TrainingType")]
         public Common.TrainingType TrainingType
         {
@@ -112,7 +116,9 @@ namespace TrainingLog.Entries
 
         public override string ToString()
         {
-            return Sport.Value + " (" + TrainingType + "): " + Duration.Value + (DistanceMSpecified ? " (" + DistanceKm + "km)" : "");
+            if (Sport != null)
+                return Sport.Value + " (" + TrainingType + "): " + Duration.Value + (DistanceMSpecified ? " (" + DistanceKm + "km)" : "");
+            throw new Exception("Sport mustnt be null");
         }
 
         #endregion

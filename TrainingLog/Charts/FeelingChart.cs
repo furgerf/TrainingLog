@@ -45,9 +45,34 @@ namespace TrainingLog.Charts
                     if (be.RestingHeartRateSpecified)
                     {
                         var rhr = be.RestingHeartRate ?? int.MaxValue;
-                        Series["Resting Heart Rate"].Points.Add(new DataPoint((be.Date ?? DateTime.MaxValue).ToOADate(), rhr)
+                        Series["Resting Heart Rate"].Points.Add(new DataPoint(
+                            (be.Date ?? DateTime.MaxValue).ToOADate(), rhr)
                         {
-                            Color = be.Feeling == Common.Index.None ? Color.Gray : TrainingLogForm.GetColor((double)(be.Feeling ?? Common.Index.Count) / ((int)Common.Index.Count - 1), Color.Red, Color.Yellow, Color.Green),
+                            Color =
+                                be.Feeling == Common.Index.None
+                                    ? Color.Gray
+                                    : TrainingLogForm.GetColor(
+                                        (double) (be.Feeling ?? Common.Index.Count)/((int) Common.Index.Count - 1),
+                                        Color.Red, Color.Yellow, Color.Green),
+                            Label = be.Note ?? "",
+                            LabelAngle = 90
+                        });
+                    }
+                    else
+                    {
+                        Series["Resting Heart Rate"].Points.Add(new DataPoint((be.Date ?? DateTime.MaxValue).ToOADate(), 0)
+                        {
+                            IsEmpty = true
+                        });
+
+                        Series["Feeling only"].Points.Add(new DataPoint((be.Date ?? DateTime.MaxValue).ToOADate(), 50)
+                        {
+                            Color =
+                                be.Feeling == Common.Index.None
+                                    ? Color.Gray
+                                    : TrainingLogForm.GetColor(
+                                        (double) (be.Feeling ?? Common.Index.Count)/((int) Common.Index.Count - 1),
+                                        Color.Red, Color.Yellow, Color.Green),
                             Label = be.Note ?? "",
                             LabelAngle = 90
                         });
@@ -91,14 +116,24 @@ namespace TrainingLog.Charts
 
             // prepare series
             Series.Add(new Series("Resting Heart Rate")
-                           {
-                               XValueType = ChartValueType.Date,
-                               YValueType = ChartValueType.Int32,
-                               ChartType = SeriesChartType.Spline,
-                               BorderWidth = 10,
-                               YAxisType = AxisType.Secondary,
-                               SmartLabelStyle = {Enabled = false}
-                           });
+                            {
+                                XValueType = ChartValueType.Date,
+                                YValueType = ChartValueType.Int32,
+                                ChartType = SeriesChartType.Spline,
+                                BorderWidth = 7,
+                                YAxisType = AxisType.Secondary,
+                                SmartLabelStyle = { Enabled = false }
+                            });
+            Series.Add(new Series("Feeling only")
+                            {
+                                XValueType = ChartValueType.Date,
+                                YValueType = ChartValueType.Int32,
+                                ChartType = SeriesChartType.Point,
+                                MarkerSize = 10,
+                                MarkerStyle = MarkerStyle.Diamond,
+                                YAxisType = AxisType.Secondary,
+                                SmartLabelStyle = {Enabled = false}
+                            });
             Series.Add(new Series("Training")
                            {
                                XValueType = ChartValueType.Date,

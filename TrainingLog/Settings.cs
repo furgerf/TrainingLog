@@ -8,31 +8,61 @@ namespace TrainingLog
     {
         #region Public Fields
 
-        [XmlElement("DataPath")]
-        public string DataPath
+        [XmlElement("TrainingPath")]
+        public string TrainingPath
         {
-            get { return _dataPath; }
+            get { return _trainingPath; }
             set
             {
-                var saveSettings = DataPathSpecified;
-                _dataPath = value;
+                var saveSettings = TrainingPathSpecified;
+                _trainingPath = value;
                 if (saveSettings)
                     SaveSettings();
             }
         }
+        public bool TrainingPathSpecified { get { return !string.IsNullOrEmpty(TrainingPath); } }
+        [XmlIgnore]
+        private string _trainingPath;
 
-        public bool DataPathSpecified { get { return !string.IsNullOrEmpty(DataPath); } }
+        [XmlElement("BiodataPath")]
+        public string BiodataPath
+        {
+            get { return _biodataPath; }
+            set
+            {
+                var saveSettings = BiodataPathSpecified;
+                _biodataPath = value;
+                if (saveSettings)
+                    SaveSettings();
+            }
+        }
+        public bool BiodataPathSpecified { get { return !string.IsNullOrEmpty(BiodataPath); } }
+        [XmlIgnore]
+        private string _biodataPath;
+
+        [XmlElement("NonSportPath")]
+        public string NonSportPath
+        {
+            get { return _nonsportPath; }
+            set
+            {
+                var saveSettings = NonSportPathSpecified;
+                _nonsportPath = value;
+                if (saveSettings)
+                    SaveSettings();
+            }
+        }
+        public bool NonSportPathSpecified { get { return !string.IsNullOrEmpty(NonSportPath); } }
+        [XmlIgnore]
+        private string _nonsportPath;
 
         #endregion
 
         #region Private Fields
 
         [XmlIgnore]
-        private readonly string SettingsPath = Directory.GetCurrentDirectory() + "\\settings.xml";
+        public const string SettingsPath = "settings.xml";
             
-        [XmlIgnore]
-        private string _dataPath;
-
         #endregion
 
         #region Constructor
@@ -46,26 +76,14 @@ namespace TrainingLog
 
         #region Main Methods
 
-        public static Settings LoadSettings()
-        {
-            return ActuallyLoadSettings((new Settings()).SettingsPath);
-        }
-
-        private static Settings ActuallyLoadSettings(string path)
+        public static Settings LoadSettings(string path = SettingsPath)
         {
             var serializer = new XmlSerializer(typeof(Settings));
-            //try
-            //{
-                using (var stringReader = new StringReader(File.ReadAllText(path)))
-                using (var reader = XmlReader.Create(stringReader))
-                {
-                    return (Settings)serializer.Deserialize(reader);
-                }
-            //}
-            //catch (FileNotFoundException fe)
-            //{
-            //    //MessageBox.Show("File " + fe.FileName + " not found. Please select settings file");
-            //}
+            using (var stringReader = new StringReader(File.ReadAllText(path)))
+            using (var reader = XmlReader.Create(stringReader))
+            {
+                return (Settings)serializer.Deserialize(reader);
+            }
         }
 
         private void SaveSettings()

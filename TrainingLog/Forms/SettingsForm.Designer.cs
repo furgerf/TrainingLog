@@ -31,32 +31,48 @@
             this.grpLog = new System.Windows.Forms.GroupBox();
             this.butOpenFolder = new System.Windows.Forms.Button();
             this.butBackup = new System.Windows.Forms.Button();
-            this.butChangeLogPath = new System.Windows.Forms.Button();
-            this.butOpenLog = new System.Windows.Forms.Button();
-            this.txtLogPath = new System.Windows.Forms.TextBox();
+            this.butChangeTrainingPath = new System.Windows.Forms.Button();
+            this.butOpenTrainingLog = new System.Windows.Forms.Button();
+            this.txtTrainingPath = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.butExit = new System.Windows.Forms.Button();
+            this.butChangeBiodataPath = new System.Windows.Forms.Button();
+            this.butOpenBiodataLog = new System.Windows.Forms.Button();
+            this.txtBiodataPath = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.butChangeNonSportPath = new System.Windows.Forms.Button();
+            this.butOpenNonSportLog = new System.Windows.Forms.Button();
+            this.txtNonsportPath = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.grpLog.SuspendLayout();
             this.SuspendLayout();
             // 
             // grpLog
             // 
+            this.grpLog.Controls.Add(this.butChangeNonSportPath);
+            this.grpLog.Controls.Add(this.butOpenNonSportLog);
+            this.grpLog.Controls.Add(this.txtNonsportPath);
+            this.grpLog.Controls.Add(this.label3);
+            this.grpLog.Controls.Add(this.butChangeBiodataPath);
+            this.grpLog.Controls.Add(this.butOpenBiodataLog);
+            this.grpLog.Controls.Add(this.txtBiodataPath);
+            this.grpLog.Controls.Add(this.label2);
             this.grpLog.Controls.Add(this.butOpenFolder);
             this.grpLog.Controls.Add(this.butBackup);
-            this.grpLog.Controls.Add(this.butChangeLogPath);
-            this.grpLog.Controls.Add(this.butOpenLog);
-            this.grpLog.Controls.Add(this.txtLogPath);
+            this.grpLog.Controls.Add(this.butChangeTrainingPath);
+            this.grpLog.Controls.Add(this.butOpenTrainingLog);
+            this.grpLog.Controls.Add(this.txtTrainingPath);
             this.grpLog.Controls.Add(this.label1);
             this.grpLog.Location = new System.Drawing.Point(12, 12);
             this.grpLog.Name = "grpLog";
-            this.grpLog.Size = new System.Drawing.Size(424, 68);
+            this.grpLog.Size = new System.Drawing.Size(392, 294);
             this.grpLog.TabIndex = 0;
             this.grpLog.TabStop = false;
             this.grpLog.Text = "Log";
             // 
             // butOpenFolder
             // 
-            this.butOpenFolder.Location = new System.Drawing.Point(91, 39);
+            this.butOpenFolder.Location = new System.Drawing.Point(207, 265);
             this.butOpenFolder.Name = "butOpenFolder";
             this.butOpenFolder.Size = new System.Drawing.Size(75, 23);
             this.butOpenFolder.TabIndex = 6;
@@ -66,7 +82,7 @@
             // 
             // butBackup
             // 
-            this.butBackup.Location = new System.Drawing.Point(208, 39);
+            this.butBackup.Location = new System.Drawing.Point(84, 265);
             this.butBackup.Name = "butBackup";
             this.butBackup.Size = new System.Drawing.Size(99, 23);
             this.butBackup.TabIndex = 5;
@@ -74,46 +90,46 @@
             this.butBackup.UseVisualStyleBackColor = true;
             this.butBackup.Click += new System.EventHandler(this.ButBackupClick);
             // 
-            // butChangeLogPath
+            // butChangeTrainingPath
             // 
-            this.butChangeLogPath.Location = new System.Drawing.Point(343, 39);
-            this.butChangeLogPath.Name = "butChangeLogPath";
-            this.butChangeLogPath.Size = new System.Drawing.Size(75, 23);
-            this.butChangeLogPath.TabIndex = 4;
-            this.butChangeLogPath.Text = "Change...";
-            this.butChangeLogPath.UseVisualStyleBackColor = true;
-            this.butChangeLogPath.Click += new System.EventHandler(this.ButChangeLogPathClick);
+            this.butChangeTrainingPath.Location = new System.Drawing.Point(308, 58);
+            this.butChangeTrainingPath.Name = "butChangeTrainingPath";
+            this.butChangeTrainingPath.Size = new System.Drawing.Size(75, 23);
+            this.butChangeTrainingPath.TabIndex = 4;
+            this.butChangeTrainingPath.Text = "Change...";
+            this.butChangeTrainingPath.UseVisualStyleBackColor = true;
+            this.butChangeTrainingPath.Click += new System.EventHandler(this.ButChangeTrainingPathClick);
             // 
-            // butOpenLog
+            // butOpenTrainingLog
             // 
-            this.butOpenLog.Location = new System.Drawing.Point(6, 39);
-            this.butOpenLog.Name = "butOpenLog";
-            this.butOpenLog.Size = new System.Drawing.Size(75, 23);
-            this.butOpenLog.TabIndex = 2;
-            this.butOpenLog.Text = "Open Log";
-            this.butOpenLog.UseVisualStyleBackColor = true;
-            this.butOpenLog.Click += new System.EventHandler(this.ButOpenLogClick);
+            this.butOpenTrainingLog.Location = new System.Drawing.Point(6, 58);
+            this.butOpenTrainingLog.Name = "butOpenTrainingLog";
+            this.butOpenTrainingLog.Size = new System.Drawing.Size(75, 23);
+            this.butOpenTrainingLog.TabIndex = 2;
+            this.butOpenTrainingLog.Text = "Open Log";
+            this.butOpenTrainingLog.UseVisualStyleBackColor = true;
+            this.butOpenTrainingLog.Click += new System.EventHandler(this.ButOpenTrainingLogClick);
             // 
-            // txtLogPath
+            // txtTrainingPath
             // 
-            this.txtLogPath.Enabled = false;
-            this.txtLogPath.Location = new System.Drawing.Point(44, 13);
-            this.txtLogPath.Name = "txtLogPath";
-            this.txtLogPath.Size = new System.Drawing.Size(374, 20);
-            this.txtLogPath.TabIndex = 1;
+            this.txtTrainingPath.Enabled = false;
+            this.txtTrainingPath.Location = new System.Drawing.Point(9, 32);
+            this.txtTrainingPath.Name = "txtTrainingPath";
+            this.txtTrainingPath.Size = new System.Drawing.Size(374, 20);
+            this.txtTrainingPath.TabIndex = 1;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(6, 16);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(32, 13);
+            this.label1.Size = new System.Drawing.Size(66, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Path:";
+            this.label1.Text = "Training Log";
             // 
             // butExit
             // 
-            this.butExit.Location = new System.Drawing.Point(89, 160);
+            this.butExit.Location = new System.Drawing.Point(160, 312);
             this.butExit.Name = "butExit";
             this.butExit.Size = new System.Drawing.Size(75, 23);
             this.butExit.TabIndex = 1;
@@ -121,11 +137,85 @@
             this.butExit.UseVisualStyleBackColor = true;
             this.butExit.Click += new System.EventHandler(this.ButExitClick);
             // 
+            // butChangeBiodataPath
+            // 
+            this.butChangeBiodataPath.Location = new System.Drawing.Point(308, 135);
+            this.butChangeBiodataPath.Name = "butChangeBiodataPath";
+            this.butChangeBiodataPath.Size = new System.Drawing.Size(75, 23);
+            this.butChangeBiodataPath.TabIndex = 10;
+            this.butChangeBiodataPath.Text = "Change...";
+            this.butChangeBiodataPath.UseVisualStyleBackColor = true;
+            this.butChangeBiodataPath.Click += new System.EventHandler(this.butChangeBiodataPath_Click);
+            // 
+            // butOpenBiodataLog
+            // 
+            this.butOpenBiodataLog.Location = new System.Drawing.Point(6, 135);
+            this.butOpenBiodataLog.Name = "butOpenBiodataLog";
+            this.butOpenBiodataLog.Size = new System.Drawing.Size(75, 23);
+            this.butOpenBiodataLog.TabIndex = 9;
+            this.butOpenBiodataLog.Text = "Open Log";
+            this.butOpenBiodataLog.UseVisualStyleBackColor = true;
+            this.butOpenBiodataLog.Click += new System.EventHandler(this.butOpenBiodataLog_Click);
+            // 
+            // txtBiodataPath
+            // 
+            this.txtBiodataPath.Enabled = false;
+            this.txtBiodataPath.Location = new System.Drawing.Point(9, 109);
+            this.txtBiodataPath.Name = "txtBiodataPath";
+            this.txtBiodataPath.Size = new System.Drawing.Size(374, 20);
+            this.txtBiodataPath.TabIndex = 8;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(6, 93);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(64, 13);
+            this.label2.TabIndex = 7;
+            this.label2.Text = "Biodata Log";
+            // 
+            // butChangeNonSportPath
+            // 
+            this.butChangeNonSportPath.Location = new System.Drawing.Point(308, 216);
+            this.butChangeNonSportPath.Name = "butChangeNonSportPath";
+            this.butChangeNonSportPath.Size = new System.Drawing.Size(75, 23);
+            this.butChangeNonSportPath.TabIndex = 15;
+            this.butChangeNonSportPath.Text = "Change...";
+            this.butChangeNonSportPath.UseVisualStyleBackColor = true;
+            this.butChangeNonSportPath.Click += new System.EventHandler(this.butChangeNonSportPath_Click);
+            // 
+            // butOpenNonSportLog
+            // 
+            this.butOpenNonSportLog.Location = new System.Drawing.Point(6, 216);
+            this.butOpenNonSportLog.Name = "butOpenNonSportLog";
+            this.butOpenNonSportLog.Size = new System.Drawing.Size(75, 23);
+            this.butOpenNonSportLog.TabIndex = 14;
+            this.butOpenNonSportLog.Text = "Open Log";
+            this.butOpenNonSportLog.UseVisualStyleBackColor = true;
+            this.butOpenNonSportLog.Click += new System.EventHandler(this.butOpenNonSportLog_Click);
+            // 
+            // txtNonsportPath
+            // 
+            this.txtNonsportPath.Enabled = false;
+            this.txtNonsportPath.Location = new System.Drawing.Point(9, 190);
+            this.txtNonsportPath.Name = "txtNonsportPath";
+            this.txtNonsportPath.Size = new System.Drawing.Size(374, 20);
+            this.txtNonsportPath.TabIndex = 13;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(6, 174);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(73, 13);
+            this.label3.TabIndex = 12;
+            this.label3.Text = "NonSport Log";
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(481, 318);
+            this.ClientSize = new System.Drawing.Size(418, 345);
             this.Controls.Add(this.butExit);
             this.Controls.Add(this.grpLog);
             this.KeyPreview = true;
@@ -142,12 +232,20 @@
         #endregion
 
         private System.Windows.Forms.GroupBox grpLog;
-        private System.Windows.Forms.Button butChangeLogPath;
-        private System.Windows.Forms.Button butOpenLog;
-        private System.Windows.Forms.TextBox txtLogPath;
+        private System.Windows.Forms.Button butChangeTrainingPath;
+        private System.Windows.Forms.Button butOpenTrainingLog;
+        private System.Windows.Forms.TextBox txtTrainingPath;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button butExit;
         private System.Windows.Forms.Button butBackup;
         private System.Windows.Forms.Button butOpenFolder;
+        private System.Windows.Forms.Button butChangeNonSportPath;
+        private System.Windows.Forms.Button butOpenNonSportLog;
+        private System.Windows.Forms.TextBox txtNonsportPath;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button butChangeBiodataPath;
+        private System.Windows.Forms.Button butOpenBiodataLog;
+        private System.Windows.Forms.TextBox txtBiodataPath;
+        private System.Windows.Forms.Label label2;
     }
 }

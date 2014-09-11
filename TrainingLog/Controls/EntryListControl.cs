@@ -67,7 +67,7 @@ namespace TrainingLog.Controls
 
         private readonly Dictionary<int, Entry> _entryMap = new Dictionary<int, Entry>();
 
-        private readonly Color[] _colors = new[] {Color.White, Color.LightGray, Color.LightSkyBlue};
+        private readonly Color[] _colors = {Color.White, Color.LightGray, Color.LightSkyBlue};
 
         #endregion
 
