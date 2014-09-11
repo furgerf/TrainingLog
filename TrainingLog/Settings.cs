@@ -56,6 +56,22 @@ namespace TrainingLog
         [XmlIgnore]
         private string _nonsportPath;
 
+        [XmlElement("EquipmentPath")]
+        public string EquipmentPath
+        {
+            get { return _equipmentPath; }
+            set
+            {
+                var saveSettings = EquipmentPathSpecified;
+                _equipmentPath = value;
+                if (saveSettings)
+                    SaveSettings();
+            }
+        }
+        public bool EquipmentPathSpecified { get { return !string.IsNullOrEmpty(EquipmentPath); } }
+        [XmlIgnore]
+        private string _equipmentPath;
+
         #endregion
 
         #region Private Fields

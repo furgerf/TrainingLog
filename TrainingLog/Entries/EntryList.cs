@@ -23,8 +23,14 @@ namespace TrainingLog.Entries
         public NonSportEntry[] NonSportEntries { get; set; }
         public bool NonSportEntriesSpecified { get { return NonSportEntries != null; } }
 
+        [XmlArray("EquipmentEntryArray")]
+        [XmlArrayItem("EquipmentEntry")]
+        public Equipment[] EquipmentEntries { get; set; }
+        public bool EquipmentEntriesSpecified { get { return EquipmentEntries != null; } }
+
         [XmlIgnore]
-        public Entry[] AllEntries {
+        public Entry[] AllEntries
+        {
             get
             {
                 var entries = new List<Entry>();
@@ -35,7 +41,8 @@ namespace TrainingLog.Entries
                 if (NonSportEntriesSpecified)
                     entries.AddRange(NonSportEntries);
                 return entries.ToArray();
-            } }
+            }
+        }
 
         #endregion
 
@@ -54,6 +61,11 @@ namespace TrainingLog.Entries
         public EntryList(NonSportEntry[] nonSportEntries)
         {
             NonSportEntries = nonSportEntries;
+        }
+
+        public EntryList(Equipment[] equipmentEntries)
+        {
+            EquipmentEntries = equipmentEntries;
         }
 
         public EntryList()

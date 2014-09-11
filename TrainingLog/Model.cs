@@ -22,6 +22,7 @@ namespace TrainingLog
         public BiodataEntry[] BiodataEntries { get { return _entries.Where(e => e is BiodataEntry).OrderBy(e => e.Date).Cast<BiodataEntry>().ToArray(); } }
         public TrainingEntry[] TrainingEntries { get { return _entries.Where(e => e is TrainingEntry).OrderBy(e => e.Date).Cast<TrainingEntry>().ToArray(); } }
         public NonSportEntry[] NonSportEntries { get { return _entries.Where(e => e is NonSportEntry).OrderBy(e => e.Date).Cast<NonSportEntry>().ToArray(); } }
+        public Equipment[] Equipment { get { return _equipments.ToArray(); } }
 
         #endregion
 
@@ -31,19 +32,23 @@ namespace TrainingLog
 
         private readonly List<Entry> _entries = new List<Entry>();
 
+        private readonly List<Equipment> _equipments = new List<Equipment>(); 
+
         private readonly string _trainingPath;
         private readonly string _biodataPath;
         private readonly string _nonSportPath;
+        private readonly string _equipmentPath;
 
         #endregion
 
         #region Constructor
 
-        private Model(string trainingPath, string biodataPath, string nonSportPath)
+        private Model(string trainingPath, string biodataPath, string nonSportPath, string equipmentPath)
         {
             _trainingPath = trainingPath;
             _biodataPath = biodataPath;
             _nonSportPath = nonSportPath;
+            _equipmentPath = equipmentPath;
 
             ReadEntries();
         }
@@ -52,9 +57,9 @@ namespace TrainingLog
 
         #region Main Methods
 
-        public static void Initialize(string trainingPath, string biodataPath, string nonSportPath)
+        public static void Initialize(string trainingPath, string biodataPath, string nonSportPath, string equipmentPath)
         {
-            _instance = new Model(trainingPath, biodataPath, nonSportPath);
+            _instance = new Model(trainingPath, biodataPath, nonSportPath, equipmentPath);
         }
 
         public void RemoveEntry(Entry entry)
@@ -75,6 +80,26 @@ namespace TrainingLog
 
             if (EntriesChanged != null)
                 EntriesChanged(this, new EntryChangedEventArgs(true, entry));
+        }
+
+        public void RemoveEntry(Equipment entry)
+        {
+            _equipments.Remove(entry);
+
+            WriteEntries(entry.GetType());
+
+            //if (EntriesChanged != null)
+            //    EntriesChanged(this, new EntryChangedEventArgs(false, entry));
+        }
+
+        public void AddEntry(Equipment entry)
+        {
+            _equipments.Add(entry);
+
+            WriteEntries(entry.GetType());
+
+            //if (EntriesChanged != null)
+            //    EntriesChanged(this, new EntryChangedEventArgs(true, entry));
         }
 
         public void WriteEntries(Type entryType, string path = null)
@@ -98,6 +123,11 @@ namespace TrainingLog
                 if (path == null)
                     path = MainForm.Instance.Settings.NonSportPath;
                 el = new EntryList(NonSportEntries);
+            }else if (entryType == typeof (Equipment))
+            {
+                if (path == null)
+                    path = MainForm.Instance.Settings.EquipmentPath;
+                el = new EntryList(Equipment);
             }
             else
                 throw new Exception("Invalid type: " + entryType.Name);
@@ -129,6 +159,11 @@ namespace TrainingLog
             using (var reader = XmlReader.Create(stringReader))
             {
                 _entries.AddRange(((EntryList)serializer.Deserialize(reader)).AllEntries);
+            }
+            using (var stringReader = new StringReader(File.ReadAllText(_equipmentPath)))
+            using (var reader = XmlReader.Create(stringReader))
+            {
+                _equipments.AddRange(((EntryList)serializer.Deserialize(reader)).EquipmentEntries);
             }
         }
 

@@ -35,6 +35,7 @@
             this.butSettings = new System.Windows.Forms.Button();
             this.butExit = new System.Windows.Forms.Button();
             this.butManageNonsport = new System.Windows.Forms.Button();
+            this.butManageEquipment = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // butAddTraining
@@ -59,40 +60,40 @@
             // 
             // butShowLog
             // 
-            this.butShowLog.Location = new System.Drawing.Point(12, 99);
+            this.butShowLog.Location = new System.Drawing.Point(12, 128);
             this.butShowLog.Name = "butShowLog";
             this.butShowLog.Size = new System.Drawing.Size(200, 23);
-            this.butShowLog.TabIndex = 3;
+            this.butShowLog.TabIndex = 4;
             this.butShowLog.Text = "Show Training Log";
             this.butShowLog.UseVisualStyleBackColor = true;
             this.butShowLog.Click += new System.EventHandler(this.ButShowLogClick);
             // 
             // butShowStatistics
             // 
-            this.butShowStatistics.Location = new System.Drawing.Point(12, 128);
+            this.butShowStatistics.Location = new System.Drawing.Point(12, 157);
             this.butShowStatistics.Name = "butShowStatistics";
             this.butShowStatistics.Size = new System.Drawing.Size(200, 23);
-            this.butShowStatistics.TabIndex = 4;
+            this.butShowStatistics.TabIndex = 5;
             this.butShowStatistics.Text = "Show Statistics";
             this.butShowStatistics.UseVisualStyleBackColor = true;
             this.butShowStatistics.Click += new System.EventHandler(this.ButShowStatisticsClick);
             // 
             // butSettings
             // 
-            this.butSettings.Location = new System.Drawing.Point(12, 157);
+            this.butSettings.Location = new System.Drawing.Point(12, 186);
             this.butSettings.Name = "butSettings";
             this.butSettings.Size = new System.Drawing.Size(200, 23);
-            this.butSettings.TabIndex = 5;
+            this.butSettings.TabIndex = 6;
             this.butSettings.Text = "Settings";
             this.butSettings.UseVisualStyleBackColor = true;
             this.butSettings.Click += new System.EventHandler(this.ButSettingsClick);
             // 
             // butExit
             // 
-            this.butExit.Location = new System.Drawing.Point(12, 186);
+            this.butExit.Location = new System.Drawing.Point(12, 215);
             this.butExit.Name = "butExit";
             this.butExit.Size = new System.Drawing.Size(200, 23);
-            this.butExit.TabIndex = 6;
+            this.butExit.TabIndex = 7;
             this.butExit.Text = "Exit";
             this.butExit.UseVisualStyleBackColor = true;
             this.butExit.Click += new System.EventHandler(this.ButExitClick);
@@ -107,11 +108,22 @@
             this.butManageNonsport.UseVisualStyleBackColor = true;
             this.butManageNonsport.Click += new System.EventHandler(this.ButManageNonsportClick);
             // 
+            // butManageEquipment
+            // 
+            this.butManageEquipment.Location = new System.Drawing.Point(12, 99);
+            this.butManageEquipment.Name = "butManageEquipment";
+            this.butManageEquipment.Size = new System.Drawing.Size(200, 23);
+            this.butManageEquipment.TabIndex = 3;
+            this.butManageEquipment.Text = "Manage Equipment";
+            this.butManageEquipment.UseVisualStyleBackColor = true;
+            this.butManageEquipment.Click += new System.EventHandler(this.butManageEquipment_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(227, 221);
+            this.ClientSize = new System.Drawing.Size(227, 248);
+            this.Controls.Add(this.butManageEquipment);
             this.Controls.Add(this.butManageNonsport);
             this.Controls.Add(this.butExit);
             this.Controls.Add(this.butSettings);
@@ -135,6 +147,7 @@
         private System.Windows.Forms.Button butSettings;
         private System.Windows.Forms.Button butExit;
         private System.Windows.Forms.Button butManageNonsport;
+        private System.Windows.Forms.Button butManageEquipment;
     }
 }
 

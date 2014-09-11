@@ -48,8 +48,8 @@ namespace TrainingLog.Forms
                 Settings = Settings.LoadSettings(fd.FileName);
             }
 
-            if (File.Exists(Settings.TrainingPath) && File.Exists(Settings.BiodataPath) && File.Exists(Settings.NonSportPath))
-                Model.Initialize(Settings.TrainingPath, Settings.BiodataPath, Settings.NonSportPath);
+            if (File.Exists(Settings.TrainingPath) && File.Exists(Settings.BiodataPath) && File.Exists(Settings.NonSportPath) && File.Exists(Settings.EquipmentPath))
+                Model.Initialize(Settings.TrainingPath, Settings.BiodataPath, Settings.NonSportPath, Settings.EquipmentPath);
             else
             {
                 if (!File.Exists(Settings.TrainingPath))
@@ -97,8 +97,23 @@ namespace TrainingLog.Forms
 
                     Settings.NonSportPath = dlg.FileName;
                 }
+                if (!File.Exists(Settings.EquipmentPath))
+                {
+                    MessageBox.Show(
+                        "Equipment log could not be found. Please select a valid log.", "Log not found", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    var dlg = new OpenFileDialog { InitialDirectory = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders", "{374DE290-123F-4565-9164-39C4925E467B}", string.Empty).ToString(), Filter = "XML-Files|*.xml" };
 
-                Model.Initialize(Settings.TrainingPath, Settings.BiodataPath, Settings.NonSportPath);
+                    if (dlg.ShowDialog() != DialogResult.OK)
+                    {
+                        MessageBox.Show("No log loaded, closing application...", "Exit", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        ButExitClick();
+                        return;
+                    }
+
+                    Settings.EquipmentPath = dlg.FileName;
+                }
+
+                Model.Initialize(Settings.TrainingPath, Settings.BiodataPath, Settings.NonSportPath, Settings.EquipmentPath);
             }
 
             EventHandler onFormHide = (s, e) =>
@@ -111,6 +126,7 @@ namespace TrainingLog.Forms
             TrainingEntryForm.Instance.VisibleChanged += onFormHide;
             BiodataEntryForm.Instance.VisibleChanged += onFormHide;
             NonSportEntryForm.Instance.VisibleChanged += onFormHide;
+            EquipmentForm.Instance.VisibleChanged += onFormHide;
             TrainingLogForm.Instance.VisibleChanged += onFormHide;
             StatisticsForm.Instance.VisibleChanged += onFormHide;
             SettingsForm.Instance.VisibleChanged += onFormHide;
@@ -156,6 +172,13 @@ namespace TrainingLog.Forms
             NonSportEntryForm.Instance.BringToFront();
         }
 
+        private void butManageEquipment_Click(object sender, EventArgs e)
+        {
+            Hide();
+            EquipmentForm.Instance.Show();
+            EquipmentForm.Instance.BringToFront();
+        }
+
         private void ButShowLogClick(object sender = null, EventArgs e = null)
         {
             Hide();
@@ -184,6 +207,7 @@ namespace TrainingLog.Forms
             TrainingEntryForm.Instance.Close();
             BiodataEntryForm.Instance.Close();
             NonSportEntryForm.Instance.Close();
+            EquipmentForm.Instance.Close();
             TrainingLogForm.Instance.Close();
             StatisticsForm.Instance.Close();
             SettingsForm.Instance.Close();
@@ -195,5 +219,6 @@ namespace TrainingLog.Forms
         }
 
         #endregion
+
     }
 }

@@ -37,20 +37,19 @@ namespace TrainingLog
 
         #region Enum Categories
 
-        public static readonly Sport[] EnduranceSports = new[] { Sport.Running, Sport.Cycling };
+        public static readonly Sport[] EnduranceSports = { Sport.Running, Sport.Cycling };
 
         public static readonly TrainingType[] EnduranceTypes =
-            new[]
-                {
-                    TrainingType.Easy, TrainingType.Interval, TrainingType.Fartlek, TrainingType.Base, TrainingType.Long, 
-                    TrainingType.Tempo, TrainingType.Mountain, TrainingType.Other
-                };
+        {
+            TrainingType.Easy, TrainingType.Interval, TrainingType.Fartlek, TrainingType.Base, TrainingType.Long, 
+            TrainingType.Tempo, TrainingType.Mountain, TrainingType.Other
+        };
 
-        public static readonly TrainingType[] SquashTypes = new[]
-                                                                {
-                                                                    TrainingType.Solo, TrainingType.Training,
-                                                                    TrainingType.Club, TrainingType.Match
-                                                                };
+        public static readonly TrainingType[] SquashTypes =
+        {
+            TrainingType.Solo, TrainingType.Training,
+            TrainingType.Club, TrainingType.Match
+        };
 
         public static readonly TrainingType[] AllTypes = EnduranceTypes.Concat(SquashTypes).ToArray();
 

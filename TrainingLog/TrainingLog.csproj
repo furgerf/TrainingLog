@@ -77,9 +77,21 @@
       <DependentUpon>EnumFilterControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Entries\EntryList.cs" />
-    <Compile Include="Entries\Equipment.cs" />
+    <Compile Include="Equipment.cs" />
     <Compile Include="Entries\NonSportEntry.cs" />
     <Compile Include="EntryChangedEventArgs.cs" />
+    <Compile Include="Forms\EquipmentForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\EquipmentForm.Designer.cs">
+      <DependentUpon>EquipmentForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\NewEquipmentForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\NewEquipmentForm.Designer.cs">
+      <DependentUpon>NewEquipmentForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\NewNonSportEntryForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -186,8 +198,14 @@
     <EmbeddedResource Include="Controls\EntryListControl.resx">
       <DependentUpon>EntryListControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\EquipmentForm.resx">
+      <DependentUpon>EquipmentForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\NewEquipmentForm.resx">
+      <DependentUpon>NewEquipmentForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\NewNonSportEntryForm.resx">
       <DependentUpon>NewNonSportEntryForm.cs</DependentUpon>
