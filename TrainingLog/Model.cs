@@ -88,8 +88,7 @@ namespace TrainingLog
 
             WriteEntries(entry.GetType());
 
-            //if (EntriesChanged != null)
-            //    EntriesChanged(this, new EntryChangedEventArgs(false, entry));
+            // no need to fire event
         }
 
         public void AddEntry(Equipment entry)
@@ -98,8 +97,7 @@ namespace TrainingLog
 
             WriteEntries(entry.GetType());
 
-            //if (EntriesChanged != null)
-            //    EntriesChanged(this, new EntryChangedEventArgs(true, entry));
+            // no need to fire event
         }
 
         public void WriteEntries(Type entryType, string path = null)

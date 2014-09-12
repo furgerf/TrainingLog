@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using Microsoft.Win32;
@@ -58,6 +59,8 @@ namespace TrainingLog.Forms
         private TrainingEntryForm()
         {
             InitializeComponent();
+
+            ChkRaceCheckedChanged();
 
             datDate.CustomFormat = "dd.MM.yyyy HH:mm:ss";
 
@@ -226,6 +229,8 @@ namespace TrainingLog.Forms
                 comSport.Text = Enum.GetName(typeof(Common.Sport), entry.Sport ?? Common.Sport.Count);
             if (entry.TrainingTypeSpecified)
                 comTrainingType.Text = Enum.GetName(typeof(Common.TrainingType), entry.TrainingType);
+            if (entry.EquipmentNameSpecified)
+                comEquipment.Text = entry.Equipment.Name;
 
             DistanceTimeChanged();
         }
@@ -240,9 +245,10 @@ namespace TrainingLog.Forms
             Close();
         }
 
-        private void ChkRaceCheckedChanged(object sender, EventArgs e)
+        private void ChkRaceCheckedChanged(object sender = null, EventArgs e = null)
         {
-            MessageBox.Show("Not implemented!");
+            Width += (chkRace.Checked ? 1 : -1)*(grpCompetition.Width + 6);
+            grpCompetition.Visible = chkRace.Checked;
         }
 
         private void ComSportSelectedIndexChanged(object sender, EventArgs e)
@@ -272,9 +278,19 @@ namespace TrainingLog.Forms
             txtDistance.Enabled = comSport.SelectedIndex == (int) Common.Sport.Running ||
                                   comSport.SelectedIndex == (int) Common.Sport.Cycling;
 
-            if (txtDistance.Enabled) return;
-            labPace.Text = "Pace:   ";
-            labSpeed.Text = "Speed: ";
+            if (!txtDistance.Enabled)
+            {
+                labPace.Text = "Pace:   ";
+                labSpeed.Text = "Speed: ";
+            }
+
+            // update equipment
+            comEquipment.Items.Clear();
+            foreach (var ee in Model.Instance.Equipment.Where(ee => ee.Sport.ToString().Equals(comSport.Text)))
+                comEquipment.Items.Add(ee.Name);
+
+            if (comEquipment.Items.Count > 0)
+                comEquipment.SelectedIndex = comEquipment.Items.Count - 1;
         }
 
         private void DistanceTimeChanged(object sender = null, EventArgs e = null)
@@ -446,7 +462,8 @@ namespace TrainingLog.Forms
                     comFeeling.Text != ""
                         ? (Common.Index)(int)Common.Index.Count - comFeeling.SelectedIndex
                         : Common.Index.None,
-                Note = txtNotes.Text
+                Note = txtNotes.Text,
+                Equipment = Model.Instance.Equipment.FirstOrDefault(ee => ee.Name.Equals(comEquipment.Text))
             };
 
             NewEntry = entry;

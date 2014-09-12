@@ -132,7 +132,7 @@
             this.picImage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.picImage.Location = new System.Drawing.Point(15, 113);
             this.picImage.Name = "picImage";
-            this.picImage.Size = new System.Drawing.Size(192, 146);
+            this.picImage.Size = new System.Drawing.Size(192, 144);
             this.picImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picImage.TabIndex = 23;
             this.picImage.TabStop = false;

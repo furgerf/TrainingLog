@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Xml.Serialization;
 
 namespace TrainingLog.Entries
@@ -32,10 +33,12 @@ namespace TrainingLog.Entries
         public Common.Sport? Sport { get; set; }
         public bool SportSpecified { get { return Sport != null; } }
 
-        //[XmlElement("Equipment")]
-        //public Equipment? Equipment { get; set; }
-        //public bool EquipmentSpecified { get { return Equipment != null; } }
-
+        [XmlElement("Equipment")]
+        public string EquipmentName { get; set; }
+        public bool EquipmentNameSpecified { get { return EquipmentName != null; } }
+        [XmlIgnore]
+        public Equipment Equipment { get { return Model.Instance.Equipment.First(e => e.Name.Equals(EquipmentName)); } set { EquipmentName = value.Name; } }
+        
         [XmlElement("TrainingType")]
         public Common.TrainingType TrainingType
         {

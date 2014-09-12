@@ -1,28 +1,23 @@
 ﻿Urgency		Workload	What?
 ------------------------------------------------------------------------------------------------------------------------------------------------
 General
-	3			4		Re-check filter concept
-	1			2		Import data-over-time from PPT (?)
+	3			5		Re-check filter concept
+	1			3		Import data-over-time from PPT (?)
 	1			1		Add a few icons...
 	1			1		Make all forms resize properly
-	4			1		Seconds-component of pace seems with running seems ok but with cycling it isn't
 	4			3		Add indicator of perceived exertion to training entries
-	1			1		Ensure BioData and NonSport are consistent with upper-/lower-case
+	1			2		Ensure BioData and NonSport are consistent with upper-/lower-case
 
 Statistics
 	1			4		Add more statistics
 	1			3		Add tooltips to the charts
-	1			4		Overview stats: Make one really big graph and enlarge other graphs when clicked
 	2			2		Find out why charts that allow grouping lack the annotations on the bottom
 
-Settingst
+Settings
 	1			2		Move some settings to settings form
 
 Race Entries
-	2			3		Implement race entries
-
-Training Entries
-	5			2		Add equipment-attribute
+	2			3		Implement race entries (competitions)
 
 TrainingLogForm
 	3			4		Re-Do.
