@@ -317,7 +317,7 @@ namespace TrainingLog.Forms
             var dist = double.Parse(txtDistance.Text.EndsWith(".") ? txtDistance.Text + "0" : txtDistance.Text);
             var pace = ts.TotalMinutes/dist;
             var paceMin = Math.Floor(pace);
-            var paceSec = Math.Floor((pace%1)*100);
+            var paceSec = Math.Floor((pace%1)*60);
             var speed = Math.Round(dist/ts.TotalHours, 2);
 
             // recalculate pace

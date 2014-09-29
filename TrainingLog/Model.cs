@@ -18,7 +18,7 @@ namespace TrainingLog
         public static Model Instance { get { if (_instance == null) throw new Exception(); return _instance; } }
 
         public Entry[] Entries { get { return _entries.ToArray(); } }
-        public RaceEntry[] RaceEntries { get { return _entries.Where(e => e is RaceEntry).OrderBy(e => e.Date).Cast<RaceEntry>().ToArray(); } }
+        public TrainingEntry[] CompetitionEntries { get { return _entries.Where(e => e.EntryName.Equals("Competition")).OrderBy(e => e.Date).Cast<TrainingEntry>().ToArray(); } }
         public BiodataEntry[] BiodataEntries { get { return _entries.Where(e => e is BiodataEntry).OrderBy(e => e.Date).Cast<BiodataEntry>().ToArray(); } }
         public TrainingEntry[] TrainingEntries { get { return _entries.Where(e => e is TrainingEntry).OrderBy(e => e.Date).Cast<TrainingEntry>().ToArray(); } }
         public NonSportEntry[] NonSportEntries { get { return _entries.Where(e => e is NonSportEntry).OrderBy(e => e.Date).Cast<NonSportEntry>().ToArray(); } }

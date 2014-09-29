@@ -9,7 +9,7 @@ General
 	1			2		Ensure BioData and NonSport are consistent with upper-/lower-case
 
 Statistics
-	1			4		Add more statistics
+	1			4		Add more statistics: Shoes, Races, Overall, ...
 	1			3		Add tooltips to the charts
 	2			2		Find out why charts that allow grouping lack the annotations on the bottom
 

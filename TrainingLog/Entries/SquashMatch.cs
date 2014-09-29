@@ -1,30 +1,43 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace TrainingLog.Entries
 {
-    public class RaceEntry : TrainingEntry
+    public class SquashMatch : TrainingEntry
     {
         #region Public Fields
 
-        public int Rank { get; set; }
+
 
         #endregion
 
         #region Private Fields
 
+
+
         #endregion
 
         #region Constructor
 
-        public RaceEntry(TimeSpan duration)
-            :base(duration, Common.Sport.Running,  Common.EntryType.Race)
+        public SquashMatch()
         {
-            throw new NotImplementedException();
+
         }
 
         #endregion
 
         #region Main Methods
+
+
+
+        #endregion
+
+        #region Event Handling
+
+
 
         #endregion
     }

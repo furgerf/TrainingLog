@@ -30,7 +30,7 @@ namespace TrainingLog
 
         public enum EntryType
         {
-            Training, Race, BioData, NonSport, Count
+            Training, Competition, BioData, NonSport, Count
         }
         
         #endregion

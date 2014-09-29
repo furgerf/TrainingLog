@@ -77,6 +77,8 @@
       <DependentUpon>EnumFilterControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Entries\EntryList.cs" />
+    <Compile Include="Entries\RunningRace.cs" />
+    <Compile Include="Entries\SquashMatch.cs" />
     <Compile Include="Equipment.cs" />
     <Compile Include="Entries\NonSportEntry.cs" />
     <Compile Include="EntryChangedEventArgs.cs" />
@@ -176,7 +178,6 @@
     <Compile Include="Forms\StatisticsForm.Designer.cs">
       <DependentUpon>StatisticsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Entries\RaceEntry.cs" />
     <Compile Include="Entries\TrainingEntry.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="ZoneData.cs" />

@@ -37,7 +37,7 @@ namespace TrainingLog.Entries
         public string EquipmentName { get; set; }
         public bool EquipmentNameSpecified { get { return EquipmentName != null; } }
         [XmlIgnore]
-        public Equipment Equipment { get { return Model.Instance.Equipment.First(e => e.Name.Equals(EquipmentName)); } set { EquipmentName = value.Name; } }
+        public Equipment Equipment { get { return Model.Instance.Equipment.First(e => e.Name.Equals(EquipmentName)); } set { if (value == null) return; EquipmentName = value.Name; } }
         
         [XmlElement("TrainingType")]
         public Common.TrainingType TrainingType
@@ -105,11 +105,11 @@ namespace TrainingLog.Entries
             Duration = duration;
         }
 
-        protected TrainingEntry(TimeSpan duration, Common.Sport sport, Common.EntryType entryType)
+        protected TrainingEntry(Common.Sport sport, Common.EntryType entryType)
             : base(entryType)
         {
-            // constructor for RaceEntry
-            Duration = duration;
+            if (entryType != Common.EntryType.Competition)
+                throw new ArgumentException("constructor for competitions");
             Sport = sport;
         }
 

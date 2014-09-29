@@ -24,7 +24,7 @@ namespace TrainingLog.Entries
         #region Protected Fields
 
         [XmlIgnore]
-        protected readonly string EntryName;
+        public readonly string EntryName;
 
         #endregion
 
