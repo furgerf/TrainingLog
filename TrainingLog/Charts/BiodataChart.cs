@@ -79,14 +79,22 @@ namespace TrainingLog.Charts
                                Color = Color.RoyalBlue
                            });
             Series.Add(new Series("Average Resting Heart Rate")
-                           {
-                               XValueType = ChartValueType.Date,
-                               YValueType = ChartValueType.Double,
-                               ChartType = SeriesChartType.Spline,
-                               BorderWidth = 3,
-                               Color = Color.Purple,
-                               IsValueShownAsLabel = true
-                           });
+            {
+                XValueType = ChartValueType.Date,
+                YValueType = ChartValueType.Double,
+                ChartType = SeriesChartType.Spline,
+                BorderWidth = 1,
+                Color = Color.Turquoise,
+                IsValueShownAsLabel = true
+            });
+            Series.Add(new Series("Local Average Resting Heart Rate")
+            {
+                XValueType = ChartValueType.Date,
+                YValueType = ChartValueType.Double,
+                ChartType = SeriesChartType.Spline,
+                BorderWidth = 3,
+                Color = Color.Purple
+            });
             Series.Add(new Series("OwnIndex")
                            {
                                XValueType = ChartValueType.Date,
@@ -192,6 +200,31 @@ namespace TrainingLog.Charts
                 else
                     lastNoteSpecified = 0;
                 lastNoteSpecified %= 5;
+            }
+
+            // local (5-day) average
+            for (var startDate = DateTime.FromOADate(Series["Resting Heart Rate"].Points[0].XValue); startDate.ToOADate() <= Series["Resting Heart Rate"].Points[Series["Resting Heart Rate"].Points.Count - 1].XValue; startDate = startDate.AddDays(1))
+            {
+                var points = new []
+                {
+                    Series["Resting Heart Rate"].Points.FirstOrDefault(
+                        p => Math.Abs(p.XValue - startDate.AddDays(-2).ToOADate()) < 0.5 && Math.Abs(p.YValues[0]) > 0.1),
+                    Series["Resting Heart Rate"].Points.FirstOrDefault(
+                        p => Math.Abs(p.XValue - startDate.AddDays(-1).ToOADate()) < 0.5 && Math.Abs(p.YValues[0]) > 0.1),
+                    Series["Resting Heart Rate"].Points.FirstOrDefault(
+                        p => Math.Abs(p.XValue - startDate.AddDays(0).ToOADate()) < 0.5 && Math.Abs(p.YValues[0]) > 0.1),
+                    Series["Resting Heart Rate"].Points.FirstOrDefault(
+                        p => Math.Abs(p.XValue - startDate.AddDays(1).ToOADate()) < 0.5 && Math.Abs(p.YValues[0]) > 0.1),
+                    Series["Resting Heart Rate"].Points.FirstOrDefault(
+                        p => Math.Abs(p.XValue - startDate.AddDays(2).ToOADate()) < 0.5 && Math.Abs(p.YValues[0]) > 0.1)
+                };
+
+                if (points.Count(p => p != null) > 0)
+                    Series["Local Average Resting Heart Rate"].Points.Add(new DataPoint(startDate.ToOADate(),
+                        points.Where(p => p != null && Math.Abs(p.YValues[0]) > 0.1).Average(p => p.YValues[0])));
+                else
+                    Series["Local Average Resting Heart Rate"].Points.Add(new DataPoint(startDate.ToOADate(),
+                        0){ IsEmpty = true });
             }
 
             foreach (var p in Series["Niggles"].Points)
