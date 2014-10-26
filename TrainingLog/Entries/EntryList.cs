@@ -9,7 +9,9 @@ namespace TrainingLog.Entries
         #region Public Fields
 
         [XmlArray("TrainingEntryArray")]
-        [XmlArrayItem("TrainingEntry")]
+        [XmlArrayItem("TrainingEntry", typeof(TrainingEntry))]
+        [XmlArrayItem("SquashMatchEntry", typeof(SquashMatch))]
+        [XmlArrayItem("RunningRaceEntry", typeof(RunningRace))]
         public TrainingEntry[] TrainingEntries { get; set; }
         public bool TrainingEntriesSpecified { get { return TrainingEntries != null; } }
 
