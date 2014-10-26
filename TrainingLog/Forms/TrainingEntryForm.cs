@@ -29,20 +29,20 @@ namespace TrainingLog.Forms
 
         private const string XmlValue1 = "value=";
 
-        private readonly string[] _xmlKeys1 = new[]
-                                        {
-                                            "exe.result.duration",
-                                            "exe.result.hrAvg",
-                                            "exe.result.calories",
-                                            "exe.result.distance",
-                                            "exe.time_date"
-                                        };
-        private readonly string[] _xmlKeys2 = new[]
-                                        {
-                                            "exe.result.zones",
-                                            "single_sport_name",
-                                            "outputid=\"exe.note"
-                                        };
+        private readonly string[] _xmlKeys1 =
+        {
+            "exe.result.duration",
+            "exe.result.hrAvg",
+            "exe.result.calories",
+            "exe.result.distance",
+            "exe.time_date"
+        };
+        private readonly string[] _xmlKeys2 =
+        {
+            "exe.result.zones",
+            "single_sport_name",
+            "outputid=\"exe.note"
+        };
 
         private static TrainingEntryForm _instance;
 
@@ -249,6 +249,19 @@ namespace TrainingLog.Forms
         {
             Width += (chkRace.Checked ? 1 : -1)*(grpCompetition.Width + 6);
             grpCompetition.Visible = chkRace.Checked;
+
+            if (!chkRace.Checked) return;
+
+            // set visibility of proper control
+            runningRaceEntryControl1.Visible = (Common.Sport) comSport.SelectedIndex == Common.Sport.Running;
+            squashMatchEntryControl1.Visible = (Common.Sport) comSport.SelectedIndex == Common.Sport.Squash;
+                
+            // fill in comboboxes
+            if (runningRaceEntryControl1.Visible)
+                runningRaceEntryControl1.UpdateComboBoxes();
+
+            if (squashMatchEntryControl1.Visible)
+                squashMatchEntryControl1.UpdateComboBoxes();
         }
 
         private void ComSportSelectedIndexChanged(object sender, EventArgs e)
@@ -291,6 +304,19 @@ namespace TrainingLog.Forms
 
             if (comEquipment.Items.Count > 0)
                 comEquipment.SelectedIndex = comEquipment.Items.Count - 1;
+
+            // en/dis-able race checkbox
+            chkRace.Enabled = (Common.Sport) comSport.SelectedIndex == Common.Sport.Running ||
+                              (Common.Sport) comSport.SelectedIndex == Common.Sport.Squash;
+            if (!chkRace.Enabled)
+                chkRace.Checked = false;
+
+            // ensure proper competition control is visible
+            if (chkRace.Checked)
+            {
+                runningRaceEntryControl1.Visible = (Common.Sport)comSport.SelectedIndex == Common.Sport.Running;
+                squashMatchEntryControl1.Visible = (Common.Sport)comSport.SelectedIndex == Common.Sport.Squash;
+            }
         }
 
         private void DistanceTimeChanged(object sender = null, EventArgs e = null)
@@ -449,22 +475,121 @@ namespace TrainingLog.Forms
             if (!IsDataValid(out duration, out zoneData))
                 return;
 
-            var entry = new TrainingEntry(duration)
+            TrainingEntry entry;
+
+            if (!chkRace.Checked)
             {
-                Date = datDate.Value,
-                Sport = (Common.Sport)comSport.SelectedIndex,
-                TrainingType = comTrainingType.Text.Equals("") ? Common.TrainingType.None : (Common.TrainingType)Enum.Parse(typeof(Common.TrainingType), comTrainingType.Text),
-                Calories = txtCalories.Text == "" ? 0 : int.Parse(txtCalories.Text),
-                AverageHr = txtAvgHR.Text == "" ? 0 : int.Parse(txtAvgHR.Text),
-                HrZones = zoneData,
-                DistanceKm = txtDistance.Text == "" ? 0 : double.Parse(txtDistance.Text),
-                Feeling =
-                    comFeeling.Text != ""
-                        ? (Common.Index)(int)Common.Index.Count - comFeeling.SelectedIndex
-                        : Common.Index.None,
-                Note = txtNotes.Text,
-                Equipment = Model.Instance.Equipment.FirstOrDefault(ee => ee.Name.Equals(comEquipment.Text))
-            };
+                entry = new TrainingEntry(duration)
+                {
+                    Date = datDate.Value,
+                    Sport = (Common.Sport) comSport.SelectedIndex,
+                    TrainingType =
+                        comTrainingType.Text.Equals("")
+                            ? Common.TrainingType.None
+                            : (Common.TrainingType) Enum.Parse(typeof (Common.TrainingType), comTrainingType.Text),
+                    Calories = txtCalories.Text == "" ? 0 : int.Parse(txtCalories.Text),
+                    AverageHr = txtAvgHR.Text == "" ? 0 : int.Parse(txtAvgHR.Text),
+                    HrZones = zoneData,
+                    DistanceKm = txtDistance.Text == "" ? 0 : double.Parse(txtDistance.Text),
+                    Feeling =
+                        comFeeling.Text != ""
+                            ? (Common.Index) (int) Common.Index.Count - comFeeling.SelectedIndex
+                            : Common.Index.None,
+                    Note = txtNotes.Text,
+                    Equipment = Model.Instance.Equipment.FirstOrDefault(ee => ee.Name.Equals(comEquipment.Text))
+                };
+            }
+            else if (comSport.SelectedIndex == (int)Common.Sport.Running)
+            {
+                if (runningRaceEntryControl1.ExactTime == null)
+                {
+                    MessageBox.Show("Please enter the exact time of the race!", "Enter exact time", MessageBoxButtons.OK,
+                        MessageBoxIcon.Exclamation);
+                    return;
+                }
+                if (runningRaceEntryControl1.ExactDistanceKm == null)
+                {
+                    MessageBox.Show("Please enter the exact distance of the race!", "Enter exact distance", MessageBoxButtons.OK,
+                        MessageBoxIcon.Exclamation);
+                    return;
+                }
+                if (runningRaceEntryControl1.Competition == "")
+                {
+                    MessageBox.Show("Please enter the competition name!", "Enter competition", MessageBoxButtons.OK,
+                        MessageBoxIcon.Exclamation);
+                    return;
+                }
+
+                entry = new RunningRace(duration, runningRaceEntryControl1.ExactTime.Value, 1000 * (double)runningRaceEntryControl1.ExactDistanceKm.Value, runningRaceEntryControl1.Competition)
+                {
+                    Date = datDate.Value,
+                    Sport = (Common.Sport)comSport.SelectedIndex,
+                    TrainingType =
+                        comTrainingType.Text.Equals("")
+                            ? Common.TrainingType.None
+                            : (Common.TrainingType)Enum.Parse(typeof(Common.TrainingType), comTrainingType.Text),
+                    Calories = txtCalories.Text == "" ? 0 : int.Parse(txtCalories.Text),
+                    AverageHr = txtAvgHR.Text == "" ? 0 : int.Parse(txtAvgHR.Text),
+                    HrZones = zoneData,
+                    DistanceKm = txtDistance.Text == "" ? 0 : double.Parse(txtDistance.Text),
+                    Feeling =
+                        comFeeling.Text != ""
+                            ? (Common.Index)(int)Common.Index.Count - comFeeling.SelectedIndex
+                            : Common.Index.None,
+                    Note = txtNotes.Text,
+                    Equipment = Model.Instance.Equipment.FirstOrDefault(ee => ee.Name.Equals(comEquipment.Text)),
+
+                    RaceAverageHr = runningRaceEntryControl1.RaceAverageHr
+                };
+
+                if (runningRaceEntryControl1.OverallRank != 0)
+                    ((RunningRace)entry).OverallRank = runningRaceEntryControl1.OverallRank;
+                if (runningRaceEntryControl1.AgeGroupRank != 0)
+                    ((RunningRace)entry).AgeGroupRank = runningRaceEntryControl1.AgeGroupRank;
+            }
+            else if (comSport.SelectedIndex == (int) Common.Sport.Squash)
+            {
+                if (squashMatchEntryControl1.Result == "")
+                {
+                    MessageBox.Show("Please enter the result of the match!", "Enter result", MessageBoxButtons.OK,
+                        MessageBoxIcon.Exclamation);
+                    return;
+                }
+                if (squashMatchEntryControl1.Competition == "")
+                {
+                    MessageBox.Show("Please enter the competition name!", "Enter competition", MessageBoxButtons.OK,
+                        MessageBoxIcon.Exclamation);
+                    return;
+                }
+
+                entry = new SquashMatch(duration, squashMatchEntryControl1.Result, squashMatchEntryControl1.Competition)
+                {
+                    Date = datDate.Value,
+                    Sport = (Common.Sport) comSport.SelectedIndex,
+                    TrainingType =
+                        comTrainingType.Text.Equals("")
+                            ? Common.TrainingType.None
+                            : (Common.TrainingType) Enum.Parse(typeof (Common.TrainingType), comTrainingType.Text),
+                    Calories = txtCalories.Text == "" ? 0 : int.Parse(txtCalories.Text),
+                    AverageHr = txtAvgHR.Text == "" ? 0 : int.Parse(txtAvgHR.Text),
+                    HrZones = zoneData,
+                    DistanceKm = txtDistance.Text == "" ? 0 : double.Parse(txtDistance.Text),
+                    Feeling =
+                        comFeeling.Text != ""
+                            ? (Common.Index) (int) Common.Index.Count - comFeeling.SelectedIndex
+                            : Common.Index.None,
+                    Note = txtNotes.Text,
+                    Equipment = Model.Instance.Equipment.FirstOrDefault(ee => ee.Name.Equals(comEquipment.Text)),
+
+                    MatchTime = squashMatchEntryControl1.ExactTime,
+                    Opponent = squashMatchEntryControl1.Opponent,
+                    MatchAverageHr = squashMatchEntryControl1.MatchAverageHr,
+                };
+            }
+            else
+            {
+                throw new NotImplementedException("This sport doesnt know competitions!");
+            }
 
             NewEntry = entry;
 
