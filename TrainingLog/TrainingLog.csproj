@@ -76,6 +76,18 @@
     <Compile Include="Controls\EnumFilterControl.Designer.cs">
       <DependentUpon>EnumFilterControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\RunningRaceEntryControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\RunningRaceEntryControl.Designer.cs">
+      <DependentUpon>RunningRaceEntryControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SquashMatchEntryControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SquashMatchEntryControl.Designer.cs">
+      <DependentUpon>SquashMatchEntryControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Entries\EntryList.cs" />
     <Compile Include="Entries\RunningRace.cs" />
     <Compile Include="Entries\SquashMatch.cs" />
@@ -189,6 +201,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\EnumFilterControl.resx">
       <DependentUpon>EnumFilterControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\RunningRaceEntryControl.resx">
+      <DependentUpon>RunningRaceEntryControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SquashMatchEntryControl.resx">
+      <DependentUpon>SquashMatchEntryControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ZoneDataBox.resx">
       <DependentUpon>ZoneDataBox.cs</DependentUpon>

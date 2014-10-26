@@ -16,8 +16,8 @@ Statistics
 Settings
 	1			2		Move some settings to settings form
 
-Race Entries
-	2			3		Implement race entries (competitions)
+Competitions
+	2			1		Implement Squash Result class (and SquashResultTextBox :D)
 
 TrainingLogForm
 	3			4		Re-Do.
