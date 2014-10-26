@@ -18,7 +18,8 @@ namespace TrainingLog
         public static Model Instance { get { if (_instance == null) throw new Exception(); return _instance; } }
 
         public Entry[] Entries { get { return _entries.ToArray(); } }
-        public TrainingEntry[] CompetitionEntries { get { return _entries.Where(e => e.EntryName.Equals("Competition")).OrderBy(e => e.Date).Cast<TrainingEntry>().ToArray(); } }
+        public SquashMatch[] SquashMatchEntries { get { return _entries.Where(e => e is SquashMatch).OrderBy(e => e.Date).Cast<SquashMatch>().ToArray(); } }
+        public RunningRace[] RunningRaceEntries { get { return _entries.Where(e => e is RunningRace).OrderBy(e => e.Date).Cast<RunningRace>().ToArray(); } }
         public BiodataEntry[] BiodataEntries { get { return _entries.Where(e => e is BiodataEntry).OrderBy(e => e.Date).Cast<BiodataEntry>().ToArray(); } }
         public TrainingEntry[] TrainingEntries { get { return _entries.Where(e => e is TrainingEntry).OrderBy(e => e.Date).Cast<TrainingEntry>().ToArray(); } }
         public NonSportEntry[] NonSportEntries { get { return _entries.Where(e => e is NonSportEntry).OrderBy(e => e.Date).Cast<NonSportEntry>().ToArray(); } }
@@ -104,13 +105,13 @@ namespace TrainingLog
         {
             EntryList el;
 
-            if (entryType == typeof(TrainingEntry))
+            if (entryType == typeof(TrainingEntry) || entryType == typeof(RunningRace) || entryType == typeof(SquashMatch))
             {
                 if (path == null)
                     path = MainForm.Instance.Settings.TrainingPath;
                 el = new EntryList(TrainingEntries);
             }
-            else if (entryType == typeof(BiodataEntry))
+            else if (entryType == typeof (BiodataEntry))
             {
                 if (path == null)
                     path = MainForm.Instance.Settings.BiodataPath;
@@ -121,7 +122,8 @@ namespace TrainingLog
                 if (path == null)
                     path = MainForm.Instance.Settings.NonSportPath;
                 el = new EntryList(NonSportEntries);
-            }else if (entryType == typeof (Equipment))
+            }
+            else if (entryType == typeof (Equipment))
             {
                 if (path == null)
                     path = MainForm.Instance.Settings.EquipmentPath;
@@ -132,7 +134,7 @@ namespace TrainingLog
 
             using (var tw = new StreamWriter(path))
             {
-                var ser = new XmlSerializer(typeof(EntryList));
+                var ser = new XmlSerializer(typeof (EntryList));
                 ser.Serialize(tw, el);
             }
         }
