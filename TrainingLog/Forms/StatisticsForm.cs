@@ -261,7 +261,7 @@ namespace TrainingLog.Forms
 
             // prepare filters and update graphs when values change
             var entries = Model.Instance.TrainingEntries.Cast<Entry>().Concat(Model.Instance.BiodataEntries).OrderBy(e => e.Date);
-            ((DateTimePicker) dfcFrom.GetControl()).Value = entries.First().Date ?? DateTime.MaxValue;
+            ((DateTimePicker) dfcFrom.GetControl()).Value = DateTime.Today.AddMonths(-2);   
             ((DateTimePicker) dfcTo.GetControl()).Value = entries.Last().Date ?? DateTime.MinValue;
             ((DateTimePicker) dfcFrom.GetControl()).ValueChanged += (s, e) => { UpdateData(); dfcFrom.Focus(); };
             ((DateTimePicker) dfcTo.GetControl()).ValueChanged += (s, e) => { UpdateData(); dfcTo.Focus(); };
