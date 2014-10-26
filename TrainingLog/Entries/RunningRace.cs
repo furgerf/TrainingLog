@@ -1,46 +1,54 @@
 ﻿using System;
+using System.Xml.Serialization;
 
 namespace TrainingLog.Entries
 {
-    class RunningRace : TrainingEntry
+    [XmlType("RunningRace")]
+    public class RunningRace : TrainingEntry
     {
         #region Public Fields
 
-        public TimeSpan ExactTime { get; set; }
+        [XmlIgnore]
+        public TimeSpan? ExactTime { get; set; }
 
-        public double ExactDistanceKm { get; set; }
+        [XmlElement("ExactTime")]
+        public string ExactTimeString { get { return (ExactTime ?? TimeSpan.MinValue).ToString(); } set { ExactTime = TimeSpan.Parse(value); } }
+        public bool ExactTimeStringSpecified { get { return ExactTime != null; } }
 
-        public int OverallRank { get; set; }
+        [XmlElement("ExactDistance")]
+        public double ExactDistanceM { get; set; }
 
-        public int AgeGroupRank { get; set; }
+        [XmlElement("RaceAverageHr")]
+        public int? RaceAverageHr { get; set; }
+        public bool RaceAverageHrSpecified { get { return RaceAverageHr != null; } }
 
-        #endregion
+        [XmlElement("OverallRank")]
+        public int? OverallRank { get; set; }
+        public bool OverallRankSpecified { get { return OverallRank != null; } }
 
-        #region Private Fields
+        [XmlElement("AgeGroupRank")]
+        public int? AgeGroupRank { get; set; }
+        public bool AgeGroupRankSpecified { get { return AgeGroupRank != null; } }
 
-
+        [XmlElement("CompetitionName")]
+        public string CompetitionName { get; set; }
 
         #endregion
 
         #region Constructor
 
-        public RunningRace()
-            : base(Common.Sport.Running, Common.EntryType.Competition)
+        public RunningRace(TimeSpan duration, TimeSpan exactTime, double exactDistanceM, string competitionName)
+            : base(duration, Common.Sport.Running, Common.EntryType.Competition)
         {
-
+            ExactTime = exactTime;
+            ExactDistanceM = exactDistanceM;
+            CompetitionName = competitionName;
         }
 
-        #endregion
-
-        #region Main Methods
-
-
-
-        #endregion
-
-        #region Event Handling
-
-
+        public RunningRace()
+        {
+            // for XML
+        }
 
         #endregion
     }
