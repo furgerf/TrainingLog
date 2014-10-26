@@ -137,9 +137,17 @@ namespace TrainingLog.Forms
 
         private void ButBackupClick(object sender, EventArgs e)
         {
+            if (!Directory.Exists(new FileInfo(_settings.TrainingPath).DirectoryName + "\\backup"))
+                Directory.CreateDirectory(new FileInfo(_settings.TrainingPath).DirectoryName + "\\backup");
             Model.Instance.WriteEntries(typeof(TrainingEntry), new FileInfo(_settings.TrainingPath).DirectoryName + "\\backup\\training_" + DateTime.Today.ToString("yyyy_MM_dd") + ".xml");
+            if (!Directory.Exists(new FileInfo(_settings.BiodataPath).DirectoryName + "\\backup"))
+                Directory.CreateDirectory(new FileInfo(_settings.BiodataPath).DirectoryName + "\\backup");
             Model.Instance.WriteEntries(typeof(BiodataEntry), new FileInfo(_settings.BiodataPath).DirectoryName + "\\backup\\biodata_" + DateTime.Today.ToString("yyyy_MM_dd") + ".xml");
+            if (!Directory.Exists(new FileInfo(_settings.NonSportPath).DirectoryName + "\\backup"))
+                Directory.CreateDirectory(new FileInfo(_settings.NonSportPath).DirectoryName + "\\backup");
             Model.Instance.WriteEntries(typeof(NonSportEntry), new FileInfo(_settings.NonSportPath).DirectoryName + "\\backup\\nonsport_" + DateTime.Today.ToString("yyyy_MM_dd") + ".xml");
+            if (!Directory.Exists(new FileInfo(_settings.EquipmentPath).DirectoryName + "\\backup"))
+                Directory.CreateDirectory(new FileInfo(_settings.EquipmentPath).DirectoryName + "\\backup");
             Model.Instance.WriteEntries(typeof(Equipment), new FileInfo(_settings.EquipmentPath).DirectoryName + "\\backup\\equipment_" + DateTime.Today.ToString("yyyy_MM_dd") + ".xml");
             MessageBox.Show("Backup created successfully!", "Backup created", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
