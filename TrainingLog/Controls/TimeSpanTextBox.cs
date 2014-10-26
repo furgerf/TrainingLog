@@ -8,9 +8,9 @@ namespace TrainingLog.Controls
     {
         #region Public Fields
 
-        public bool IsValueValid { get { return !TimeSpan.Equals(TimeSpan.MinValue); } }
+        public bool IsValueValid { get { return !TimeSpan.Equals(null); } }
 
-        public TimeSpan TimeSpan
+        public TimeSpan? TimeSpan
         {
             get
             {
@@ -21,9 +21,20 @@ namespace TrainingLog.Controls
                     txt = "00:" + txt;
                     split = txt.Split(':');
                 }
-                TimeSpan ts;
 
-                return TimeSpan.TryParse(txt, out ts) ? ts : TimeSpan.MinValue;
+                try
+                {
+                    return System.TimeSpan.Parse(txt);
+                }
+                catch (Exception ex)
+                {
+                    if (ex is FormatException || ex is OverflowException)
+                    {
+                        return null;
+                    }
+
+                    throw;
+                }
             }
         }
 

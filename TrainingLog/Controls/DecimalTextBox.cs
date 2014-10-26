@@ -10,13 +10,18 @@ namespace TrainingLog.Controls
 
         public bool IsValueValid { get { return Decimal != decimal.MinValue; } }
 
-        public decimal Decimal
+        public decimal? Decimal
         {
             get
             {
-                decimal dec;
-
-                return decimal.TryParse(Text, out dec) ? dec : decimal.MinValue;
+                try
+                {
+                    return decimal.Parse(Text);
+                }
+                catch (FormatException)
+                {
+                    return null;
+                }
             }
         }
 

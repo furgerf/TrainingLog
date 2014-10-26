@@ -10,12 +10,18 @@ namespace TrainingLog.Controls
 
         public bool IsValueValid { get { return Integer != int.MinValue; } }
 
-        public int Integer
+        public int? Integer
         {
             get
             {
-                int i;
-                return int.TryParse(Text, out i) ? i : int.MinValue;
+                try
+                {
+                    return int.Parse(Text);
+                }
+                catch (FormatException)
+                {
+                    return null;
+                }
             }
         }
 
