@@ -105,12 +105,13 @@ namespace TrainingLog.Entries
             Duration = duration;
         }
 
-        protected TrainingEntry(Common.Sport sport, Common.EntryType entryType)
+        protected TrainingEntry(TimeSpan duration, Common.Sport sport, Common.EntryType entryType)
             : base(entryType)
         {
             if (entryType != Common.EntryType.Competition)
                 throw new ArgumentException("constructor for competitions");
             Sport = sport;
+            Duration = duration;
         }
 
         #endregion
