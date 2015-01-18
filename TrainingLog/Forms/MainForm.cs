@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows.Forms;
 using Microsoft.Win32;
+using TrainingLog.Entries;
 
 namespace TrainingLog.Forms
 {
@@ -139,12 +140,29 @@ namespace TrainingLog.Forms
         }
 
         #endregion
-        
+
         #region Methods
 
         public static void Initialize()
         {
             new MainForm();
+
+            //var entry = new SquashMatch(new TimeSpan(1, 2, 3), "11-0 11-0 11-0", "füdliliga")
+            //{
+            //    MatchTime = new TimeSpan(2, 3, 4),
+            //    Opponent = "Hansi",
+            //    MatchAverageHr = 666
+            //};
+
+            //Model.Instance.AddEntry(entry);
+
+            //var entry2 = new RunningRace(new TimeSpan(1, 2, 3), new TimeSpan(2, 3, 4), 1234, "füdliliga")
+            //{
+            //    RaceAverageHr = 123,
+            //    OverallRank = -1,
+            //};
+
+            //Model.Instance.AddEntry(entry2);
         }
 
         #endregion

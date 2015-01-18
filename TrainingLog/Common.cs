@@ -25,7 +25,9 @@ namespace TrainingLog
         {
             None = 0,
             Easy = 10, Interval, Fartlek, Base, Long, Tempo, Mountain, Other,
-            Solo = 20, Training, Club, Match, Count
+            Solo = 20, Training, Club, Match, 
+            GymCardio = 30, GymWeights, Plyometrics,
+            Count
         }
 
         public enum EntryType
@@ -49,6 +51,11 @@ namespace TrainingLog
         {
             TrainingType.Solo, TrainingType.Training,
             TrainingType.Club, TrainingType.Match
+        };
+
+        public static readonly TrainingType[] OtherTypes =
+        {
+            TrainingType.None, TrainingType.GymCardio, TrainingType.GymWeights, TrainingType.Plyometrics
         };
 
         public static readonly TrainingType[] AllTypes = EnduranceTypes.Concat(SquashTypes).ToArray();

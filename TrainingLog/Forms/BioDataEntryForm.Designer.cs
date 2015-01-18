@@ -46,11 +46,11 @@
             this.comFeeling = new System.Windows.Forms.ComboBox();
             this.numWeight = new System.Windows.Forms.NumericUpDown();
             this.grpNiggles = new System.Windows.Forms.GroupBox();
+            this.comNiggles = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.comNotes = new System.Windows.Forms.ComboBox();
             this.butOk = new System.Windows.Forms.Button();
             this.butCancel = new System.Windows.Forms.Button();
-            this.comNiggles = new System.Windows.Forms.ComboBox();
-            this.comNotes = new System.Windows.Forms.ComboBox();
             this.grpSleep.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numSleepDuration)).BeginInit();
             this.grpHeartRate.SuspendLayout();
@@ -267,6 +267,16 @@
             this.grpNiggles.TabStop = false;
             this.grpNiggles.Text = "Niggles";
             // 
+            // comNiggles
+            // 
+            this.comNiggles.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.comNiggles.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.comNiggles.FormattingEnabled = true;
+            this.comNiggles.Location = new System.Drawing.Point(9, 19);
+            this.comNiggles.Name = "comNiggles";
+            this.comNiggles.Size = new System.Drawing.Size(489, 21);
+            this.comNiggles.TabIndex = 1;
+            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.comNotes);
@@ -276,6 +286,16 @@
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Notes";
+            // 
+            // comNotes
+            // 
+            this.comNotes.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.comNotes.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.comNotes.FormattingEnabled = true;
+            this.comNotes.Location = new System.Drawing.Point(9, 19);
+            this.comNotes.Name = "comNotes";
+            this.comNotes.Size = new System.Drawing.Size(489, 21);
+            this.comNotes.TabIndex = 1;
             // 
             // butOk
             // 
@@ -296,24 +316,6 @@
             this.butCancel.Text = "Cancel";
             this.butCancel.UseVisualStyleBackColor = true;
             this.butCancel.Click += new System.EventHandler(this.ButCancelClick);
-            // 
-            // comNiggles
-            // 
-            this.comNiggles.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.comNiggles.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.comNiggles.FormattingEnabled = true;
-            this.comNiggles.Location = new System.Drawing.Point(9, 19);
-            this.comNiggles.Name = "comNiggles";
-            this.comNiggles.Size = new System.Drawing.Size(489, 21);
-            this.comNiggles.TabIndex = 1;
-            // 
-            // comNotes
-            // 
-            this.comNotes.FormattingEnabled = true;
-            this.comNotes.Location = new System.Drawing.Point(9, 19);
-            this.comNotes.Name = "comNotes";
-            this.comNotes.Size = new System.Drawing.Size(489, 21);
-            this.comNotes.TabIndex = 1;
             // 
             // BiodataEntryForm
             // 

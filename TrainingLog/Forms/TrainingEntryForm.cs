@@ -276,12 +276,19 @@ namespace TrainingLog.Forms
                     foo[i] = Common.EnduranceTypes[i].ToString();
                 comTrainingType.Items.AddRange(foo);
             }
-            else if (((Common.Sport) comSport.SelectedIndex) == Common.Sport.Squash)
+            else if (((Common.Sport)comSport.SelectedIndex) == Common.Sport.Squash)
             {
                 var foo = new object[Common.SquashTypes.Length];
                 for (var i = 0; i < Common.SquashTypes.Length; i++)
                     foo[i] = Common.SquashTypes[i].ToString();
-                comTrainingType.Items.AddRange(foo);   
+                comTrainingType.Items.AddRange(foo);
+            }
+            else if (((Common.Sport)comSport.SelectedIndex) == Common.Sport.Other)
+            {
+                var foo = new object[Common.OtherTypes.Length];
+                for (var i = 0; i < Common.OtherTypes.Length; i++)
+                    foo[i] = Common.OtherTypes[i].ToString();
+                comTrainingType.Items.AddRange(foo);
             }
 
             if (comTrainingType.Items.Count > 0)
@@ -301,6 +308,13 @@ namespace TrainingLog.Forms
             comEquipment.Items.Clear();
             foreach (var ee in Model.Instance.Equipment.Where(ee => ee.Sport.ToString().Equals(comSport.Text)))
                 comEquipment.Items.Add(ee.Name);
+
+            if (comSport.Text == Common.Sport.Other.ToString())
+            {
+                comEquipment.Items.Add("");
+                foreach (var ee in Model.Instance.Equipment)
+                    comEquipment.Items.Add(ee.Name);
+            }
 
             if (comEquipment.Items.Count > 0)
                 comEquipment.SelectedIndex = comEquipment.Items.Count - 1;
@@ -650,17 +664,19 @@ namespace TrainingLog.Forms
                                };
 
             openTef = () =>
-                          {
+            {
+                var durationString = exercises[0].result.duration.Contains(".")
+                    ? exercises[0].result.duration.Remove(exercises[0].result.duration.IndexOf('.'))
+                    : exercises[0].result.duration;
+                if (durationString.EndsWith(":"))
+                    durationString += "00";
                               FillEntryData(new TrainingEntry
                                                 {
                                                     AverageHr = exercises[0].result.heartrate.average,
                                                     Calories = int.Parse(exercises[0].result.calories),
                                                     Date = DateTime.Parse(exercises[0].time),
                                                     DistanceM = (int) exercises[0].result.distance,
-                                                    Duration =
-                                                        TimeSpan.Parse(exercises[0].result.duration.Contains(".") ? 
-                                                        exercises[0].result.duration.Remove(exercises[0].result.duration.IndexOf('.')) : 
-                                                        exercises[0].result.duration),
+                                                    Duration = TimeSpan.Parse(durationString),
                                                     HrZones =
                                                         ZoneData.Parse(exercises[0].result.zones[4].inzone + "_" +
                                                                        exercises[0].result.zones[3].inzone +
