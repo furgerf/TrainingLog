@@ -33,16 +33,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Polar\activitylog.cs" />
+    <Compile Include="Polar\activityRegion.cs" />
+    <Compile Include="Polar\altitudeinfo.cs" />
+    <Compile Include="Polar\bloodpressure.cs" />
+    <Compile Include="Polar\bloodvalues.cs" />
+    <Compile Include="Polar\byterange.cs" />
+    <Compile Include="Polar\calendaritem.cs" />
+    <Compile Include="Polar\calendaritems.cs" />
     <Compile Include="Charts\AbstractChart.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -88,12 +94,22 @@
     <Compile Include="Controls\SquashMatchEntryControl.Designer.cs">
       <DependentUpon>SquashMatchEntryControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Polar\customvalue.cs" />
+    <Compile Include="Polar\customvalues.cs" />
+    <Compile Include="Polar\durationAdapter.cs" />
+    <Compile Include="Polar\endingvalues.cs" />
     <Compile Include="Entries\EntryList.cs" />
     <Compile Include="Entries\RunningRace.cs" />
     <Compile Include="Entries\SquashMatch.cs" />
     <Compile Include="Equipment.cs" />
     <Compile Include="Entries\NonSportEntry.cs" />
     <Compile Include="EntryChangedEventArgs.cs" />
+    <Compile Include="Polar\event.cs" />
+    <Compile Include="Polar\exercise.cs" />
+    <Compile Include="Polar\exercisedata.cs" />
+    <Compile Include="Polar\fitnessdata.cs" />
+    <Compile Include="Polar\fitnessdetails.cs" />
+    <Compile Include="Polar\floatrange.cs" />
     <Compile Include="Forms\EquipmentForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -118,7 +134,24 @@
     <Compile Include="Forms\NonSportEntryForm.Designer.cs">
       <DependentUpon>NonSportEntryForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="PolarData.cs" />
+    <Compile Include="Polar\healthriskappraisals.cs" />
+    <Compile Include="Polar\heartraterange.cs" />
+    <Compile Include="Polar\hraqDepression.cs" />
+    <Compile Include="Polar\hraqHeartDisease.cs" />
+    <Compile Include="Polar\hraqNutrition.cs" />
+    <Compile Include="Polar\hraqStress.cs" />
+    <Compile Include="Polar\lap.cs" />
+    <Compile Include="Polar\limit.cs" />
+    <Compile Include="Polar\move.cs" />
+    <Compile Include="Polar\note.cs" />
+    <Compile Include="Polar\phase.cs" />
+    <Compile Include="Polar\activityinfo.cs" />
+    <Compile Include="Polar\polarexercisedata.cs" />
+    <Compile Include="Polar\power.cs" />
+    <Compile Include="Polar\range.cs" />
+    <Compile Include="Polar\result.cs" />
+    <Compile Include="Polar\sample.cs" />
+    <Compile Include="Polar\sampleType.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Entries\BiodataEntry.cs" />
     <Compile Include="Controls\DateFilterControl.cs">
@@ -192,6 +225,18 @@
     </Compile>
     <Compile Include="Entries\TrainingEntry.cs" />
     <Compile Include="Common.cs" />
+    <Compile Include="Polar\shortrange.cs" />
+    <Compile Include="Polar\speed.cs" />
+    <Compile Include="Polar\speedType.cs" />
+    <Compile Include="Polar\sportresult.cs" />
+    <Compile Include="Polar\sportspeed.cs" />
+    <Compile Include="Polar\strengthactivity.cs" />
+    <Compile Include="Polar\target.cs" />
+    <Compile Include="Polar\timestampAdapter.cs" />
+    <Compile Include="Polar\user.cs" />
+    <Compile Include="Polar\usersettings.cs" />
+    <Compile Include="Polar\xmlAdapter.cs" />
+    <Compile Include="Polar\zone.cs" />
     <Compile Include="ZoneData.cs" />
     <EmbeddedResource Include="Controls\ControlList.resx">
       <DependentUpon>ControlList.cs</DependentUpon>

@@ -105,6 +105,9 @@ namespace TrainingLog.Charts
 
             var entries = GetEntries();
 
+            if (entries.Length == 0)
+                return;
+
             var data = new List<TrainingEntry[]>();
             var index = 0;
 

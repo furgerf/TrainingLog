@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 using Microsoft.Win32;
 using TrainingLog.Entries;
+using TrainingLog.Polar;
 
 namespace TrainingLog.Forms
 {
